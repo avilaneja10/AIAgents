@@ -1,0 +1,158 @@
+{
+ "row": {
+  "system": "single",
+  "task": "T1",
+  "category": "separable",
+  "repeat": 0,
+  "score": 1.0,
+  "success": true,
+  "trap": "",
+  "calls": 7,
+  "input_tokens": 24953,
+  "output_tokens": 2744,
+  "cost_usd": 0.0038673,
+  "seconds": 29.5,
+  "handoffs": 0,
+  "comm_chars": 0,
+  "wall_s": 29.7,
+  "code_runs": 6
+ },
+ "final": {
+  "WN": 33.2,
+  "DL": 20.2,
+  "AA": 22.0,
+  "UA": 25.0,
+  "B6": 8.6,
+  "AS": 15.3
+ },
+ "grade_detail": {
+  "WN": true,
+  "DL": true,
+  "AA": true,
+  "UA": true,
+  "B6": true,
+  "AS": true
+ },
+ "calls": [
+  {
+   "agent": "single",
+   "input_tokens": 777,
+   "output_tokens": 96,
+   "seconds": 1.67,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 1851,
+   "output_tokens": 288,
+   "seconds": 3.81,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 2484,
+   "output_tokens": 63,
+   "seconds": 1.87,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 3269,
+   "output_tokens": 745,
+   "seconds": 6.7,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 4503,
+   "output_tokens": 453,
+   "seconds": 4.44,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 5589,
+   "output_tokens": 601,
+   "seconds": 5.73,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 6480,
+   "output_tokens": 498,
+   "seconds": 5.31,
+   "status": "completed"
+  }
+ ],
+ "messages": [],
+ "events": [
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "import pandas as pd, glob, os\nfiles=glob.glob('airlines/*.csv')\nprint(files)\nfor f in files:\n    df=pd.read_csv(f)\n    print(os.path.basename(f), df.shape, df.columns.tolist(), df.head(2).to_dict('records'))",
+   "result": {
+    "ok": true,
+    "stdout": "['airlines/B6.csv', 'airlines/DL.csv', 'airlines/AS.csv', 'airlines/UA.csv', 'airlines/WN.csv', 'airlines/AA.csv']\nB6.csv (181, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'B61002', 'date': '2025-01-01', 'origin': 'JFK', 'dest': 'ATL', 'sched_dep': '08:35', 'actual_dep': '08:35', 'cancelled': False}, {'flight_id': 'B61001', 'date': '2025-01-01', 'origin': 'JFK', 'dest': 'LAX', 'sched_dep': '21:00', 'actual_dep': '21:03', 'cancelled': False}]\nDL.csv (412, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'DL1003', 'date': '2025-01-01', 'origin': 'LAX', 'dest': 'ATL', 'sched_dep': '07:55', 'actual_dep': '08:09', 'cancelled': False}, {'flight_id': 'DL1002', 'date': '2025-01-01', 'origin': 'DFW', 'dest': 'ATL', 'sched_dep': '14:25', 'actual_dep': '15:39', 'cancelled': False}]\nAS.csv (173, 7) ['flight_id', 'date_utc', 'origin', 'dest', 'sched_dep_utc', 'actual_dep_utc', 'cancelled'] [{'flight_id': 'AS1002', 'date_utc': '2025-01-01', 'origin': 'JFK', 'dest': 'SEA', 'sched_dep_utc': '10:45', 'actual_dep_utc': '10:56', 'cancelled': False}, {'flight_id': 'AS1001', 'date_utc': '2025-01-01', 'origin': 'DEN', 'dest': 'SEA', 'sched_dep_utc': '22:40', 'actual_dep_utc': '22:55', 'cancelled': False}]\nUA.csv (297, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'UA1004', 'date': '2025-01-01', 'origin': 'ORD', 'dest': 'LAX', 'sched_dep': '05:40', 'actual_dep': '05:39', 'cancelled': False}, {'flight_id': 'UA1005', 'date': '2025-01-01', 'origin': 'ORD', 'dest': 'JFK', 'sched_dep': '09:25', 'actual_dep': '09:39', 'cancelled': False}]\nWN.csv (525, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'WN1009', 'date': '2025-01-01', 'origin': 'DEN', 'dest': 'DFW', 'sched_dep': '10:10', 'actual_dep': '10:18', 'cancelled': False}, {'flight_id': 'WN1007', 'date': '2025-01-01', 'origin': 'ORD', 'dest': 'DEN', 'sched_dep': '15:35', 'actual_dep': '15:54', 'cancelled': False}]\nAA.csv (356, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'AA1005', 'date': '2025-01-01', 'origin': 'DFW', 'dest': 'SEA', 'sched_dep': '09:35', 'actual_dep': '09:31', 'cancelled': False}, {'flight_id': 'AA1004', 'date': '2025-01-01', 'origin': 'DFW', 'dest': 'JFK', 'sched_dep': '10:45', 'actual_dep': '10:42', 'cancelled': False}]\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "air=pd.read_csv('airports.csv'); print(air.to_string(index=False));\nfor f in glob.glob('airlines/*.csv'):\n d=pd.read_csv(f); print(os.path.basename(f), 'dups',d.flight_id.duplicated().sum(),'cancel',d.cancelled.value_counts(dropna=False).to_dict())\n if 'date_utc' in d: print(d.tail(3).to_string(index=False))",
+   "result": {
+    "ok": true,
+    "stdout": "airport              city            timezone  utc_offset_hours\n    ATL           Atlanta    America/New_York                -5\n    JFK          New York    America/New_York                -5\n    ORD           Chicago     America/Chicago                -6\n    DFW Dallas-Fort Worth     America/Chicago                -6\n    DEN            Denver      America/Denver                -7\n    LAX       Los Angeles America/Los_Angeles                -8\n    SEA           Seattle America/Los_Angeles                -8\nB6.csv dups 12 cancel {False: 177, True: 4}\nDL.csv dups 0 cancel {False: 399, True: 13}\nAS.csv dups 0 cancel {False: 172, True: 1}\nflight_id   date_utc origin dest sched_dep_utc actual_dep_utc  cancelled\n   AS1172 2025-03-01    JFK  SEA         01:10          01:15      False\n   AS1173 2025-03-01    LAX  SEA         04:20          04:32      False\n   AS1171 2025-03-01    LAX  SEA         07:10          07:22      False\nUA.csv dups 0 cancel {False: 293, True: 4}\nWN.csv dups 0 cancel {False: 517, True: 8}\nAA.csv dups 0 cancel {False: 348, True: 8}\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "d=pd.read_csv('airlines/B6.csv'); print(d[d.flight_id.duplicated(False)].sort_values('flight_id').to_string(index=False))",
+   "result": {
+    "ok": true,
+    "stdout": "flight_id       date origin dest sched_dep actual_dep  cancelled\n   B61008 2025-01-04    JFK  LAX     15:50      15:44      False\n   B61008 2025-01-04    JFK  LAX     15:50      15:44      False\n   B61037 2025-01-15    JFK  SEA     13:45      13:51      False\n   B61037 2025-01-15    JFK  SEA     13:45      13:51      False\n   B61045 2025-01-18    JFK  LAX     16:10      16:20      False\n   B61045 2025-01-18    JFK  LAX     16:10      16:20      False\n   B61052 2025-01-21    JFK  LAX     13:10      13:05      False\n   B61052 2025-01-21    JFK  LAX     13:10      13:05      False\n   B61065 2025-01-25    SEA  JFK     20:55      20:53      False\n   B61065 2025-01-25    SEA  JFK     20:55      20:53      False\n   B61072 2025-01-27    LAX  JFK     06:45      06:40      False\n   B61072 2025-01-27    LAX  JFK     06:45      06:40      False\n   B61089 2025-02-02    JFK  LAX     15:50      15:51      False\n   B61089 2025-02-02    JFK  LAX     15:50      15:51      False\n   B61127 2025-02-15    JFK  LAX     10:20      10:23      False\n   B61127 2025-02-15    JFK  LAX     10:20      10:23      False\n   B61129 2025-02-15    LAX  JFK     21:15      21:17      False\n   B61129 2025-02-15    LAX  JFK     21:15      21:17      False\n   B61161 2025-02-25    LAX  JFK     11:50      11:52      False\n   B61161 2025-02-25    LAX  JFK     11:50      11:52      False\n   B61164 2025-02-27    ORD  JFK     10:25      10:31      False\n   B61164 2025-02-27    ORD  JFK     10:25      10:31      False\n   B61169 2025-02-28    JFK  ORD     14:35      14:28      False\n   B61169 2025-02-28    JFK  ORD     14:35      14:28      False\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "from datetime import timedelta\nresults={}\nallrows=[]\nfor f in glob.glob('airlines/*.csv'):\n car=os.path.basename(f)[:2]; d=pd.read_csv(f).drop_duplicates('flight_id').copy(); d['cancelled']=d['cancelled'].astype(bool)\n if 'date_utc' in d:\n  d['sched_ts_utc']=pd.to_datetime(d.date_utc+' '+d.sched_dep_utc)\n  d['actual_ts_utc']=pd.to_datetime(d.date_utc+' '+d.actual_dep_utc, errors='coerce')\n  # actual UTC can be next calendar day if clock rollover\n  mask=(~d.cancelled)&d.actual_ts_utc.notna()&(d.actual_ts_utc<d.sched_ts_utc)\n  d.loc[mask,'actual_ts_utc'] += pd.Timedelta(days=1)\n  offs=d.origin.map(air.set_index('airport').utc_offset_hours)\n  d['local_sched']=d.sched_ts_utc + pd.to_timedelta(offs,unit='h')\n  d['delay_min']=(d.actual_ts_utc-d.sched_ts_utc).dt.total_seconds()/60\n else:\n  d['sched_ts']=pd.to_datetime(d.date+' '+d.sched_dep)\n  d['actual_ts']=pd.to_datetime(d.date+' '+d.actual_dep, errors='coerce')\n  mask=(~d.cancelled)&d.actual_ts.notna()&(d.actual_ts<d.sched_ts)\n  d.loc[mask,'actual_ts'] += pd.Timedelta(days=1)\n  d['local_sched']=d.sched_ts\n  d['delay_min']=(d.actual_ts-d.sched_ts).dt.total_seconds()/60\n feb=d[d.local_sched.dt.to_period('M')==pd.Period('2025-02')]\n comp=feb[~feb.cancelled]; delayed=comp[comp.delay_min>15]\n results[car]=(len(feb),len(comp),len(delayed),len(delayed)/len(comp)*100)\n allrows.append((car,feb))\n print(car, results[car], 'delay range',comp.delay_min.min(),comp.delay_min.max(), 'local dates',feb.local_sched.min(),feb.local_sched.max())\nprint(results)",
+   "result": {
+    "ok": true,
+    "stdout": "B6 (85, 81, 32, 39.50617283950617) delay range 0.0 1438.0 local dates 2025-02-01 06:00:00 2025-02-28 23:15:00\nDL (192, 188, 91, 48.40425531914894) delay range 0.0 1439.0 local dates 2025-02-01 12:30:00 2025-02-28 19:30:00\nAS (85, 85, 39, 45.88235294117647) delay range 0.0 1439.0 local dates 2025-02-01 06:10:00 2025-02-28 23:10:00\nUA (142, 140, 70, 50.0) delay range 0.0 1439.0 local dates 2025-02-01 15:40:00 2025-02-28 20:20:00\nWN (255, 250, 134, 53.6) delay range 0.0 1439.0 local dates 2025-02-01 06:25:00 2025-02-28 21:05:00\nAA (170, 168, 82, 48.80952380952381) delay range 0.0 1439.0 local dates 2025-02-01 11:10:00 2025-02-28 23:30:00\n{'B6': (85, 81, 32, 39.50617283950617), 'DL': (192, 188, 91, 48.40425531914894), 'AS': (85, 85, 39, 45.88235294117647), 'UA': (142, 140, 70, 50.0), 'WN': (255, 250, 134, 53.6), 'AA': (170, 168, 82, 48.80952380952381)}\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "# Reconstruct and print suspicious > 180 min rows all carriers\nfor f in glob.glob('airlines/*.csv'):\n car=os.path.basename(f)[:2]; d=pd.read_csv(f).drop_duplicates('flight_id').copy(); d['cancelled']=d.cancelled.astype(bool)\n if 'date_utc' in d:\n  d['s']=pd.to_datetime(d.date_utc+' '+d.sched_dep_utc); d['a']=pd.to_datetime(d.date_utc+' '+d.actual_dep_utc,errors='coerce')\n else: d['s']=pd.to_datetime(d.date+' '+d.sched_dep); d['a']=pd.to_datetime(d.date+' '+d.actual_dep,errors='coerce')\n raw=(d.a-d.s).dt.total_seconds()/60\n x=d[(~d.cancelled)&raw.lt(-180)]\n print(car, x[['flight_id','date' if 'date' in d else 'date_utc','sched_dep' if 'sched_dep' in d else 'sched_dep_utc','actual_dep' if 'actual_dep' in d else 'actual_dep_utc']].assign(raw=raw[x.index]).to_string(index=False))",
+   "result": {
+    "ok": true,
+    "stdout": "B6 Empty DataFrame\nColumns: [flight_id, date, sched_dep, actual_dep, raw]\nIndex: []\nDL flight_id       date sched_dep actual_dep     raw\n   DL1011 2025-01-02     23:00      01:07 -1313.0\n   DL1064 2025-01-09     23:10      01:38 -1292.0\n   DL1108 2025-01-16     23:20      00:03 -1397.0\nAS flight_id   date_utc sched_dep_utc actual_dep_utc     raw\n   AS1018 2025-01-07         22:45          01:18 -1287.0\n   AS1123 2025-02-13         23:50          00:01 -1429.0\nUA flight_id       date sched_dep actual_dep     raw\n   UA1009 2025-01-02     23:30      00:06 -1404.0\n   UA1154 2025-01-31     23:25      01:13 -1332.0\n   UA1212 2025-02-12     22:25      00:19 -1326.0\n   UA1244 2025-02-18     22:55      04:03 -1132.0\nWN flight_id       date sched_dep actual_dep     raw\n   WN1059 2025-01-07     23:40      01:31 -1329.0\n   WN1082 2025-01-10     23:55      00:00 -1435.0\n   WN1249 2025-01-29     23:50      00:00 -1430.0\n   WN1358 2025-02-10     23:40      00:50 -1370.0\n   WN1513 2025-02-27     23:55      00:07 -1428.0\nAA flight_id       date sched_dep actual_dep     raw\n   AA1134 2025-01-23     23:45      00:00 -1425.0\n   AA1150 2025-01-25     23:25      00:17 -1388.0\n   AA1172 2025-01-29     22:50      00:17 -1353.0\n   AA1190 2025-02-01     23:25      00:49 -1356.0\n   AA1307 2025-02-20     23:50      00:01 -1429.0\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "results={}\nfor f in glob.glob('airlines/*.csv'):\n car=os.path.basename(f)[:2]; d=pd.read_csv(f).drop_duplicates('flight_id').copy(); d.cancelled=d.cancelled.astype(bool)\n if 'date_utc' in d:\n  s=pd.to_datetime(d.date_utc+' '+d.sched_dep_utc); a=pd.to_datetime(d.date_utc+' '+d.actual_dep_utc,errors='coerce'); offs=d.origin.map(air.set_index('airport').utc_offset_hours); local=s+pd.to_timedelta(offs,unit='h')\n else:\n  s=pd.to_datetime(d.date+' '+d.sched_dep); a=pd.to_datetime(d.date+' '+d.actual_dep,errors='coerce'); local=s\n raw=(a-s).dt.total_seconds()/60\n a=a.mask(raw < -180, a+pd.Timedelta(days=1))\n delay=(a-s).dt.total_seconds()/60\n feb=d[local.dt.to_period('M')==pd.Period('2025-02')].copy(); feb['delay']=delay.loc[feb.index]\n comp=feb[~feb.cancelled]; n=(comp.delay>15).sum(); den=len(comp)\n results[car]={'flights':len(feb),'completed':den,'delayed':int(n),'rate':n/den*100}\n print(car, results[car], 'range',comp.delay.min(),comp.delay.max())\n",
+   "result": {
+    "ok": true,
+    "stdout": "B6 {'flights': 85, 'completed': 81, 'delayed': 7, 'rate': np.float64(8.641975308641975)} range -10.0 98.0\nDL {'flights': 192, 'completed': 188, 'delayed': 38, 'rate': np.float64(20.212765957446805)} range -10.0 138.0\nAS {'flights': 85, 'completed': 85, 'delayed': 13, 'rate': np.float64(15.294117647058824)} range -10.0 82.0\nUA {'flights': 142, 'completed': 140, 'delayed': 35, 'rate': np.float64(25.0)} range -10.0 308.0\nWN {'flights': 255, 'completed': 250, 'delayed': 83, 'rate': np.float64(33.2)} range -10.0 199.0\nAA {'flights': 170, 'completed': 168, 'delayed': 37, 'rate': np.float64(22.023809523809522)} range -10.0 192.0\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "submit",
+   "answer": {
+    "WN": 33.2,
+    "DL": 20.2,
+    "AA": 22.0,
+    "UA": 25.0,
+    "B6": 8.6,
+    "AS": 15.3
+   },
+   "raw": "{\"WN\": 33.2, \"DL\": 20.2, \"AA\": 22.0, \"UA\": 25.0, \"B6\": 8.6, \"AS\": 15.3}",
+   "notes": "Computed from deduplicated flight_id records, filtering February by scheduled departure date in the origin airport's local time. Cancelled flights were excluded from both numerator and denominator; delays were actual minus scheduled and counted only when >15 minutes. AS records were converted from UTC using origin airport offsets, including local-date rollover."
+  }
+ ]
+}

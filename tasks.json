@@ -1,0 +1,337 @@
+{
+  "seed": 853,
+  "delay_threshold": 15,
+  "tasks": [
+    {
+      "id": "T1",
+      "category": "separable",
+      "prompt": "What was the delay rate for each carrier in February 2025? Give a percentage for every carrier.",
+      "why_topology_matters": "Six independent per-carrier files: a manager can hand carriers to workers with no cross-talk needed.",
+      "expected": {
+        "WN": 33.2,
+        "DL": 20.2,
+        "AA": 22.0,
+        "UA": 25.0,
+        "B6": 8.6,
+        "AS": 15.3
+      },
+      "trap_answers": {
+        "no_dedup": {
+          "WN": 33.2,
+          "DL": 20.2,
+          "AA": 22.0,
+          "UA": 25.0,
+          "B6": 8.0,
+          "AS": 15.3
+        },
+        "no_utc_fix": {
+          "WN": 33.2,
+          "DL": 20.2,
+          "AA": 22.0,
+          "UA": 25.0,
+          "B6": 8.6,
+          "AS": 15.5
+        },
+        "no_midnight_wrap": {
+          "WN": 32.8,
+          "DL": 20.2,
+          "AA": 21.4,
+          "UA": 23.6,
+          "B6": 8.6,
+          "AS": 15.3
+        }
+      }
+    },
+    {
+      "id": "T2",
+      "category": "separable",
+      "prompt": "For each carrier, over January and February 2025: (a) which route had the most scheduled flights (count cancelled flights too), and (b) which route had the highest delay rate among routes with at least 20 completed (non-cancelled) flights? Treat a route as an airport pair regardless of direction (ATL->JFK and JFK->ATL are the same route).",
+      "why_topology_matters": "Same per-carrier split as T1 but more work per carrier, so parallel workers save effort.",
+      "expected": {
+        "WN": {
+          "busiest": "DEN-LAX",
+          "busiest_n": 119,
+          "busiest_tie": false,
+          "worst": "DEN-ORD",
+          "worst_rate": 39.1,
+          "worst_tie": false
+        },
+        "DL": {
+          "busiest": "ATL-JFK",
+          "busiest_n": 122,
+          "busiest_tie": false,
+          "worst": "ATL-DFW",
+          "worst_rate": 39.6,
+          "worst_tie": false
+        },
+        "AA": {
+          "busiest": "DFW-LAX",
+          "busiest_n": 91,
+          "busiest_tie": false,
+          "worst": "DFW-ORD",
+          "worst_rate": 28.4,
+          "worst_tie": false
+        },
+        "UA": {
+          "busiest": "LAX-ORD",
+          "busiest_n": 66,
+          "busiest_tie": false,
+          "worst": "ATL-ORD",
+          "worst_rate": 44.4,
+          "worst_tie": false
+        },
+        "B6": {
+          "busiest": "JFK-LAX",
+          "busiest_n": 83,
+          "busiest_tie": false,
+          "worst": "ATL-JFK",
+          "worst_rate": 15.8,
+          "worst_tie": false
+        },
+        "AS": {
+          "busiest": "LAX-SEA",
+          "busiest_n": 95,
+          "busiest_tie": false,
+          "worst": "JFK-SEA",
+          "worst_rate": 20.6,
+          "worst_tie": false
+        }
+      },
+      "trap_answers": {
+        "no_dedup": {
+          "WN": {
+            "busiest": "DEN-LAX",
+            "busiest_n": 119,
+            "busiest_tie": false,
+            "worst": "DEN-ORD",
+            "worst_rate": 39.1,
+            "worst_tie": false
+          },
+          "DL": {
+            "busiest": "ATL-JFK",
+            "busiest_n": 122,
+            "busiest_tie": false,
+            "worst": "ATL-DFW",
+            "worst_rate": 39.6,
+            "worst_tie": false
+          },
+          "AA": {
+            "busiest": "DFW-LAX",
+            "busiest_n": 91,
+            "busiest_tie": false,
+            "worst": "DFW-ORD",
+            "worst_rate": 28.4,
+            "worst_tie": false
+          },
+          "UA": {
+            "busiest": "LAX-ORD",
+            "busiest_n": 66,
+            "busiest_tie": false,
+            "worst": "ATL-ORD",
+            "worst_rate": 44.4,
+            "worst_tie": false
+          },
+          "B6": {
+            "busiest": "JFK-LAX",
+            "busiest_n": 91,
+            "busiest_tie": false,
+            "worst": "ATL-JFK",
+            "worst_rate": 15.8,
+            "worst_tie": false
+          },
+          "AS": {
+            "busiest": "LAX-SEA",
+            "busiest_n": 95,
+            "busiest_tie": false,
+            "worst": "JFK-SEA",
+            "worst_rate": 20.6,
+            "worst_tie": false
+          }
+        },
+        "no_midnight_wrap": {
+          "WN": {
+            "busiest": "DEN-LAX",
+            "busiest_n": 119,
+            "busiest_tie": false,
+            "worst": "DEN-ORD",
+            "worst_rate": 39.1,
+            "worst_tie": false
+          },
+          "DL": {
+            "busiest": "ATL-JFK",
+            "busiest_n": 122,
+            "busiest_tie": false,
+            "worst": "ATL-DFW",
+            "worst_rate": 39.6,
+            "worst_tie": false
+          },
+          "AA": {
+            "busiest": "DFW-LAX",
+            "busiest_n": 91,
+            "busiest_tie": false,
+            "worst": "DFW-ORD",
+            "worst_rate": 28.4,
+            "worst_tie": false
+          },
+          "UA": {
+            "busiest": "LAX-ORD",
+            "busiest_n": 66,
+            "busiest_tie": false,
+            "worst": "ATL-ORD",
+            "worst_rate": 40.7,
+            "worst_tie": false
+          },
+          "B6": {
+            "busiest": "JFK-LAX",
+            "busiest_n": 83,
+            "busiest_tie": false,
+            "worst": "ATL-JFK",
+            "worst_rate": 15.8,
+            "worst_tie": false
+          },
+          "AS": {
+            "busiest": "LAX-SEA",
+            "busiest_n": 95,
+            "busiest_tie": false,
+            "worst": "JFK-SEA",
+            "worst_rate": 20.6,
+            "worst_tie": false
+          }
+        }
+      }
+    },
+    {
+      "id": "T3",
+      "category": "distinct_roles",
+      "prompt": "Consider only Delta (DL), American (AA) and United (UA) flights in January and February 2025. Of their delayed flights, what percentage were scheduled to depart during bad weather at the origin airport? Use the weather at the origin during the hour of the scheduled departure.",
+      "why_topology_matters": "Needs a weather specialist (codes + visibility rule in weather_codes.md) and a flights specialist; a generalist juggling all files may use a naive 'anything not clear' rule.",
+      "expected": {
+        "pct_in_bad_weather": 30.9,
+        "delayed": 246,
+        "delayed_in_bad_weather": 76
+      },
+      "trap_answers": {
+        "no_midnight_wrap": {
+          "pct_in_bad_weather": 30.5,
+          "delayed": 236,
+          "delayed_in_bad_weather": 72
+        },
+        "naive_weather": {
+          "pct_in_bad_weather": 43.9,
+          "delayed": 246,
+          "delayed_in_bad_weather": 108
+        }
+      }
+    },
+    {
+      "id": "T4",
+      "category": "distinct_roles",
+      "prompt": "For Alaska (AS) flights in January and February 2025, compare the delay rate of flights scheduled to depart during bad weather at the origin airport with the delay rate of all other AS flights. Use the weather at the origin during the hour of the scheduled departure.",
+      "why_topology_matters": "Three sources must be combined: AS times are UTC, weather is local, airports.csv holds the offsets. A timezone/flights role and a weather role each own one boundary.",
+      "expected": {
+        "bad_weather_rate": 41.7,
+        "other_rate": 6.8,
+        "n_bad": 24,
+        "n_other": 148
+      },
+      "trap_answers": {
+        "no_utc_fix": {
+          "bad_weather_rate": 7.7,
+          "other_rate": 11.9,
+          "n_bad": 13,
+          "n_other": 159
+        },
+        "no_midnight_wrap": {
+          "bad_weather_rate": 37.5,
+          "other_rate": 6.8,
+          "n_bad": 24,
+          "n_other": 148
+        },
+        "naive_weather": {
+          "bad_weather_rate": 23.1,
+          "other_rate": 4.7,
+          "n_bad": 65,
+          "n_other": 107
+        }
+      }
+    },
+    {
+      "id": "T5",
+      "category": "integration",
+      "prompt": "What was the overall delay rate across the whole network (all carriers combined) for January and February 2025?",
+      "why_topology_matters": "If workers return per-carrier percentages, the synthesizer must pool counts, not average the rates.",
+      "expected": {
+        "network_rate": 23.9
+      },
+      "trap_answers": {
+        "no_dedup": {
+          "network_rate": 23.8
+        },
+        "no_midnight_wrap": {
+          "network_rate": 23.2
+        },
+        "mean_of_carrier_rates": {
+          "network_rate": 21.0
+        }
+      }
+    },
+    {
+      "id": "T6",
+      "category": "integration",
+      "prompt": "Which 5 routes had the most scheduled flights across all carriers combined in January and February 2025 (count cancelled flights too)? Treat a route as an airport pair regardless of direction.",
+      "why_topology_matters": "Global top-5 is not the union of per-carrier top routes; workers must return full counts for a correct merge.",
+      "expected": {
+        "top5": [
+          "DFW-LAX",
+          "DEN-SEA",
+          "DEN-LAX",
+          "ATL-JFK",
+          "ATL-DFW"
+        ],
+        "counts": {
+          "DFW-LAX": 200,
+          "DEN-SEA": 170,
+          "DEN-LAX": 169,
+          "ATL-JFK": 161,
+          "ATL-DFW": 160
+        },
+        "sixth_count": 144
+      },
+      "trap_answers": {
+        "union_of_carrier_top3": {
+          "top5": [
+            "DFW-LAX",
+            "ATL-JFK",
+            "DEN-LAX",
+            "DEN-SEA",
+            "ATL-LAX"
+          ]
+        }
+      }
+    },
+    {
+      "id": "T7",
+      "category": "wasteful",
+      "prompt": "How many JetBlue (B6) flights were cancelled on February 14, 2025?",
+      "why_topology_matters": "A single lookup in one file: any decomposition is pure overhead.",
+      "expected": {
+        "cancelled": 2
+      },
+      "trap_answers": {}
+    },
+    {
+      "id": "T8",
+      "category": "shared_mistake",
+      "prompt": "What was the average departure delay, in minutes, across all completed (non-cancelled) flights by all carriers in January and February 2025? Early departures count as negative delay.",
+      "why_topology_matters": "Every worker runs the same naive time subtraction; post-midnight departures (and B6 duplicates) skew the mean. Parallel agents can repeat the same mistake; a critic may or may not catch it.",
+      "expected": {
+        "avg_delay_min": 15.4
+      },
+      "trap_answers": {
+        "no_midnight_wrap": {
+          "avg_delay_min": 1.0
+        }
+      }
+    }
+  ]
+}

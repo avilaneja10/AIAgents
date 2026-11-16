@@ -1,0 +1,132 @@
+{
+ "row": {
+  "system": "single",
+  "task": "T4",
+  "category": "distinct_roles",
+  "effort": "low",
+  "repeat": 0,
+  "score": 0.0,
+  "success": false,
+  "trap": "",
+  "calls": 6,
+  "input_tokens": 17299,
+  "output_tokens": 1599,
+  "cost_usd": 0.0025294,
+  "seconds": 21.3,
+  "handoffs": 0,
+  "comm_chars": 0,
+  "wall_s": 21.4,
+  "code_runs": 5
+ },
+ "final": {
+  "bad_weather_rate": 54.2,
+  "other_rate": 40.5
+ },
+ "grade_detail": {
+  "bad_weather_rate": false,
+  "other_rate": false
+ },
+ "calls": [
+  {
+   "agent": "single",
+   "input_tokens": 796,
+   "output_tokens": 125,
+   "seconds": 2.45,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 1712,
+   "output_tokens": 122,
+   "seconds": 2.16,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 2151,
+   "output_tokens": 661,
+   "seconds": 6.82,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 3844,
+   "output_tokens": 193,
+   "seconds": 2.83,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 4233,
+   "output_tokens": 213,
+   "seconds": 2.61,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 4563,
+   "output_tokens": 285,
+   "seconds": 4.44,
+   "status": "completed"
+  }
+ ],
+ "messages": [],
+ "events": [
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "import pandas as pd, os, glob\nprint(open('weather_codes.md').read())\nasdf=pd.read_csv('airlines/AS.csv'); wx=pd.read_csv('weather.csv')\nprint(asdf.head(), asdf.dtypes, asdf.shape)\nprint(wx.head(), wx.dtypes, wx.shape)\nprint(asdf['date'].min(),asdf['date'].max(), asdf['cancelled'].value_counts())",
+   "result": {
+    "ok": false,
+    "stdout": "| heavy rain |\n| `BR` | mist |\n| `FG` | fog |\n| `SN` | snow |\n| `TS` | thunderstorm |\n\n`visibility_mi` is visibility in statute miles.\n\n## Bad weather\nAn airport-hour counts as **bad weather** if and only if:\n- `wx_code` is `TS`, `SN` or `+RA`; **or**\n- `wx_code` is `FG` **and** `visibility_mi` < 1.0.\n\nEverything else (`CLR`, `-RA`, `RA`, `BR`, and `FG` with visibility >= 1.0) is **not** bad weather.\n\n  flight_id    date_utc origin dest sched_dep_utc actual_dep_utc  cancelled\n0    AS1002  2025-01-01    JFK  SEA         10:45          10:56      False\n1    AS1001  2025-01-01    DEN  SEA         22:40          22:55      False\n2    AS1003  2025-01-02    LAX  SEA         19:45          19:57      False\n3    AS1005  2025-01-02    LAX  SEA         22:55          22:57      False\n4    AS1006  2025-01-02    LAX  SEA         23:35          23:28      False flight_id          str\ndate_utc           str\norigin             str\ndest               str\nsched_dep_utc      str\nactual_dep_utc     str\ncancelled         bool\ndtype: object (173, 7)\n  airport        date  hour wx_code  visibility_mi\n0     ATL  2025-01-01     0     CLR           10.0\n1     ATL  2025-01-01     1     CLR           10.0\n2     ATL  2025-01-01     2     CLR           10.0\n3     ATL  2025-01-01     3     CLR           10.0\n4     ATL  2025-01-01     4     CLR           10.0 airport              str\ndate                 str\nhour               int64\nwx_code              str\nvisibility_mi    float64\ndtype: object (9912, 5)\n",
+    "error": "Traceback (most recent call last):\n  File \"/Users/avilaneja/Study/University/Sem4/CS839_aiAgents/HW1/.venv/lib/python3.12/site-packages/pandas/core/indexes/base.py\", line 3641, in get_loc\n    return self._engine.get_loc(casted_key)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"pandas/_libs/index.pyx\", line 168, in pandas._libs.index.IndexEngine.get_loc\nKeyError: 'date'\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/var/folders/ql/8_mlfx5s0hlckrlfb0lldh9w0000gn/T/ipykernel_74530/3513064669.py\", line 16, in run_python\n    exec(code, self.ns)\n  File \"<string>\", line 6, in <module>\nKeyError: 'date'\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "ap=pd.read_csv('airports.csv'); print(ap.to_string(index=False)); print(asdf[['date_utc','origin','sched_dep_utc','actual_dep_utc','cancelled']].tail()); print(asdf.date_utc.min(),asdf.date_utc.max()); print(asdf.origin.value_counts())",
+   "result": {
+    "ok": true,
+    "stdout": "airport              city            timezone  utc_offset_hours\n    ATL           Atlanta    America/New_York                -5\n    JFK          New York    America/New_York                -5\n    ORD           Chicago     America/Chicago                -6\n    DFW Dallas-Fort Worth     America/Chicago                -6\n    DEN            Denver      America/Denver                -7\n    LAX       Los Angeles America/Los_Angeles                -8\n    SEA           Seattle America/Los_Angeles                -8\n       date_utc origin sched_dep_utc actual_dep_utc  cancelled\n168  2025-02-28    SEA         07:00          07:00      False\n169  2025-02-28    SEA         22:40          22:53      False\n170  2025-03-01    JFK         01:10          01:15      False\n171  2025-03-01    LAX         04:20          04:32      False\n172  2025-03-01    LAX         07:10          07:22      False\n2025-01-01 2025-03-01\norigin\nSEA    80\nLAX    52\nDEN    25\nJFK    16\nName: count, dtype: int64\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "import datetime as dt\n# normalize AS exported UTC fields to local scheduled date/hour using stated offsets\nx=asdf.merge(ap[['airport','utc_offset_hours']].rename(columns={'airport':'origin'}),on='origin',how='left')\nx['sched_dt_utc']=pd.to_datetime(x.date_utc+' '+x.sched_dep_utc)\nx['actual_dt_utc']=pd.to_datetime(x.date_utc+' '+x.actual_dep_utc, errors='coerce')\nx['sched_local']=x.sched_dt_utc+pd.to_timedelta(x.utc_offset_hours,unit='h')\nx['actual_local']=x.actual_dt_utc+pd.to_timedelta(x.utc_offset_hours,unit='h')\nx['delay_min']=(x.actual_dt_utc-x.sched_dt_utc).dt.total_seconds()/60\n# local scheduled Jan/Feb\nx=x[x.sched_local.dt.month.isin([1,2])].copy()\nwx['bad']=wx.wx_code.isin(['TS','SN','+RA']) | ((wx.wx_code=='FG') & (wx.visibility_mi<1.0))\nkey=x[['origin']].copy(); key['date']=x.sched_local.dt.strftime('%Y-%m-%d'); key['hour']=x.sched_local.dt.hour\nx=x.join(key[['date','hour']])\nx=x.merge(wx[['airport','date','hour','wx_code','visibility_mi','bad']],left_on=['origin','date','hour'],right_on=['airport','date','hour'],how='left',validate='many_to_one')\nprint(x[['flight_id','origin','sched_local','date','hour','wx_code','visibility_mi','bad','cancelled','delay_min']].head(20).to_string(index=False))\nprint('rows',len(x),'missing wx',x.bad.isna().sum(),'dupes',x.flight_id.duplicated().sum())\nfor bad in [True,False]:\n z=x[(x.bad==bad)&(~x.cancelled)]\n print(bad,len(z),(z.delay_min>15).sum(), (z.delay_min>15).mean()*100)\nprint(x.groupby(['bad','cancelled']).size())",
+   "result": {
+    "ok": true,
+    "stdout": "flight_id origin         sched_local       date  hour wx_code  visibility_mi   bad  cancelled  delay_min\n   AS1002    JFK 2025-01-01 05:45:00 2025-01-01     5     CLR          10.00 False      False       11.0\n   AS1001    DEN 2025-01-01 15:40:00 2025-01-01    15     CLR          10.00 False      False       15.0\n   AS1003    LAX 2025-01-02 11:45:00 2025-01-02    11     CLR          10.00 False      False       12.0\n   AS1005    LAX 2025-01-02 14:55:00 2025-01-02    14     CLR          10.00 False      False        2.0\n   AS1006    LAX 2025-01-02 15:35:00 2025-01-02    15     CLR          10.00 False      False       -7.0\n   AS1004    SEA 2025-01-02 22:05:00 2025-01-02    22     CLR          10.00 False      False        6.0\n   AS1007    DEN 2025-01-03 10:00:00 2025-01-03    10     CLR          10.00 False      False       11.0\n   AS1008    SEA 2025-01-03 23:55:00 2025-01-03    23     +RA           2.00  True      False       -7.0\n   AS1009    LAX 2025-01-04 13:20:00 2025-01-04    13     CLR          10.00 False      False       -8.0\n   AS1010    SEA 2025-01-04 19:15:00 2025-01-04    19     CLR          10.00 False      False        5.0\n   AS1013    SEA 2025-01-05 10:30:00 2025-01-05    10     CLR          10.00 False      False        8.0\n   AS1012    LAX 2025-01-05 19:55:00 2025-01-05    19     CLR          10.00 False      False        1.0\n   AS1011    LAX 2025-01-05 20:40:00 2025-01-05    20     CLR          10.00 False      False        4.0\n   AS1014    SEA 2025-01-06 13:50:00 2025-01-06    13     -RA           9.50 False      False       19.0\n   AS1015    SEA 2025-01-06 15:15:00 2025-01-06    15     -RA           8.00 False      False       -8.0\n   AS1019    SEA 2025-01-07 09:10:00 2025-01-07     9     CLR          10.00 False      False       10.0\n   AS1016    LAX 2025-01-07 09:30:00 2025-01-07     9     CLR          10.00 False      False       -2.0\n   AS1018    SEA 2025-01-07 14:45:00 2025-01-07    14     +RA           2.75  True      False    -1287.0\n   AS1017    SEA 2025-01-07 21:00:00 2025-01-07    21     CLR          10.00 False      False       18.0\n   AS1021    SEA 2025-01-08 08:00:00 2025-01-08     8     CLR          10.00 False      False        8.0\nrows 173 missing wx 0 dupes 0\nTrue 24 9 37.5\nFalse 148 10 6.756756756756757\nbad    cancelled\nFalse  False        148\n       True           1\nTrue   False         24\ndtype: int64\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "print(asdf.loc[asdf.flight_id=='AS1018'].to_string(index=False)); print(x[x.delay_min< -100][['flight_id','sched_dep_utc','actual_dep_utc','sched_local','delay_min','bad']].to_string(index=False)); print(x[x.delay_min>100][['flight_id','sched_dep_utc','actual_dep_utc','delay_min','bad']].to_string(index=False))",
+   "result": {
+    "ok": true,
+    "stdout": "flight_id   date_utc origin dest sched_dep_utc actual_dep_utc  cancelled\n   AS1018 2025-01-07    SEA  DEN         22:45          01:18      False\nflight_id sched_dep_utc actual_dep_utc         sched_local  delay_min   bad\n   AS1018         22:45          01:18 2025-01-07 14:45:00    -1287.0  True\n   AS1123         23:50          00:01 2025-02-13 15:50:00    -1429.0 False\nEmpty DataFrame\nColumns: [flight_id, sched_dep_utc, actual_dep_utc, delay_min, bad]\nIndex: []\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "# Correct cross-midnight actual times, then recompute delay and rates\nx['delay_min']=((x.actual_dt_utc-x.sched_dt_utc).dt.total_seconds()/60)\nx.loc[x.actual_dep_utc < x.sched_dep_utc,'delay_min'] += 1440\nfor bad in [True,False]:\n z=x[(x.bad==bad)&(~x.cancelled)]\n print(bad,'completed',len(z),'delayed',(z.delay_min>15).sum(),'rate',round((z.delay_min>15).mean()*100,1))\nprint(x[x.flight_id.isin(['AS1018','AS1123'])][['flight_id','sched_dep_utc','actual_dep_utc','delay_min','bad']])",
+   "result": {
+    "ok": true,
+    "stdout": "True completed 24 delayed 13 rate 54.2\nFalse completed 148 delayed 60 rate 40.5\n    flight_id sched_dep_utc actual_dep_utc  delay_min    bad\n17     AS1018         22:45          01:18      153.0   True\n123    AS1123         23:50          00:01       11.0  False\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "submit",
+   "answer": {
+    "bad_weather_rate": 54.2,
+    "other_rate": 40.5
+   },
+   "raw": "{\"bad_weather_rate\": 54.2, \"other_rate\": 40.5}",
+   "notes": "Loaded AS flights, converted the exported UTC schedule/actual timestamps to origin-local time using airports.csv, and selected locally scheduled dates in January-February 2025. Joined weather by origin, local scheduled date, and scheduled-departure hour. Applied the documented bad-weather rule (TS/SN/+RA, or FG with visibility <1.0), excluded cancellations from both rates, treated delays as >15 minutes, and corrected overnight actual departures by adding one day."
+  }
+ ]
+}

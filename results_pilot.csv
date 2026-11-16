@@ -1,0 +1,20 @@
+system,task,category,repeat,score,success,trap,calls,input_tokens,output_tokens,cost_usd,seconds,handoffs,comm_chars,wall_s,distinct_answers,solvers_no_result,solver_scores,critic_best,agg_chosen,final_is_majority,final_matches_a_solver,plan_ok,n_workers,invalid_files,files_overlap,workers_no_result,caveats_passed,code_runs
+debate+smoke,T7,wasteful,0,1.0,True,,8,7956,1712,0.0016516,22.2,3,4252,22.3,1,0,"[1.0, 1.0, 1.0]",S1,S1,True,True,,,,,,,
+debate,T1,separable,0,0.0,False,,11,21369,5411,0.0048424,55.6,3,11528,55.8,2,0,"[0.0, 0.0, 0.0]",none,combined,True,True,,,,,,,
+debate,T2,separable,0,0.0,False,,11,17373,3105,0.0032898,35.9,3,5366,36.0,2,0,"[0.0, 0.0, 0.0]",none,S1,False,True,,,,,,,
+debate,T3,distinct_roles,0,0.0,False,,11,23305,5375,0.005018,54.1,3,10274,54.4,3,0,"[0.0, 0.0, 0.0]",S3,S3,False,True,,,,,,,
+debate,T4,distinct_roles,0,0.0,False,,11,18575,4332,0.0040235,48.3,3,5627,48.5,2,0,"[0.0, 0.0, 0.0]",none,S1,False,True,,,,,,,
+debate,T5,integration,0,0.0,False,,11,26260,6660,0.0059559999999999995,64.9,3,11969,65.2,3,0,"[0.0, 1.0, 0.0]",S3,S3,False,True,,,,,,,
+hierarchy+smoke,T7,wasteful,0,1.0,True,,5,5035,959,0.000983,13.2,2,1843,13.2,,,,,,,,True,1,[],0,0,"[""cancelled"", ""dedup""]",
+hierarchy,T1,separable,0,0.167,False,,8,12530,2790,0.002648,31.7,3,5108,31.8,,,,,,,,True,2,[],1,0,"[""threshold_15"", ""cancelled"", ""utc"", ""dedup"", ""midnight""]",
+hierarchy,T2,separable,0,0.0,False,,11,17997,4083,0.0038412,46.2,4,8068,46.4,,,,,,,,True,3,[],2,0,"[""threshold_15"", ""cancelled"", ""utc"", ""midnight""]",
+hierarchy,T3,distinct_roles,0,0.0,False,,5,7886,2298,0.0019376000000000003,25.0,2,2599,25.1,,,,,,,,True,1,[],0,0,"[""threshold_15"", ""cancelled"", ""dedup"", ""midnight"", ""bad_weather_rule""]",
+hierarchy,T4,distinct_roles,0,1.0,True,,5,9500,2630,0.002265,28.1,2,4039,28.2,,,,,,,,True,1,[],0,0,"[""threshold_15"", ""cancelled"", ""utc"", ""dedup"", ""bad_weather_rule""]",
+hierarchy,T5,integration,0,0.0,False,,5,9247,2370,0.0021097,25.9,2,3693,26.0,,,,,,,,True,1,[],0,0,"[""threshold_15"", ""cancelled"", ""utc"", ""dedup"", ""midnight""]",
+single+smoke,T7,wasteful,0,1.0,True,,2,1904,196,0.0002884,5.1,0,0,5.1,,,,,,,,,,,,,,1
+single,T1,separable,0,1.0,True,,7,24953,2744,0.0038673,29.5,0,0,29.7,,,,,,,,,,,,,,6
+single,T2,separable,0,0.917,False,,4,12168,1632,0.0020328,16.8,0,0,17.0,,,,,,,,,,,,,,3
+single,T3,distinct_roles,0,1.0,True,,5,17311,1470,0.0024661,17.0,0,0,17.1,,,,,,,,,,,,,,4
+single,T4,distinct_roles,0,1.0,True,,5,16950,2138,0.002764,21.7,0,0,21.8,,,,,,,,,,,,,,4
+single,T5,integration,0,1.0,True,,6,22550,2237,0.0033734999999999998,24.9,0,0,25.0,,,,,,,,,,,,,,5
+single,T6,integration,0,1.0,True,,4,8639,1222,0.0014749000000000001,13.7,0,0,13.8,,,,,,,,,,,,,,3

@@ -1,0 +1,96 @@
+{
+ "row": {
+  "system": "single",
+  "task": "T8",
+  "category": "shared_mistake",
+  "effort": "low",
+  "repeat": 2,
+  "score": 1.0,
+  "success": true,
+  "trap": "",
+  "calls": 4,
+  "input_tokens": 9224,
+  "output_tokens": 1085,
+  "cost_usd": 0.0014648999999999999,
+  "seconds": 15.6,
+  "handoffs": 0,
+  "comm_chars": 0,
+  "wall_s": 15.7,
+  "code_runs": 3
+ },
+ "final": {
+  "avg_delay_min": 15.4
+ },
+ "grade_detail": {
+  "avg_delay_min": true
+ },
+ "calls": [
+  {
+   "agent": "single",
+   "input_tokens": 769,
+   "output_tokens": 160,
+   "seconds": 2.62,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 1719,
+   "output_tokens": 416,
+   "seconds": 5.51,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 2955,
+   "output_tokens": 343,
+   "seconds": 4.05,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 3781,
+   "output_tokens": 166,
+   "seconds": 3.45,
+   "status": "completed"
+  }
+ ],
+ "messages": [],
+ "events": [
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "import pandas as pd, glob, os\nfiles=glob.glob('airlines/*.csv')\nprint(files)\nfor f in files:\n d=pd.read_csv(f)\n print(os.path.basename(f), d.shape, d.columns.tolist(), d['flight_id'].nunique(), d['cancelled'].value_counts(dropna=False).to_dict())\n print(d.head(2).to_string(index=False))",
+   "result": {
+    "ok": true,
+    "stdout": "['airlines/B6.csv', 'airlines/DL.csv', 'airlines/AS.csv', 'airlines/UA.csv', 'airlines/WN.csv', 'airlines/AA.csv']\nB6.csv (181, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] 169 {False: 177, True: 4}\nflight_id       date origin dest sched_dep actual_dep  cancelled\n   B61002 2025-01-01    JFK  ATL     08:35      08:35      False\n   B61001 2025-01-01    JFK  LAX     21:00      21:03      False\nDL.csv (412, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] 412 {False: 399, True: 13}\nflight_id       date origin dest sched_dep actual_dep  cancelled\n   DL1003 2025-01-01    LAX  ATL     07:55      08:09      False\n   DL1002 2025-01-01    DFW  ATL     14:25      15:39      False\nAS.csv (173, 7) ['flight_id', 'date_utc', 'origin', 'dest', 'sched_dep_utc', 'actual_dep_utc', 'cancelled'] 173 {False: 172, True: 1}\nflight_id   date_utc origin dest sched_dep_utc actual_dep_utc  cancelled\n   AS1002 2025-01-01    JFK  SEA         10:45          10:56      False\n   AS1001 2025-01-01    DEN  SEA         22:40          22:55      False\nUA.csv (297, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] 297 {False: 293, True: 4}\nflight_id       date origin dest sched_dep actual_dep  cancelled\n   UA1004 2025-01-01    ORD  LAX     05:40      05:39      False\n   UA1005 2025-01-01    ORD  JFK     09:25      09:39      False\nWN.csv (525, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] 525 {False: 517, True: 8}\nflight_id       date origin dest sched_dep actual_dep  cancelled\n   WN1009 2025-01-01    DEN  DFW     10:10      10:18      False\n   WN1007 2025-01-01    ORD  DEN     15:35      15:54      False\nAA.csv (356, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] 356 {False: 348, True: 8}\nflight_id       date origin dest sched_dep actual_dep  cancelled\n   AA1005 2025-01-01    DFW  SEA     09:35      09:31      False\n   AA1004 2025-01-01    DFW  JFK     10:45      10:42      False\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "import pandas as pd, glob\nrows=[]\nfor f in glob.glob('airlines/*.csv'):\n d=pd.read_csv(f).drop_duplicates('flight_id')\n sc=[c for c in d.columns if c.startswith('sched_dep')][0]; ac=[c for c in d.columns if c.startswith('actual_dep')][0]\n x=d[~d.cancelled].copy(); raw=(pd.to_datetime(x[ac],format='%H:%M')-pd.to_datetime(x[sc],format='%H:%M')).dt.total_seconds()/60\n print(f, 'completed',len(x),'raw min',raw.min(),'max',raw.max(),'negatives',raw[raw<0].sort_values().head(10).tolist())\n rows.append(pd.DataFrame({'id':x.flight_id,'raw':raw,'carrier':f}))\nallx=pd.concat(rows)\nprint('all',len(allx),'raw stats',allx.raw.describe().to_string())\nprint(allx.sort_values('raw').head(20).to_string(index=False))",
+   "result": {
+    "ok": true,
+    "stdout": "airlines/B6.csv completed 165 raw min -10.0 max 142.0 negatives [-10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -9.0, -9.0, -8.0, -8.0]\nairlines/DL.csv completed 399 raw min -1397.0 max 167.0 negatives [-1397.0, -1313.0, -1292.0, -10.0, -10.0, -9.0, -9.0, -9.0, -9.0, -9.0]\nairlines/AS.csv completed 172 raw min -1429.0 max 82.0 negatives [-1429.0, -1287.0, -10.0, -10.0, -10.0, -10.0, -10.0, -9.0, -9.0, -9.0]\nairlines/UA.csv completed 293 raw min -1404.0 max 227.0 negatives [-1404.0, -1332.0, -1326.0, -1132.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0]\nairlines/WN.csv completed 517 raw min -1435.0 max 199.0 negatives [-1435.0, -1430.0, -1428.0, -1370.0, -1329.0, -10.0, -10.0, -10.0, -10.0, -10.0]\nairlines/AA.csv completed 348 raw min -1429.0 max 309.0 negatives [-1429.0, -1425.0, -1388.0, -1356.0, -1353.0, -10.0, -10.0, -10.0, -10.0, -10.0]\nall 1894 raw stats count    1894.000000\nmean        0.999472\nstd       140.386872\nmin     -1435.000000\n25%        -2.000000\n50%         7.000000\n75%        15.000000\nmax       309.000000\n    id     raw         carrier\nWN1082 -1435.0 airlines/WN.csv\nWN1249 -1430.0 airlines/WN.csv\nAS1123 -1429.0 airlines/AS.csv\nAA1307 -1429.0 airlines/AA.csv\nWN1513 -1428.0 airlines/WN.csv\nAA1134 -1425.0 airlines/AA.csv\nUA1009 -1404.0 airlines/UA.csv\nDL1108 -1397.0 airlines/DL.csv\nAA1150 -1388.0 airlines/AA.csv\nWN1358 -1370.0 airlines/WN.csv\nAA1190 -1356.0 airlines/AA.csv\nAA1172 -1353.0 airlines/AA.csv\nUA1154 -1332.0 airlines/UA.csv\nWN1059 -1329.0 airlines/WN.csv\nUA1212 -1326.0 airlines/UA.csv\nDL1011 -1313.0 airlines/DL.csv\nDL1064 -1292.0 airlines/DL.csv\nAS1018 -1287.0 airlines/AS.csv\nUA1244 -1132.0 airlines/UA.csv\nAA1303   -10.0 airlines/AA.csv\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "import pandas as pd, glob\nparts=[]\nfor f in glob.glob('airlines/*.csv'):\n d=pd.read_csv(f).drop_duplicates('flight_id')\n sc=next(c for c in d if c.startswith('sched_dep')); ac=next(c for c in d if c.startswith('actual_dep'))\n x=d[(~d.cancelled) & d[ac].notna()].copy()\n raw=(pd.to_datetime(x[ac],format='%H:%M')-pd.to_datetime(x[sc],format='%H:%M')).dt.total_seconds()/60\n # clock rollover: only very large negative differences indicate next-day departure; preserve modest early departures\n delay=raw.where(raw>=-720,raw+1440)\n parts.append(pd.DataFrame({'delay':delay,'raw':raw,'carrier':f}))\nz=pd.concat(parts,ignore_index=True)\nprint('n',len(z),'sum',z.delay.sum(),'mean',z.delay.mean(),'rounded',round(z.delay.mean(),1),'rollovers',(z.raw< -720).sum())\nprint(z.groupby('carrier').agg(n=('delay','size'),avg=('delay','mean'),sum=('delay','sum')).to_string())\nprint(z[z.raw < -720].sort_values('raw').to_string(index=False))",
+   "result": {
+    "ok": true,
+    "stdout": "n 1894 sum 29253.0 mean 15.445089757127771 rounded 15.4 rollovers 19\n                   n        avg      sum\ncarrier                                 \nairlines/AA.csv  348  14.933908   5197.0\nairlines/AS.csv  172   8.767442   1508.0\nairlines/B6.csv  165   7.309091   1206.0\nairlines/DL.csv  399  15.160401   6049.0\nairlines/UA.csv  293  17.030717   4990.0\nairlines/WN.csv  517  19.928433  10303.0\n delay     raw         carrier\n   5.0 -1435.0 airlines/WN.csv\n  10.0 -1430.0 airlines/WN.csv\n  11.0 -1429.0 airlines/AA.csv\n  11.0 -1429.0 airlines/AS.csv\n  12.0 -1428.0 airlines/WN.csv\n  15.0 -1425.0 airlines/AA.csv\n  36.0 -1404.0 airlines/UA.csv\n  43.0 -1397.0 airlines/DL.csv\n  52.0 -1388.0 airlines/AA.csv\n  70.0 -1370.0 airlines/WN.csv\n  84.0 -1356.0 airlines/AA.csv\n  87.0 -1353.0 airlines/AA.csv\n 108.0 -1332.0 airlines/UA.csv\n 111.0 -1329.0 airlines/WN.csv\n 114.0 -1326.0 airlines/UA.csv\n 127.0 -1313.0 airlines/DL.csv\n 148.0 -1292.0 airlines/DL.csv\n 153.0 -1287.0 airlines/AS.csv\n 308.0 -1132.0 airlines/UA.csv\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "submit",
+   "answer": {
+    "avg_delay_min": 15.4
+   },
+   "raw": "{\"avg_delay_min\": 15.4}",
+   "notes": "Deduplicated records by flight_id, excluded cancelled flights, computed actual minus scheduled departure in minutes, and adjusted the 19 clear next-day departures for midnight rollover. Across 1,894 completed flights, the mean delay was 15.4451 minutes, reported as 15.4 minutes to one decimal."
+  }
+ ]
+}

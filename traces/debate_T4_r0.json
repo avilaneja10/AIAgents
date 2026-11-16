@@ -1,0 +1,414 @@
+{
+ "row": {
+  "system": "debate",
+  "task": "T4",
+  "category": "distinct_roles",
+  "repeat": 0,
+  "score": 1.0,
+  "success": true,
+  "trap": "",
+  "calls": 20,
+  "input_tokens": 79290,
+  "output_tokens": 8648,
+  "cost_usd": 0.012253,
+  "seconds": 90.6,
+  "handoffs": 3,
+  "comm_chars": 13763,
+  "wall_s": 90.9,
+  "distinct_answers": 2,
+  "solvers_no_result": 0,
+  "solver_caps": "[6, 7, 7]",
+  "solver_calls_used": "[5, 6, 7]",
+  "solver_scores": "[0.5, 1.0, 1.0]",
+  "critic_best": "S2",
+  "agg_chosen": "S2",
+  "final_is_majority": true,
+  "final_matches_a_solver": true
+ },
+ "final": {
+  "bad_weather_rate": 41.7,
+  "other_rate": 6.8
+ },
+ "grade_detail": {
+  "bad_weather_rate": true,
+  "other_rate": true
+ },
+ "calls": [
+  {
+   "agent": "S1",
+   "input_tokens": 796,
+   "output_tokens": 126,
+   "seconds": 1.95,
+   "status": "completed"
+  },
+  {
+   "agent": "S1",
+   "input_tokens": 1545,
+   "output_tokens": 656,
+   "seconds": 5.82,
+   "status": "completed"
+  },
+  {
+   "agent": "S1",
+   "input_tokens": 3773,
+   "output_tokens": 385,
+   "seconds": 4.1,
+   "status": "completed"
+  },
+  {
+   "agent": "S1",
+   "input_tokens": 4890,
+   "output_tokens": 346,
+   "seconds": 3.92,
+   "status": "completed"
+  },
+  {
+   "agent": "S1",
+   "input_tokens": 5531,
+   "output_tokens": 179,
+   "seconds": 3.16,
+   "status": "completed"
+  },
+  {
+   "agent": "S2",
+   "input_tokens": 796,
+   "output_tokens": 115,
+   "seconds": 1.73,
+   "status": "completed"
+  },
+  {
+   "agent": "S2",
+   "input_tokens": 1648,
+   "output_tokens": 164,
+   "seconds": 2.44,
+   "status": "completed"
+  },
+  {
+   "agent": "S2",
+   "input_tokens": 2555,
+   "output_tokens": 486,
+   "seconds": 5.32,
+   "status": "completed"
+  },
+  {
+   "agent": "S2",
+   "input_tokens": 4917,
+   "output_tokens": 402,
+   "seconds": 4.68,
+   "status": "completed"
+  },
+  {
+   "agent": "S2",
+   "input_tokens": 6531,
+   "output_tokens": 495,
+   "seconds": 4.59,
+   "status": "completed"
+  },
+  {
+   "agent": "S2",
+   "input_tokens": 7899,
+   "output_tokens": 305,
+   "seconds": 3.65,
+   "status": "completed"
+  },
+  {
+   "agent": "S3",
+   "input_tokens": 796,
+   "output_tokens": 119,
+   "seconds": 2.24,
+   "status": "completed"
+  },
+  {
+   "agent": "S3",
+   "input_tokens": 1634,
+   "output_tokens": 798,
+   "seconds": 6.84,
+   "status": "completed"
+  },
+  {
+   "agent": "S3",
+   "input_tokens": 3722,
+   "output_tokens": 733,
+   "seconds": 6.31,
+   "status": "completed"
+  },
+  {
+   "agent": "S3",
+   "input_tokens": 4583,
+   "output_tokens": 520,
+   "seconds": 4.19,
+   "status": "completed"
+  },
+  {
+   "agent": "S3",
+   "input_tokens": 6868,
+   "output_tokens": 662,
+   "seconds": 5.9,
+   "status": "completed"
+  },
+  {
+   "agent": "S3",
+   "input_tokens": 7662,
+   "output_tokens": 442,
+   "seconds": 3.52,
+   "status": "completed"
+  },
+  {
+   "agent": "S3",
+   "input_tokens": 8194,
+   "output_tokens": 143,
+   "seconds": 2.16,
+   "status": "completed"
+  },
+  {
+   "agent": "critic",
+   "input_tokens": 3985,
+   "output_tokens": 1443,
+   "seconds": 16.18,
+   "status": "completed"
+  },
+  {
+   "agent": "aggregator",
+   "input_tokens": 965,
+   "output_tokens": 129,
+   "seconds": 1.86,
+   "status": "completed"
+  }
+ ],
+ "messages": [
+  {
+   "frm": "solvers",
+   "to": "critic",
+   "chars": 10492
+  },
+  {
+   "frm": "solvers",
+   "to": "aggregator",
+   "chars": 1342
+  },
+  {
+   "frm": "critic",
+   "to": "aggregator",
+   "chars": 1929
+  }
+ ],
+ "events": [
+  {
+   "agent": "S1",
+   "kind": "run_python",
+   "code": "import pandas as pd, os\nprint(open('weather_codes.md').read())\nfl=pd.read_csv('airlines/AS.csv')\nwx=pd.read_csv('weather.csv')\nprint(fl.head(), fl.dtypes, fl.shape, sep='\\n')\nprint(wx.head(), wx.shape, wx.dtypes, sep='\\n')",
+   "result": {
+    "ok": true,
+    "stdout": "# Weather codes (METAR style)\n\n| code | meaning |\n|---|---|\n| `CLR` | clear |\n| `-RA` | light rain |\n| `RA` | moderate rain |\n| `+RA` | heavy rain |\n| `BR` | mist |\n| `FG` | fog |\n| `SN` | snow |\n| `TS` | thunderstorm |\n\n`visibility_mi` is visibility in statute miles.\n\n## Bad weather\nAn airport-hour counts as **bad weather** if and only if:\n- `wx_code` is `TS`, `SN` or `+RA`; **or**\n- `wx_code` is `FG` **and** `visibility_mi` < 1.0.\n\nEverything else (`CLR`, `-RA`, `RA`, `BR`, and `FG` with visibility >= 1.0) is **not** bad weather.\n\n  flight_id    date_utc origin dest sched_dep_utc actual_dep_utc  cancelled\n0    AS1002  2025-01-01    JFK  SEA         10:45          10:56      False\n1    AS1001  2025-01-01    DEN  SEA         22:40          22:55      False\n2    AS1003  2025-01-02    LAX  SEA         19:45          19:57      False\n3    AS1005  2025-01-02    LAX  SEA         22:55          22:57      False\n4    AS1006  2025-01-02    LAX  SEA         23:35          23:28      False\nflight_id          str\ndate_utc           str\norigin             str\ndest               str\nsched_dep_utc      str\nactual_dep_utc     str\ncancelled         bool\ndtype: object\n(173, 7)\n  airport        date  hour wx_code  visibility_mi\n0     ATL  2025-01-01     0     CLR           10.0\n1     ATL  2025-01-01     1     CLR           10.0\n2     ATL  2025-01-01     2     CLR           10.0\n3     ATL  2025-01-01     3     CLR           10.0\n4     ATL  2025-01-01     4     CLR           10.0\n(9912, 5)\nairport              str\ndate                 str\nhour               int64\nwx_code              str\nvisibility_mi    float64\ndtype: object\n"
+   }
+  },
+  {
+   "agent": "S1",
+   "kind": "run_python",
+   "code": "import pandas as pd\nfl=pd.read_csv('airlines/AS.csv'); ap=pd.read_csv('airports.csv'); wx=pd.read_csv('weather.csv')\nprint(ap.to_string(index=False)); print(fl.tail()); print(fl.cancelled.value_counts())\n# Convert explicitly UTC columns to local using offset\nfl=fl.merge(ap[['airport','utc_offset_hours']], left_on='origin', right_on='airport', how='left')\nfor c in ['sched_dep_utc','actual_dep_utc']:\n    fl[c+'_dt']=pd.to_datetime(fl['date_utc']+' '+fl[c], errors='coerce') + pd.to_timedelta(fl['utc_offset_hours'],unit='h')\nfl['local_date']=fl['sched_dep_utc_dt'].dt.strftime('%Y-%m-%d')\nfl['local_hour']=fl['sched_dep_utc_dt'].dt.hour\n# delay elapsed based local timestamps, actual on actual date (UTC date + time conversion); subtraction works\nfl['delay_min']=(fl['actual_dep_utc_dt']-fl['sched_dep_utc_dt']).dt.total_seconds()/60\n# Filter local Jan-Feb 2025\nf=fl[fl.local_date.between('2025-01-01','2025-02-28')].copy()\nprint('local date range/count',f.local_date.min(),f.local_date.max(),len(f), 'orig utc dates',fl.date_utc.min(),fl.date_utc.max())\n# weather merge\nf=f.merge(wx, left_on=['origin','local_date','local_hour'], right_on=['airport','date','hour'], how='left', indicator=True)\nf['bad']=f.wx_code.isin(['TS','SN','+RA']) | ((f.wx_code=='FG') & (f.visibility_mi<1.0))\nf['delayed']=f.delay_min>15\nprint(f[['flight_id','date_utc','origin','sched_dep_utc','sched_dep_utc_dt','actual_dep_utc_dt','delay_min','cancelled','local_date','local_hour','wx_code','visibility_mi','bad','delayed','_merge']].head(15).to_string(index=False))\nprint('merge',f._merge.value_counts(),'bad among all',f.bad.value_counts(),'cancelled',f.cancelled.value_counts())\ncompleted=f[~f.cancelled]\nprint(completed.groupby('bad').agg(n=('flight_id','size'), delayed=('delayed','sum'), rate=('delayed','mean')))\nprint('missing weather completed', completed.wx_code.isna().sum())",
+   "result": {
+    "ok": true,
+    "stdout": "airport              city            timezone  utc_offset_hours\n    ATL           Atlanta    America/New_York                -5\n    JFK          New York    America/New_York                -5\n    ORD           Chicago     America/Chicago                -6\n    DFW Dallas-Fort Worth     America/Chicago                -6\n    DEN            Denver      America/Denver                -7\n    LAX       Los Angeles America/Los_Angeles                -8\n    SEA           Seattle America/Los_Angeles                -8\n    flight_id    date_utc origin dest sched_dep_utc actual_dep_utc  cancelled\n168    AS1169  2025-02-28    SEA  LAX         07:00          07:00      False\n169    AS1170  2025-02-28    SEA  DEN         22:40          22:53      False\n170    AS1172  2025-03-01    JFK  SEA         01:10          01:15      False\n171    AS1173  2025-03-01    LAX  SEA         04:20          04:32      False\n172    AS1171  2025-03-01    LAX  SEA         07:10          07:22      False\ncancelled\nFalse    172\nTrue       1\nName: count, dtype: int64\nlocal date range/count 2025-01-01 2025-02-28 173 orig utc dates 2025-01-01 2025-03-01\nflight_id   date_utc origin sched_dep_utc    sched_dep_utc_dt   actual_dep_utc_dt  delay_min  cancelled local_date  local_hour wx_code  visibility_mi   bad  delayed _merge\n   AS1002 2025-01-01    JFK         10:45 2025-01-01 05:45:00 2025-01-01 05:56:00       11.0      False 2025-01-01           5     CLR           10.0 False    False   both\n   AS1001 2025-01-01    DEN         22:40 2025-01-01 15:40:00 2025-01-01 15:55:00       15.0      False 2025-01-01          15     CLR           10.0 False    False   both\n   AS1003 2025-01-02    LAX         19:45 2025-01-02 11:45:00 2025-01-02 11:57:00       12.0      False 2025-01-02          11     CLR           10.0 False    False   both\n   AS1005 2025-01-02    LAX         22:55 2025-01-02 14:55:00 2025-01-02 14:57:00        2.0      False 2025-01-02          14     CLR           10.0 False    False   both\n   AS1006 2025-01-02    LAX         23:35 2025-01-02 15:35:00 2025-01-02 15:28:00       -7.0      False 2025-01-02          15     CLR           10.0 False    False   both\n   AS1004 2025-01-03    SEA         06:05 2025-01-02 22:05:00 2025-01-02 22:11:00        6.0      False 2025-01-02          22     CLR           10.0 False    False   both\n   AS1007 2025-01-03    DEN         17:00 2025-01-03 10:00:00 2025-01-03 10:11:00       11.0      False 2025-01-03          10     CLR           10.0 False    False   both\n   AS1008 2025-01-04    SEA         07:55 2025-01-03 23:55:00 2025-01-03 23:48:00       -7.0      False 2025-01-03          23     +RA            2.0  True    False   both\n   AS1009 2025-01-04    LAX         21:20 2025-01-04 13:20:00 2025-01-04 13:12:00       -8.0      False 2025-01-04          13     CLR           10.0 False    False   both\n   AS1010 2025-01-05    SEA         03:15 2025-01-04 19:15:00 2025-01-04 19:20:00        5.0      False 2025-01-04          19     CLR           10.0 False    False   both\n   AS1013 2025-01-05    SEA         18:30 2025-01-05 10:30:00 2025-01-05 10:38:00        8.0      False 2025-01-05          10     CLR           10.0 False    False   both\n   AS1012 2025-01-06    LAX         03:55 2025-01-05 19:55:00 2025-01-05 19:56:00        1.0      False 2025-01-05          19     CLR           10.0 False    False   both\n   AS1011 2025-01-06    LAX         04:40 2025-01-05 20:40:00 2025-01-05 20:44:00        4.0      False 2025-01-05          20     CLR           10.0 False    False   both\n   AS1014 2025-01-06    SEA         21:50 2025-01-06 13:50:00 2025-01-06 14:09:00       19.0      False 2025-01-06          13     -RA            9.5 False     True   both\n   AS1015 2025-01-06    SEA         23:15 2025-01-06 15:15:00 2025-01-06 15:07:00       -8.0      False 2025-01-06          15     -RA            8.0 False    False   both\nmerge _merge\nboth          173\nleft_only       0\nright_only      0\nName: count, dtype: int64 bad among all bad\nFalse    \n...[truncated]"
+   }
+  },
+  {
+   "agent": "S1",
+   "kind": "run_python",
+   "code": "# recreate variables if needed from previous persist\nprint(completed.groupby('bad').agg(n=('flight_id','size'), delayed=('delayed','sum'), rate=('delayed','mean')).to_string())\nfor b,g in completed.groupby('bad'):\n print('bad',b,'n',len(g),'delayed',int(g.delayed.sum()),'pct',round(100*g.delayed.mean(),1))\n print(g[g.delayed][['flight_id','origin','local_date','local_hour','wx_code','visibility_mi','delay_min','cancelled']].to_string(index=False))\n# Alternative raw UTC date Jan-Feb, for comparison\nraw=fl[fl.date_utc.between('2025-01-01','2025-02-28')].copy().merge(wx,left_on=['origin','date_utc','sched_dep_utc_dt'],right_on=['airport','date','hour'],how='left') if False else None",
+   "result": {
+    "ok": true,
+    "stdout": "         n  delayed      rate\nbad                          \nFalse  148       10  0.067568\nTrue    24        9  0.375000\nbad False n 148 delayed 10 pct 6.8\nflight_id origin local_date  local_hour wx_code  visibility_mi  delay_min  cancelled\n   AS1014    SEA 2025-01-06          13     -RA           9.50       19.0      False\n   AS1017    SEA 2025-01-07          21     CLR          10.00       18.0      False\n   AS1082    SEA 2025-01-29          11     CLR          10.00       27.0      False\n   AS1094    SEA 2025-02-03           7     CLR          10.00       81.0      False\n   AS1098    DEN 2025-02-04           8     CLR          10.00       43.0      False\n   AS1097    LAX 2025-02-04          17      BR           2.75       82.0      False\n   AS1106    SEA 2025-02-07          22      BR           4.25       21.0      False\n   AS1125    SEA 2025-02-13          22     -RA           7.75       37.0      False\n   AS1151    SEA 2025-02-22           9     -RA           9.50       69.0      False\n   AS1167    LAX 2025-02-27          22     CLR          10.00       62.0      False\nbad True n 24 delayed 9 pct 37.5\nflight_id origin local_date  local_hour wx_code  visibility_mi  delay_min  cancelled\n   AS1048    SEA 2025-01-18          17      FG           0.75       44.0      False\n   AS1067    LAX 2025-01-24          17      FG           0.75       22.0      False\n   AS1070    DEN 2025-01-26          18      SN           2.75       32.0      False\n   AS1104    SEA 2025-02-06          11      FG           0.75       27.0      False\n   AS1126    JFK 2025-02-14          17      SN           3.00       45.0      False\n   AS1136    LAX 2025-02-16          20      FG           0.25       77.0      False\n   AS1139    SEA 2025-02-17          22      SN           1.25       37.0      False\n   AS1149    SEA 2025-02-21           7     +RA           2.25       74.0      False\n   AS1156    SEA 2025-02-23          18      SN           2.75       28.0      False\n"
+   }
+  },
+  {
+   "agent": "S1",
+   "kind": "run_python",
+   "code": "print(fl[(fl.date_utc.isin(['2025-01-01','2025-03-01']))][['flight_id','date_utc','origin','sched_dep_utc','sched_dep_utc_dt','local_date']].to_string(index=False))\n# show canceled and category\nprint('canceled selected',f[f.cancelled][['flight_id','origin','local_date','local_hour','wx_code','visibility_mi','bad']].to_string(index=False))\n# Check no duplicated weather keys and exact numerator denominator manually\nprint('weather duplicates',wx.duplicated(['airport','date','hour']).sum())",
+   "result": {
+    "ok": true,
+    "stdout": "flight_id   date_utc origin sched_dep_utc    sched_dep_utc_dt local_date\n   AS1002 2025-01-01    JFK         10:45 2025-01-01 05:45:00 2025-01-01\n   AS1001 2025-01-01    DEN         22:40 2025-01-01 15:40:00 2025-01-01\n   AS1172 2025-03-01    JFK         01:10 2025-02-28 20:10:00 2025-02-28\n   AS1173 2025-03-01    LAX         04:20 2025-02-28 20:20:00 2025-02-28\n   AS1171 2025-03-01    LAX         07:10 2025-02-28 23:10:00 2025-02-28\ncanceled selected flight_id origin local_date  local_hour wx_code  visibility_mi   bad\n   AS1057    SEA 2025-01-20          19      BR            4.5 False\nweather duplicates 0\n"
+   }
+  },
+  {
+   "agent": "S1",
+   "kind": "submit",
+   "answer": {
+    "bad_weather_rate": 37.5,
+    "other_rate": 6.8
+   },
+   "raw": "{\"bad_weather_rate\": 37.5, \"other_rate\": 6.8}",
+   "notes": "Converted AS's explicitly UTC date/time fields to origin-local time using airports.csv offsets, selected locally scheduled dates in Jan-Feb 2025, and joined weather by origin/local date/scheduled local hour. Bad weather followed weather_codes.md (TS/SN/+RA, or FG with visibility <1.0 mi). Excluded the one cancelled flight; rates are 9/24 and 10/148, respectively."
+  },
+  {
+   "agent": "S2",
+   "kind": "run_python",
+   "code": "import pandas as pd, os\nasf=pd.read_csv('airlines/AS.csv')\nwx=pd.read_csv('weather.csv')\nprint(asf.shape, asf.dtypes.to_dict()); print(asf.head().to_string())\nprint(wx.shape, wx.dtypes.to_dict()); print(wx.head().to_string())\nprint(open('weather_codes.md').read())",
+   "result": {
+    "ok": true,
+    "stdout": "(173, 7) {'flight_id': <StringDtype(storage='python', na_value=nan)>, 'date_utc': <StringDtype(storage='python', na_value=nan)>, 'origin': <StringDtype(storage='python', na_value=nan)>, 'dest': <StringDtype(storage='python', na_value=nan)>, 'sched_dep_utc': <StringDtype(storage='python', na_value=nan)>, 'actual_dep_utc': <StringDtype(storage='python', na_value=nan)>, 'cancelled': dtype('bool')}\n  flight_id    date_utc origin dest sched_dep_utc actual_dep_utc  cancelled\n0    AS1002  2025-01-01    JFK  SEA         10:45          10:56      False\n1    AS1001  2025-01-01    DEN  SEA         22:40          22:55      False\n2    AS1003  2025-01-02    LAX  SEA         19:45          19:57      False\n3    AS1005  2025-01-02    LAX  SEA         22:55          22:57      False\n4    AS1006  2025-01-02    LAX  SEA         23:35          23:28      False\n(9912, 5) {'airport': <StringDtype(storage='python', na_value=nan)>, 'date': <StringDtype(storage='python', na_value=nan)>, 'hour': dtype('int64'), 'wx_code': <StringDtype(storage='python', na_value=nan)>, 'visibility_mi': dtype('float64')}\n  airport        date  hour wx_code  visibility_mi\n0     ATL  2025-01-01     0     CLR           10.0\n1     ATL  2025-01-01     1     CLR           10.0\n2     ATL  2025-01-01     2     CLR           10.0\n3     ATL  2025-01-01     3     CLR           10.0\n4     ATL  2025-01-01     4     CLR           10.0\n# Weather codes (METAR style)\n\n| code | meaning |\n|---|---|\n| `CLR` | clear |\n| `-RA` | light rain |\n| `RA` | moderate rain |\n| `+RA` | heavy rain |\n| `BR` | mist |\n| `FG` | fog |\n| `SN` | snow |\n| `TS` | thunderstorm |\n\n`visibility_mi` is visibility in statute miles.\n\n## Bad weather\nAn airport-hour counts as **bad weather** if and only if:\n- `wx_code` is `TS`, `SN` or `+RA`; **or**\n- `wx_code` is `FG` **and** `visibility_mi` < 1.0.\n\nEverything else (`CLR`, `-RA`, `RA`, `BR`, and `FG` with visibility >= 1.0) is **not** bad weather.\n\n"
+   }
+  },
+  {
+   "agent": "S2",
+   "kind": "run_python",
+   "code": "print(open('README.md').read())\nprint(pd.read_csv('airports.csv').to_string(index=False))\nprint(asf.tail().to_string(index=False))\nprint(asf['date_utc'].min(),asf['date_utc'].max(), asf.cancelled.value_counts().to_dict())",
+   "result": {
+    "ok": true,
+    "stdout": "# Flight operations dataset (January-February 2025)\n\n## Files\n| file | contents |\n|---|---|\n| `airlines/<CARRIER>.csv` | one file per carrier: DL (Delta), AA (American), UA (United), WN (Southwest), B6 (JetBlue), AS (Alaska) |\n| `weather.csv` | hourly weather observation at each airport |\n| `airports.csv` | airport metadata: `airport, city, timezone, utc_offset_hours` |\n| `weather_codes.md` | meaning of weather codes and the definition of **bad weather** |\n\n### Flights columns\n`flight_id, date, origin, dest, sched_dep, actual_dep, cancelled`\n- `flight_id` is unique: every flight appears exactly once. The export may contain repeated records.\n- `date` is the scheduled departure date; `sched_dep` / `actual_dep` are clock times `HH:MM`.\n- A delayed flight may depart after midnight, i.e. on the day after `date`.\n- `actual_dep` is empty if the flight was cancelled. `cancelled` is `true` / `false`.\n- Times are local time at the origin airport, **unless the column name ends in `_utc`**.\n\n### Weather columns\n`airport, date, hour, wx_code, visibility_mi` -- local time at that airport; `hour` h covers h:00-h:59.\n\n## Conventions\n- Departure delay (minutes) = actual departure - scheduled departure. Early departures are negative.\n- A flight is **delayed** if its departure delay is **more than 15 minutes**.\n- **Delay rate** = delayed flights / completed (non-cancelled) flights. Cancelled flights are excluded\n  from both numerator and denominator. Report rates as percentages with 1 decimal.\n- Dates, months and hours refer to local time at the origin airport.\n\nairport              city            timezone  utc_offset_hours\n    ATL           Atlanta    America/New_York                -5\n    JFK          New York    America/New_York                -5\n    ORD           Chicago     America/Chicago                -6\n    DFW Dallas-Fort Worth     America/Chicago                -6\n    DEN            Denver      America/Denver                -7\n    LAX       Los Angeles America/Los_Angeles                -8\n    SEA           Seattle America/Los_Angeles                -8\nflight_id   date_utc origin dest sched_dep_utc actual_dep_utc  cancelled\n   AS1169 2025-02-28    SEA  LAX         07:00          07:00      False\n   AS1170 2025-02-28    SEA  DEN         22:40          22:53      False\n   AS1172 2025-03-01    JFK  SEA         01:10          01:15      False\n   AS1173 2025-03-01    LAX  SEA         04:20          04:32      False\n   AS1171 2025-03-01    LAX  SEA         07:10          07:22      False\n2025-01-01 2025-03-01 {False: 172, True: 1}\n"
+   }
+  },
+  {
+   "agent": "S2",
+   "kind": "run_python",
+   "code": "ap=pd.read_csv('airports.csv'); off=ap.set_index('airport')['utc_offset_hours']\nf=asf.copy(); f['offset']=f.origin.map(off)\nf['sched_utc']=pd.to_datetime(f.date_utc+' '+f.sched_dep_utc)\nf['local_dt']=f.sched_utc+pd.to_timedelta(f['offset'],unit='h')\nf['local_date']=f.local_dt.dt.date; f['local_hour']=f.local_dt.dt.hour\nf['actual_dt_same']=pd.to_datetime(f.date_utc+' '+f.actual_dep_utc, errors='coerce')\nf['delay']=(f.actual_dt_same-f.sched_utc).dt.total_seconds()/60\n# correct negative clock for completed likely rollover\nf.loc[(~f.cancelled)&(f.delay<0),'delay']+=1440\nprint(f[['flight_id','date_utc','origin','sched_dep_utc','actual_dep_utc','local_dt','delay','cancelled']].to_string(index=False))\nprint('local date counts', f.local_date.value_counts().sort_index().to_string())\nprint('weather relevant missing',len(f.merge(wx,left_on=['origin','local_date','local_hour'],right_on=['airport','date','hour'],how='left').query('wx_code.isna()')))\n",
+   "result": {
+    "ok": true,
+    "stdout": "flight_id   date_utc origin sched_dep_utc actual_dep_utc            local_dt  delay  cancelled\n   AS1002 2025-01-01    JFK         10:45          10:56 2025-01-01 05:45:00   11.0      False\n   AS1001 2025-01-01    DEN         22:40          22:55 2025-01-01 15:40:00   15.0      False\n   AS1003 2025-01-02    LAX         19:45          19:57 2025-01-02 11:45:00   12.0      False\n   AS1005 2025-01-02    LAX         22:55          22:57 2025-01-02 14:55:00    2.0      False\n   AS1006 2025-01-02    LAX         23:35          23:28 2025-01-02 15:35:00 1433.0      False\n   AS1004 2025-01-03    SEA         06:05          06:11 2025-01-02 22:05:00    6.0      False\n   AS1007 2025-01-03    DEN         17:00          17:11 2025-01-03 10:00:00   11.0      False\n   AS1008 2025-01-04    SEA         07:55          07:48 2025-01-03 23:55:00 1433.0      False\n   AS1009 2025-01-04    LAX         21:20          21:12 2025-01-04 13:20:00 1432.0      False\n   AS1010 2025-01-05    SEA         03:15          03:20 2025-01-04 19:15:00    5.0      False\n   AS1013 2025-01-05    SEA         18:30          18:38 2025-01-05 10:30:00    8.0      False\n   AS1012 2025-01-06    LAX         03:55          03:56 2025-01-05 19:55:00    1.0      False\n   AS1011 2025-01-06    LAX         04:40          04:44 2025-01-05 20:40:00    4.0      False\n   AS1014 2025-01-06    SEA         21:50          22:09 2025-01-06 13:50:00   19.0      False\n   AS1015 2025-01-06    SEA         23:15          23:07 2025-01-06 15:15:00 1432.0      False\n   AS1019 2025-01-07    SEA         17:10          17:20 2025-01-07 09:10:00   10.0      False\n   AS1016 2025-01-07    LAX         17:30          17:28 2025-01-07 09:30:00 1438.0      False\n   AS1018 2025-01-07    SEA         22:45          01:18 2025-01-07 14:45:00  153.0      False\n   AS1017 2025-01-08    SEA         05:00          05:18 2025-01-07 21:00:00   18.0      False\n   AS1021 2025-01-08    SEA         16:00          16:08 2025-01-08 08:00:00    8.0      False\n   AS1022 2025-01-08    LAX         20:10          20:03 2025-01-08 12:10:00 1433.0      False\n   AS1020 2025-01-09    SEA         06:00          06:15 2025-01-08 22:00:00   15.0      False\n   AS1023 2025-01-09    SEA         18:05          18:17 2025-01-09 10:05:00   12.0      False\n   AS1024 2025-01-09    SEA         18:55          18:51 2025-01-09 10:55:00 1436.0      False\n   AS1025 2025-01-10    LAX         04:55          04:55 2025-01-09 20:55:00    0.0      False\n   AS1027 2025-01-10    SEA         13:35          13:50 2025-01-10 05:35:00   15.0      False\n   AS1026 2025-01-11    LAX         01:20          01:32 2025-01-10 17:20:00   12.0      False\n   AS1028 2025-01-11    DEN         22:10          22:12 2025-01-11 15:10:00    2.0      False\n   AS1029 2025-01-12    SEA         00:50          00:53 2025-01-11 16:50:00    3.0      False\n   AS1030 2025-01-12    JFK         10:30          10:29 2025-01-12 05:30:00 1439.0      False\n   AS1031 2025-01-12    SEA         13:15          13:11 2025-01-12 05:15:00 1436.0      False\n   AS1032 2025-01-12    SEA         14:00          13:52 2025-01-12 06:00:00 1432.0      False\n   AS1033 2025-01-13    SEA         20:05          20:05 2025-01-13 12:05:00    0.0      False\n   AS1034 2025-01-14    DEN         03:00          03:07 2025-01-13 20:00:00    7.0      False\n   AS1037 2025-01-14    DEN         14:55          14:59 2025-01-14 07:55:00    4.0      False\n   AS1036 2025-01-14    LAX         15:55          16:06 2025-01-14 07:55:00   11.0      False\n   AS1035 2025-01-14    DEN         18:40          18:46 2025-01-14 11:40:00    6.0      False\n   AS1039 2025-01-15    SEA         14:00          14:11 2025-01-15 06:00:00   11.0      False\n   AS1038 2025-01-15    DEN         19:35          19:45 2025-01-15 12:35:00   10.0      False\n   AS1040 2025-01-15    SEA         21:45          21:44 2025-01-15 13:45:00 1439.0      False\n   AS1043 2025-01-16    LAX         15:55          16:10 2025-01-16 07:55:00   15.0      False\n   AS1041 \n...[truncated]"
+   }
+  },
+  {
+   "agent": "S2",
+   "kind": "run_python",
+   "code": "f['rawdelay']=(pd.to_datetime(f.actual_dep_utc,errors='coerce')-pd.to_datetime(f.sched_dep_utc)).dt.total_seconds()/60\nprint(f.rawdelay.describe().to_string()); print(f.loc[f.rawdelay<0,['flight_id','sched_dep_utc','actual_dep_utc','rawdelay']].to_string(index=False))",
+   "result": {
+    "ok": true,
+    "stdout": "count     172.000000\nmean       -7.976744\nstd       147.985536\nmin     -1429.000000\n25%        -2.000000\n50%         5.500000\n75%        12.000000\nmax        82.000000\nflight_id sched_dep_utc actual_dep_utc  rawdelay\n   AS1006         23:35          23:28      -7.0\n   AS1008         07:55          07:48      -7.0\n   AS1009         21:20          21:12      -8.0\n   AS1015         23:15          23:07      -8.0\n   AS1016         17:30          17:28      -2.0\n   AS1018         22:45          01:18   -1287.0\n   AS1022         20:10          20:03      -7.0\n   AS1024         18:55          18:51      -4.0\n   AS1030         10:30          10:29      -1.0\n   AS1031         13:15          13:11      -4.0\n   AS1032         14:00          13:52      -8.0\n   AS1040         21:45          21:44      -1.0\n   AS1045         19:05          18:59      -6.0\n   AS1046         19:05          19:04      -1.0\n   AS1044         05:55          05:53      -2.0\n   AS1050         06:30          06:22      -8.0\n   AS1053         14:45          14:36      -9.0\n   AS1058         22:20          22:16      -4.0\n   AS1060         06:20          06:12      -8.0\n   AS1061         06:50          06:47      -3.0\n   AS1064         01:40          01:30     -10.0\n   AS1063         05:10          05:06      -4.0\n   AS1065         22:50          22:40     -10.0\n   AS1071         15:10          15:04      -6.0\n   AS1072         01:15          01:13      -2.0\n   AS1074         07:35          07:25     -10.0\n   AS1077         18:05          18:03      -2.0\n   AS1078         02:25          02:24      -1.0\n   AS1091         14:10          14:00     -10.0\n   AS1092         02:30          02:25      -5.0\n   AS1095         00:35          00:28      -7.0\n   AS1100         19:15          19:06      -9.0\n   AS1103         17:15          17:12      -3.0\n   AS1107         16:35          16:26      -9.0\n   AS1110         21:45          21:44      -1.0\n   AS1108         06:25          06:16      -9.0\n   AS1112         13:15          13:08      -7.0\n   AS1122         17:45          17:40      -5.0\n   AS1120         01:55          01:46      -9.0\n   AS1123         23:50          00:01   -1429.0\n   AS1129         20:15          20:10      -5.0\n   AS1127         01:20          01:16      -4.0\n   AS1131         15:20          15:14      -6.0\n   AS1135         17:00          16:53      -7.0\n   AS1133         07:10          07:08      -2.0\n   AS1137         00:25          00:18      -7.0\n   AS1142         02:30          02:25      -5.0\n   AS1143         23:25          23:21      -4.0\n   AS1154         14:50          14:45      -5.0\n   AS1158         14:00          13:55      -5.0\n   AS1163         16:30          16:29      -1.0\n   AS1161         03:40          03:31      -9.0\n   AS1165         19:10          19:08      -2.0\n   AS1166         00:25          00:15     -10.0\n   AS1164         01:35          01:34      -1.0\n"
+   }
+  },
+  {
+   "agent": "S2",
+   "kind": "run_python",
+   "code": "# rebuild robustly, local scheduled date/hour from UTC offsets; overnight actual times identified by huge negative clock gap\nf=asf.copy(); f['offset']=f.origin.map(off)\nf['sched_dt_utc']=pd.to_datetime(f.date_utc+' '+f.sched_dep_utc)\nf['local_dt']=f.sched_dt_utc+pd.to_timedelta(f.offset,unit='h')\nf['local_date']=f.local_dt.dt.strftime('%Y-%m-%d'); f['local_hour']=f.local_dt.dt.hour\nf['rawdelay']=(pd.to_datetime(f.date_utc+' '+f.actual_dep_utc,errors='coerce')-f.sched_dt_utc).dt.total_seconds()/60\nf['delay']=f.rawdelay.where(f.rawdelay>=-720, f.rawdelay+1440)\nf=f[f.local_dt.dt.month.isin([1,2])].copy()\nw=wx.copy(); w['bad']=w.wx_code.isin(['TS','SN','+RA']) | ((w.wx_code=='FG') & (w.visibility_mi<1.0))\nw=w[['airport','date','hour','wx_code','visibility_mi','bad']]\nm=f.merge(w,left_on=['origin','local_date','local_hour'],right_on=['airport','date','hour'],how='left',validate='many_to_one')\nprint('rows',len(m),'cancelled',m.cancelled.sum(),'weather missing',m.bad.isna().sum())\nprint(m.groupby('bad',dropna=False).size())\ncompleted=m[~m.cancelled]\nprint(completed.groupby('bad').agg(n=('flight_id','size'),delayed=('delay',lambda x:(x>15).sum()),rate=('delay',lambda x:100*(x>15).mean())))\nprint('bad examples',m[m.bad==True][['flight_id','local_date','local_hour','origin','wx_code','visibility_mi','delay','cancelled']].to_string(index=False))",
+   "result": {
+    "ok": true,
+    "stdout": "rows 173 cancelled 1 weather missing 0\nbad\nFalse    149\nTrue      24\ndtype: int64\n         n  delayed       rate\nbad                           \nFalse  148       10   6.756757\nTrue    24       10  41.666667\nbad examples flight_id local_date  local_hour origin wx_code  visibility_mi  delay  cancelled\n   AS1008 2025-01-03          23    SEA     +RA           2.00   -7.0      False\n   AS1018 2025-01-07          14    SEA     +RA           2.75  153.0      False\n   AS1038 2025-01-15          12    DEN      SN           1.75   10.0      False\n   AS1048 2025-01-18          17    SEA      FG           0.75   44.0      False\n   AS1054 2025-01-19           6    JFK      SN           1.25    7.0      False\n   AS1053 2025-01-19           7    DEN      SN           0.50   -9.0      False\n   AS1056 2025-01-20          23    DEN      SN           1.00   11.0      False\n   AS1067 2025-01-24          17    LAX      FG           0.75   22.0      False\n   AS1066 2025-01-24          20    LAX     +RA           1.75    9.0      False\n   AS1070 2025-01-26          18    DEN      SN           2.75   32.0      False\n   AS1101 2025-02-05           5    SEA     +RA           2.25    9.0      False\n   AS1099 2025-02-05           7    DEN      SN           1.00    0.0      False\n   AS1103 2025-02-06          12    JFK      SN           0.75   -3.0      False\n   AS1104 2025-02-06          11    SEA      FG           0.75   27.0      False\n   AS1126 2025-02-14          17    JFK      SN           3.00   45.0      False\n   AS1136 2025-02-16          20    LAX      FG           0.25   77.0      False\n   AS1138 2025-02-17          18    DEN      SN           2.25    0.0      False\n   AS1139 2025-02-17          22    SEA      SN           1.25   37.0      False\n   AS1145 2025-02-20           7    DEN      SN           2.50   15.0      False\n   AS1148 2025-02-21           6    SEA     +RA           3.00    9.0      False\n   AS1149 2025-02-21           7    SEA     +RA           2.25   74.0      False\n   AS1157 2025-02-23          16    LAX     +RA           1.50   15.0      False\n   AS1156 2025-02-23          18    SEA      SN           2.75   28.0      False\n   AS1162 2025-02-25          16    JFK     +RA           1.75    4.0      False\n"
+   }
+  },
+  {
+   "agent": "S2",
+   "kind": "submit",
+   "answer": {
+    "bad_weather_rate": 41.7,
+    "other_rate": 6.8
+   },
+   "raw": "{\"bad_weather_rate\": 41.7, \"other_rate\": 6.8}",
+   "notes": "Converted scheduled UTC timestamps to origin-local dates/hours using airports.csv offsets, joined the corresponding local weather hour, and applied the documented bad-weather rule. Computed delays from scheduled versus actual times (handling overnight clock rollover), excluded the one cancelled flight, and used delay >15 minutes."
+  },
+  {
+   "agent": "S3",
+   "kind": "run_python",
+   "code": "import pandas as pd, os\nprint(open('weather_codes.md').read())\nfor f in ['airlines/AS.csv','weather.csv','airports.csv']:\n    df=pd.read_csv(f)\n    print('\\n',f, df.shape, df.head().to_string(), '\\ncols',df.columns.tolist())",
+   "result": {
+    "ok": true,
+    "stdout": "# Weather codes (METAR style)\n\n| code | meaning |\n|---|---|\n| `CLR` | clear |\n| `-RA` | light rain |\n| `RA` | moderate rain |\n| `+RA` | heavy rain |\n| `BR` | mist |\n| `FG` | fog |\n| `SN` | snow |\n| `TS` | thunderstorm |\n\n`visibility_mi` is visibility in statute miles.\n\n## Bad weather\nAn airport-hour counts as **bad weather** if and only if:\n- `wx_code` is `TS`, `SN` or `+RA`; **or**\n- `wx_code` is `FG` **and** `visibility_mi` < 1.0.\n\nEverything else (`CLR`, `-RA`, `RA`, `BR`, and `FG` with visibility >= 1.0) is **not** bad weather.\n\n\n airlines/AS.csv (173, 7)   flight_id    date_utc origin dest sched_dep_utc actual_dep_utc  cancelled\n0    AS1002  2025-01-01    JFK  SEA         10:45          10:56      False\n1    AS1001  2025-01-01    DEN  SEA         22:40          22:55      False\n2    AS1003  2025-01-02    LAX  SEA         19:45          19:57      False\n3    AS1005  2025-01-02    LAX  SEA         22:55          22:57      False\n4    AS1006  2025-01-02    LAX  SEA         23:35          23:28      False \ncols ['flight_id', 'date_utc', 'origin', 'dest', 'sched_dep_utc', 'actual_dep_utc', 'cancelled']\n\n weather.csv (9912, 5)   airport        date  hour wx_code  visibility_mi\n0     ATL  2025-01-01     0     CLR           10.0\n1     ATL  2025-01-01     1     CLR           10.0\n2     ATL  2025-01-01     2     CLR           10.0\n3     ATL  2025-01-01     3     CLR           10.0\n4     ATL  2025-01-01     4     CLR           10.0 \ncols ['airport', 'date', 'hour', 'wx_code', 'visibility_mi']\n\n airports.csv (7, 4)   airport               city          timezone  utc_offset_hours\n0     ATL            Atlanta  America/New_York                -5\n1     JFK           New York  America/New_York                -5\n2     ORD            Chicago   America/Chicago                -6\n3     DFW  Dallas-Fort Worth   America/Chicago                -6\n4     DEN             Denver    America/Denver                -7 \ncols ['airport', 'city', 'timezone', 'utc_offset_hours']\n"
+   }
+  },
+  {
+   "agent": "S3",
+   "kind": "run_python",
+   "code": "import pandas as pd\nfrom datetime import timedelta\nasf=pd.read_csv('airlines/AS.csv')\napt=pd.read_csv('airports.csv')\nwx=pd.read_csv('weather.csv')\nprint(open('README.md').read())\nprint(apt.to_string(index=False))\nprint('cancel',asf.cancelled.value_counts().to_dict(),'dupes',asf.flight_id.duplicated().sum())\n# normalize bool\nasf['cancelled']=asf['cancelled'].astype(str).str.lower().eq('true')\nasf=asf.merge(apt[['airport','utc_offset_hours']],left_on='origin',right_on='airport',how='left')\n# UTC timestamps and local scheduled timestamp\nasf['sched_ts_utc']=pd.to_datetime(asf['date_utc']+' '+asf['sched_dep_utc'])\nasf['actual_ts_utc']=pd.to_datetime(asf['date_utc']+' '+asf['actual_dep_utc'],errors='coerce')\nasf['delay_min']=(asf.actual_ts_utc-asf.sched_ts_utc).dt.total_seconds()/60\nasf['sched_local']=asf.sched_ts_utc+pd.to_timedelta(asf.utc_offset_hours,unit='h')\nasf['local_date']=asf.sched_local.dt.strftime('%Y-%m-%d'); asf['local_hour']=asf.sched_local.dt.hour\nwx['bad']=(wx.wx_code.isin(['TS','SN','+RA'])) | ((wx.wx_code=='FG') & (wx.visibility_mi<1.0))\n# check relevant date / merge\nasf=asf.merge(wx[['airport','date','hour','bad','wx_code','visibility_mi']],left_on=['origin','local_date','local_hour'],right_on=['airport','date','hour'],how='left',validate='many_to_one')\nprint(asf[['flight_id','date_utc','origin','sched_dep_utc','local_date','local_hour','cancelled','delay_min','bad','wx_code','visibility_mi']].to_string(index=False))\n# Jan Feb local date; completed only\nrel=asf[asf.local_date.str[:7].isin(['2025-01','2025-02'])]\nprint('relevant',len(rel),'weather missing',rel.bad.isna().sum(), 'bad counts all',rel.bad.value_counts(dropna=False).to_dict())\ncomp=rel[~rel.cancelled].copy(); comp['delayed']=comp.delay_min>15\nprint(comp.groupby('bad',dropna=False).agg(n=('flight_id','size'),delayed=('delayed','sum'),rate=('delayed','mean')).to_string())\nprint('all delay',comp.delayed.sum(),len(comp),comp.delayed.mean())",
+   "result": {
+    "ok": true,
+    "stdout": "# Flight operations dataset (January-February 2025)\n\n## Files\n| file | contents |\n|---|---|\n| `airlines/<CARRIER>.csv` | one file per carrier: DL (Delta), AA (American), UA (United), WN (Southwest), B6 (JetBlue), AS (Alaska) |\n| `weather.csv` | hourly weather observation at each airport |\n| `airports.csv` | airport metadata: `airport, city, timezone, utc_offset_hours` |\n| `weather_codes.md` | meaning of weather codes and the definition of **bad weather** |\n\n### Flights columns\n`flight_id, date, origin, dest, sched_dep, actual_dep, cancelled`\n- `flight_id` is unique: every flight appears exactly once. The export may contain repeated records.\n- `date` is the scheduled departure date; `sched_dep` / `actual_dep` are clock times `HH:MM`.\n- A delayed flight may depart after midnight, i.e. on the day after `date`.\n- `actual_dep` is empty if the flight was cancelled. `cancelled` is `true` / `false`.\n- Times are local time at the origin airport, **unless the column name ends in `_utc`**.\n\n### Weather columns\n`airport, date, hour, wx_code, visibility_mi` -- local time at that airport; `hour` h covers h:00-h:59.\n\n## Conventions\n- Departure delay (minutes) = actual departure - scheduled departure. Early departures are negative.\n- A flight is **delayed** if its departure delay is **more than 15 minutes**.\n- **Delay rate** = delayed flights / completed (non-cancelled) flights. Cancelled flights are excluded\n  from both numerator and denominator. Report rates as percentages with 1 decimal.\n- Dates, months and hours refer to local time at the origin airport.\n\nairport              city            timezone  utc_offset_hours\n    ATL           Atlanta    America/New_York                -5\n    JFK          New York    America/New_York                -5\n    ORD           Chicago     America/Chicago                -6\n    DFW Dallas-Fort Worth     America/Chicago                -6\n    DEN            Denver      America/Denver                -7\n    LAX       Los Angeles America/Los_Angeles                -8\n    SEA           Seattle America/Los_Angeles                -8\ncancel {False: 172, True: 1} dupes 0\nflight_id   date_utc origin sched_dep_utc local_date  local_hour  cancelled  delay_min   bad wx_code  visibility_mi\n   AS1002 2025-01-01    JFK         10:45 2025-01-01           5      False       11.0 False     CLR          10.00\n   AS1001 2025-01-01    DEN         22:40 2025-01-01          15      False       15.0 False     CLR          10.00\n   AS1003 2025-01-02    LAX         19:45 2025-01-02          11      False       12.0 False     CLR          10.00\n   AS1005 2025-01-02    LAX         22:55 2025-01-02          14      False        2.0 False     CLR          10.00\n   AS1006 2025-01-02    LAX         23:35 2025-01-02          15      False       -7.0 False     CLR          10.00\n   AS1004 2025-01-03    SEA         06:05 2025-01-02          22      False        6.0 False     CLR          10.00\n   AS1007 2025-01-03    DEN         17:00 2025-01-03          10      False       11.0 False     CLR          10.00\n   AS1008 2025-01-04    SEA         07:55 2025-01-03          23      False       -7.0  True     +RA           2.00\n   AS1009 2025-01-04    LAX         21:20 2025-01-04          13      False       -8.0 False     CLR          10.00\n   AS1010 2025-01-05    SEA         03:15 2025-01-04          19      False        5.0 False     CLR          10.00\n   AS1013 2025-01-05    SEA         18:30 2025-01-05          10      False        8.0 False     CLR          10.00\n   AS1012 2025-01-06    LAX         03:55 2025-01-05          19      False        1.0 False     CLR          10.00\n   AS1011 2025-01-06    LAX         04:40 2025-01-05          20      False        4.0 False     CLR          10.00\n   AS1014 2025-01-06    SEA         21:50 2025-01-06          13      False       19.0 False     -RA           9.50\n   AS1015 2025-01-06    SEA         23:15 2025-01-06          15      False       -8.0 False     -RA           8.00\n   AS1019 2025-01-07    S\n...[truncated]"
+   }
+  },
+  {
+   "agent": "S3",
+   "kind": "run_python",
+   "code": "# concise inspect suspicious clock wrap and aggregate\ns=pd.read_csv('airlines/AS.csv'); s['cancelled']=s.cancelled.astype(str).str.lower().eq('true')\n# clock minute diff\nfor c in ['sched_dep_utc','actual_dep_utc']:\n    h=s[c].str.slice(0,2).astype(int); m=s[c].str.slice(3,5).astype(int); s[c+'_min']=60*h+m\ns['rawdiff']=s.actual_dep_utc_min-s.sched_dep_utc_min\nprint('raw negative completed',s[(~s.cancelled)&(s.rawdiff<0)][['flight_id','date_utc','origin','sched_dep_utc','actual_dep_utc','rawdiff']].to_string(index=False))\nprint('raw positive >15 count',((~s.cancelled)&(s.rawdiff>15)).sum())\nprint('raw diff stats',s.loc[~s.cancelled,'rawdiff'].describe().to_string())\n# show relevant agg with local dates and using modulo only if negative? \napt=pd.read_csv('airports.csv'); wx=pd.read_csv('weather.csv'); s=s.merge(apt[['airport','utc_offset_hours']],left_on='origin',right_on='airport')\nsched=pd.to_datetime(s.date_utc+' '+s.sched_dep_utc); actual=pd.to_datetime(s.date_utc+' '+s.actual_dep_utc,errors='coerce')\ns['local']=sched+pd.to_timedelta(s.utc_offset_hours,unit='h'); s['ld']=s.local.dt.strftime('%Y-%m-%d');s['lh']=s.local.dt.hour\nwx['bad'] = wx.wx_code.isin(['TS','SN','+RA']) | ((wx.wx_code=='FG')&(wx.visibility_mi<1))\ns=s.merge(wx[['airport','date','hour','bad']],left_on=['origin','ld','lh'],right_on=['airport','date','hour'],how='left')\nr=s[s.ld.str[:7].isin(['2025-01','2025-02']) & ~s.cancelled].copy(); r['delay']=r.rawdiff>15\nprint(r.groupby('bad').agg(n=('flight_id','size'),delayed=('delay','sum'),rate=('delay','mean')).to_string())\nprint('bad flights',r[r.bad][['flight_id','origin','sched_dep_utc','ld','lh','rawdiff','delay']].to_string(index=False))",
+   "result": {
+    "ok": false,
+    "stdout": "",
+    "error": "Traceback (most recent call last):\n  File \"/var/folders/ql/8_mlfx5s0hlckrlfb0lldh9w0000gn/T/ipykernel_71385/3513064669.py\", line 16, in run_python\n    exec(code, self.ns)\n  File \"<string>\", line 5, in <module>\nValueError: cannot convert float NaN to integer\n"
+   }
+  },
+  {
+   "agent": "S3",
+   "kind": "run_python",
+   "code": "s=pd.read_csv('airlines/AS.csv'); s['cancelled']=s.cancelled.astype(str).str.lower().eq('true')\nfor c in ['sched_dep_utc','actual_dep_utc']:\n    t=s[c].str.split(':'); s[c+'_min']=pd.to_numeric(t.str[0])*60+pd.to_numeric(t.str[1])\ns['rawdiff']=s.actual_dep_utc_min-s.sched_dep_utc_min\nprint('raw negative completed\\n',s[(~s.cancelled)&(s.rawdiff<0)][['flight_id','date_utc','origin','sched_dep_utc','actual_dep_utc','rawdiff']].to_string(index=False))\nprint('raw positive >15 count',((~s.cancelled)&(s.rawdiff>15)).sum())\nprint('raw diff stats\\n',s.loc[~s.cancelled,'rawdiff'].describe().to_string())\napt=pd.read_csv('airports.csv'); wx=pd.read_csv('weather.csv'); s=s.merge(apt[['airport','utc_offset_hours']],left_on='origin',right_on='airport')\nsched=pd.to_datetime(s.date_utc+' '+s.sched_dep_utc); s['local']=sched+pd.to_timedelta(s.utc_offset_hours,unit='h'); s['ld']=s.local.dt.strftime('%Y-%m-%d');s['lh']=s.local.dt.hour\nwx['bad'] = wx.wx_code.isin(['TS','SN','+RA']) | ((wx.wx_code=='FG')&(wx.visibility_mi<1))\ns=s.merge(wx[['airport','date','hour','bad']],left_on=['origin','ld','lh'],right_on=['airport','date','hour'],how='left')\nr=s[s.ld.str[:7].isin(['2025-01','2025-02']) & ~s.cancelled].copy(); r['delay']=r.rawdiff>15\nprint('aggregate\\n',r.groupby('bad').agg(n=('flight_id','size'),delayed=('delay','sum'),rate=('delay','mean')).to_string())\nprint('bad flights\\n',r[r.bad][['flight_id','origin','sched_dep_utc','ld','lh','rawdiff','delay']].to_string(index=False))",
+   "result": {
+    "ok": true,
+    "stdout": "raw negative completed\n flight_id   date_utc origin sched_dep_utc actual_dep_utc  rawdiff\n   AS1006 2025-01-02    LAX         23:35          23:28     -7.0\n   AS1008 2025-01-04    SEA         07:55          07:48     -7.0\n   AS1009 2025-01-04    LAX         21:20          21:12     -8.0\n   AS1015 2025-01-06    SEA         23:15          23:07     -8.0\n   AS1016 2025-01-07    LAX         17:30          17:28     -2.0\n   AS1018 2025-01-07    SEA         22:45          01:18  -1287.0\n   AS1022 2025-01-08    LAX         20:10          20:03     -7.0\n   AS1024 2025-01-09    SEA         18:55          18:51     -4.0\n   AS1030 2025-01-12    JFK         10:30          10:29     -1.0\n   AS1031 2025-01-12    SEA         13:15          13:11     -4.0\n   AS1032 2025-01-12    SEA         14:00          13:52     -8.0\n   AS1040 2025-01-15    SEA         21:45          21:44     -1.0\n   AS1045 2025-01-17    SEA         19:05          18:59     -6.0\n   AS1046 2025-01-17    LAX         19:05          19:04     -1.0\n   AS1044 2025-01-18    LAX         05:55          05:53     -2.0\n   AS1050 2025-01-19    SEA         06:30          06:22     -8.0\n   AS1053 2025-01-19    DEN         14:45          14:36     -9.0\n   AS1058 2025-01-21    JFK         22:20          22:16     -4.0\n   AS1060 2025-01-23    LAX         06:20          06:12     -8.0\n   AS1061 2025-01-23    SEA         06:50          06:47     -3.0\n   AS1064 2025-01-24    LAX         01:40          01:30    -10.0\n   AS1063 2025-01-24    DEN         05:10          05:06     -4.0\n   AS1065 2025-01-24    SEA         22:50          22:40    -10.0\n   AS1071 2025-01-26    JFK         15:10          15:04     -6.0\n   AS1072 2025-01-27    LAX         01:15          01:13     -2.0\n   AS1074 2025-01-28    LAX         07:35          07:25    -10.0\n   AS1077 2025-01-28    LAX         18:05          18:03     -2.0\n   AS1078 2025-01-29    SEA         02:25          02:24     -1.0\n   AS1091 2025-02-01    LAX         14:10          14:00    -10.0\n   AS1092 2025-02-03    JFK         02:30          02:25     -5.0\n   AS1095 2025-02-04    SEA         00:35          00:28     -7.0\n   AS1100 2025-02-05    LAX         19:15          19:06     -9.0\n   AS1103 2025-02-06    JFK         17:15          17:12     -3.0\n   AS1107 2025-02-08    JFK         16:35          16:26     -9.0\n   AS1110 2025-02-08    DEN         21:45          21:44     -1.0\n   AS1108 2025-02-09    DEN         06:25          06:16     -9.0\n   AS1112 2025-02-09    LAX         13:15          13:08     -7.0\n   AS1122 2025-02-12    SEA         17:45          17:40     -5.0\n   AS1120 2025-02-13    SEA         01:55          01:46     -9.0\n   AS1123 2025-02-13    SEA         23:50          00:01  -1429.0\n   AS1129 2025-02-14    SEA         20:15          20:10     -5.0\n   AS1127 2025-02-15    SEA         01:20          01:16     -4.0\n   AS1131 2025-02-15    JFK         15:20          15:14     -6.0\n   AS1135 2025-02-16    SEA         17:00          16:53     -7.0\n   AS1133 2025-02-17    LAX         07:10          07:08     -2.0\n   AS1137 2025-02-18    SEA         00:25          00:18     -7.0\n   AS1142 2025-02-19    LAX         02:30          02:25     -5.0\n   AS1143 2025-02-19    LAX         23:25          23:21     -4.0\n   AS1154 2025-02-22    DEN         14:50          14:45     -5.0\n   AS1158 2025-02-24    SEA         14:00          13:55     -5.0\n   AS1163 2025-02-25    LAX         16:30          16:29     -1.0\n   AS1161 2025-02-26    LAX         03:40          03:31     -9.0\n   AS1165 2025-02-26    LAX         19:10          19:08     -2.0\n   AS1166 2025-02-27    LAX         00:25          00:15    -10.0\n   AS1164 2025-02-27    SEA         01:35          01:34     -1.0\nraw positive >15 count 19\nraw diff stats\n count     172.000000\nmean       -7.976744\nstd       147.985536\nmin     -1429.000000\n25%        -2.000000\n50%         5.500000\n75%        12.000000\nmax        82.000000\naggregate\n          n  delayed      rate\nbad                          \n...[truncated]"
+   }
+  },
+  {
+   "agent": "S3",
+   "kind": "run_python",
+   "code": "# Recompute compact, fixing only clear midnight crossings (raw diff < -60)\ns=pd.read_csv('airlines/AS.csv'); s['cancelled']=s.cancelled.astype(str).str.lower().eq('true')\ndef mins(x):\n t=x.str.split(':'); return pd.to_numeric(t.str[0])*60+pd.to_numeric(t.str[1])\ns['sm']=mins(s.sched_dep_utc);s['am']=mins(s.actual_dep_utc);s['raw']=s.am-s.sm;s['delay']=s.raw.where(s.raw>=-60,s.raw+1440)\napt=pd.read_csv('airports.csv'); wx=pd.read_csv('weather.csv');s=s.merge(apt[['airport','utc_offset_hours']],left_on='origin',right_on='airport')\nst=pd.to_datetime(s.date_utc+' '+s.sched_dep_utc);s['loc']=st+pd.to_timedelta(s.utc_offset_hours,unit='h');s['ld']=s.loc.dt.strftime('%Y-%m-%d');s['lh']=s.loc.dt.hour\nwx['bad']=wx.wx_code.isin(['TS','SN','+RA'])|((wx.wx_code=='FG')&(wx.visibility_mi<1.0))\ns=s.merge(wx[['airport','date','hour','bad']],left_on=['origin','ld','lh'],right_on=['airport','date','hour'],how='left')\nr=s[s.ld.str[:7].isin(['2025-01','2025-02']) & ~s.cancelled].copy();r['delayed']=r.delay>15\nprint(r.groupby('bad').agg(n=('flight_id','size'),delayed=('delayed','sum')).reset_index().to_dict('records'))\nprint('date range/count',r.ld.min(),r.ld.max(),len(r),'missing wx',r.bad.isna().sum())\nprint('all flights JanFeb by local incl cancelled',len(s[s.ld.str[:7].isin(['2025-01','2025-02'])]), 'cancel',s[s.ld.str[:7].isin(['2025-01','2025-02'])].cancelled.sum())",
+   "result": {
+    "ok": false,
+    "stdout": "",
+    "error": "Traceback (most recent call last):\n  File \"/var/folders/ql/8_mlfx5s0hlckrlfb0lldh9w0000gn/T/ipykernel_71385/3513064669.py\", line 16, in run_python\n    exec(code, self.ns)\n  File \"<string>\", line 7, in <module>\nAttributeError: '_LocIndexer' object has no attribute 'dt'\n"
+   }
+  },
+  {
+   "agent": "S3",
+   "kind": "run_python",
+   "code": "s=pd.read_csv('airlines/AS.csv'); s['cancelled']=s.cancelled.astype(str).str.lower().eq('true')\ndef mins(x):\n t=x.str.split(':'); return pd.to_numeric(t.str[0])*60+pd.to_numeric(t.str[1])\ns['sm']=mins(s.sched_dep_utc);s['am']=mins(s.actual_dep_utc);s['raw']=s.am-s.sm;s['delay']=s.raw.where(s.raw>=-60,s.raw+1440)\napt=pd.read_csv('airports.csv'); wx=pd.read_csv('weather.csv');s=s.merge(apt[['airport','utc_offset_hours']],left_on='origin',right_on='airport')\nst=pd.to_datetime(s.date_utc+' '+s.sched_dep_utc);s['local_ts']=st+pd.to_timedelta(s.utc_offset_hours,unit='h');s['ld']=s['local_ts'].dt.strftime('%Y-%m-%d');s['lh']=s['local_ts'].dt.hour\nwx['bad']=wx.wx_code.isin(['TS','SN','+RA'])|((wx.wx_code=='FG')&(wx.visibility_mi<1.0))\ns=s.merge(wx[['airport','date','hour','bad']],left_on=['origin','ld','lh'],right_on=['airport','date','hour'],how='left')\nr=s[s.ld.str[:7].isin(['2025-01','2025-02']) & ~s.cancelled].copy();r['delayed']=r.delay>15\nprint(r.groupby('bad').agg(n=('flight_id','size'),delayed=('delayed','sum')).reset_index().to_dict('records'))\nprint('date range/count',r.ld.min(),r.ld.max(),len(r),'missing wx',r.bad.isna().sum())",
+   "result": {
+    "ok": true,
+    "stdout": "[{'bad': False, 'n': 148, 'delayed': 10}, {'bad': True, 'n': 24, 'delayed': 10}]\ndate range/count 2025-01-01 2025-02-28 172 missing wx 0\n"
+   }
+  },
+  {
+   "agent": "S3",
+   "kind": "submit",
+   "answer": {
+    "bad_weather_rate": 41.7,
+    "other_rate": 6.8
+   },
+   "raw": "{\"bad_weather_rate\": 41.7, \"other_rate\": 6.8}",
+   "notes": "Converted AS scheduled UTC timestamps to local origin dates/hours using airport offsets, matched those local airport-hours to weather, and applied the documented bad-weather rule. Excluded the cancelled flight and classified delays as strictly more than 15 minutes; midnight-crossing actual departures were handled as next-day departures."
+  },
+  {
+   "agent": "solvers",
+   "kind": "handoff",
+   "to": "critic",
+   "content": "[\n {\n  \"analyst\": \"S1\",\n  \"raw\": \"{\\\"bad_weather_rate\\\": 37.5, \\\"other_rate\\\": 6.8}\",\n  \"notes\": \"Converted AS's explicitly UTC date/time fields to origin-local time using airports.csv offsets, selected locally scheduled dates in Jan-Feb 2025, and joined weather by origin/local date/scheduled local hour. Bad weather followed weather_codes.md (TS/SN/+RA, or FG with visibility <1.0 mi). Excluded the one cancelled flight; rates are 9/24 and 10/148, respectively.\",\n  \"code\": \".read_csv('airports.csv'); wx=pd.read_csv('weather.csv')\\nprint(ap.to_string(index=False)); print(fl.tail()); print(fl.cancelled.value_counts())\\n# Convert explicitly UTC columns to local using offset\\nfl=fl.merge(ap[['airport','utc_offset_hours']], left_on='origin', right_on='airport', how='left')\\nfor c in ['sched_dep_utc','actual_dep_utc']:\\n    fl[c+'_dt']=pd.to_datetime(fl['date_utc']+' '+fl[c], errors='coerce') + pd.to_timedelta(fl['utc_offset_hours'],unit='h')\\nfl['local_date']=fl['sched_dep_utc_dt'].dt.strftime('%Y-%m-%d')\\nfl['local_hour']=fl['sched_dep_utc_dt'].dt.hour\\n# delay elapsed based local timestamps, actual on actual date (UTC date + time conversion); subtraction works\\nfl['delay_min']=(fl['actual_dep_utc_dt']-fl['sched_dep_utc_dt']).dt.total_seconds()/60\\n# Filter local Jan-Feb 2025\\nf=fl[fl.local_date.between('2025-01-01','2025-02-28')].copy()\\nprint('local date range/count',f.local_date.min(),f.local_date.max(),len(f), 'orig utc dates',fl.date_utc.min(),fl.date_utc.max())\\n# weather merge\\nf=f.merge(wx, left_on=['origin','local_date','local_hour'], right_on=['airport','date','hour'], how='left', indicator=True)\\nf['bad']=f.wx_code.isin(['TS','SN','+RA']) | ((f.wx_code=='FG') & (f.visibility_mi<1.0))\\nf['delayed']=f.delay_min>15\\nprint(f[['flight_id','date_utc','origin','sched_dep_utc','sched_dep_utc_dt','actual_dep_utc_dt','delay_min','cancelled','local_date','local_hour','wx_code','visibility_mi','bad','delayed','_merge']].head(15).to_string(index=False))\\nprint('merge',f._merge.value_counts(),'bad among all',f.bad.value_counts(),'cancelled',f.cancelled.value_counts())\\ncompleted=f[~f.cancelled]\\nprint(completed.groupby('bad').agg(n=('flight_id','size'), delayed=('delayed','sum'), rate=('delayed','mean')))\\nprint('missing weather completed', completed.wx_code.isna().sum())\\n# ----\\n# recreate variables if needed from previous persist\\nprint(completed.groupby('bad').agg(n=('flight_id','size'), delayed=('delayed','sum'), rate=('delayed','mean')).to_string())\\nfor b,g in completed.groupby('bad'):\\n print('bad',b,'n',len(g),'delayed',int(g.delayed.sum()),'pct',round(100*g.delayed.mean(),1))\\n print(g[g.delayed][['flight_id','origin','local_date','local_hour','wx_code','visibility_mi','delay_min','cancelled']].to_string(index=False))\\n# Alternative raw UTC date Jan-Feb, for comparison\\nraw=fl[fl.date_utc.between('2025-01-01','2025-02-28')].copy().merge(wx,left_on=['origin','date_utc','sched_dep_utc_dt'],right_on=['airport','date','hour'],how='left') if False else None\\n# ----\\nprint(fl[(fl.date_utc.isin(['2025-01-01','2025-03-01']))][['flight_id','date_utc','origin','sched_dep_utc','sched_dep_utc_dt','local_date']].to_string(index=False))\\n# show canceled and category\\nprint('canceled selected',f[f.cancelled][['flight_id','origin','local_date','local_hour','wx_code','visibility_mi','bad']].to_string(index=False))\\n# Check no duplicated weather keys and exact numerator denominator manually\\nprint('weather duplicates',wx.duplicated(['airport','date','hour']).sum())\"\n },\n {\n  \"analyst\": \"S2\",\n  \"raw\": \"{\\\"bad_weather_rate\\\": 41.7, \\\"other_rate\\\": 6.8}\",\n  \"notes\": \"Converted scheduled UTC timestamps to origin-local dates/hours using airports.csv offsets, joined the corresponding local weather hour, and applied the documented bad-weather rule. Computed delays from scheduled versus actual times (handling overnight clock rollover), excluded the one cancelled flight, and used delay >15 minutes.\",\n  \"code\": \"nt(asf.shape, asf.dtypes.to_dict()); print(asf.head().to_string())\\nprint(wx.shape, wx.dtypes.to_dict()); print(wx.head().to_string())\\nprint(open('weather_codes.md').read())\\n# ----\\nprint(open('README.md').read())\\nprint(pd.read_csv('airports.csv').to_string(index=False))\\nprint(asf.tail().to_string(index=False))\\nprint(asf['date_utc'].min(),asf['date_utc'].max(), asf.cancelled.value_counts().to_dict())\\n# ----\\nap=pd.read_csv('airports.csv'); off=ap.set_index('airport')['utc_offset_hours']\\nf=asf.copy(); f['offset']=f.origin.map(off)\\nf['sched_utc']=pd.to_datetime(f.date_utc+' '+f.sched_dep_utc)\\nf['local_dt']=f.sched_utc+pd.to_timedelta(f['offset'],unit='h')\\nf['local_date']=f.local_dt.dt.date; f['local_hour']=f.local_dt.dt.hour\\nf['actual_dt_same']=pd.to_datetime(f.date_utc+' '+f.actual_dep_utc, errors='coerce')\\nf['delay']=(f.actual_dt_same-f.sched_utc).dt.total_seconds()/60\\n# correct negative clock for completed likely rollover\\nf.loc[(~f.cancelled)&(f.delay<0),'delay']+=1440\\nprint(f[['flight_id','date_utc','origin','sched_dep_utc','actual_dep_utc','local_dt','delay','cancelled']].to_string(index=False))\\nprint('local date counts', f.local_date.value_counts().sort_index().to_string())\\nprint('weather relevant missing',len(f.merge(wx,left_on=['origin','local_date','local_hour'],right_on=['airport','date','hour'],how='left').query('wx_code.isna()')))\\n\\n# ----\\nf['rawdelay']=(pd.to_datetime(f.actual_dep_utc,errors='coerce')-pd.to_datetime(f.sched_dep_utc)).dt.total_seconds()/60\\nprint(f.rawdelay.describe().to_string()); print(f.loc[f.rawdelay<0,['flight_id','sched_dep_utc','actual_dep_utc','rawdelay']].to_string(index=False))\\n# ----\\n# rebuild robustly, local scheduled date/hour from UTC offsets; overnight actual times identified by huge negative clock gap\\nf=asf.copy(); f['offset']=f.origin.map(off)\\nf['sched_dt_utc']=pd.to_datetime(f.date_utc+' '+f.sched_dep_utc)\\nf['local_dt']=f.sched_dt_utc+pd.to_timedelta(f.offset,unit='h')\\nf['local_date']=f.local_dt.dt.strftime('%Y-%m-%d'); f['local_hour']=f.local_dt.dt.hour\\nf['rawdelay']=(pd.to_datetime(f.date_utc+' '+f.actual_dep_utc,errors='coerce')-f.sched_dt_utc).dt.total_seconds()/60\\nf['delay']=f.rawdelay.where(f.rawdelay>=-720, f.rawdelay+1440)\\nf=f[f.local_dt.dt.month.isin([1,2])].copy()\\nw=wx.copy(); w['bad']=w.wx_code.isin(['TS','SN','+RA']) | ((w.wx_code=='FG') & (w.visibility_mi<1.0))\\nw=w[['airport','date','hour','wx_code','visibility_mi','bad']]\\nm=f.merge(w,left_on=['origin','local_date','local_hour'],right_on=['airport','date','hour'],how='left',validate='many_to_one')\\nprint('rows',len(m),'cancelled',m.cancelled.sum(),'weather missing',m.bad.isna().sum())\\nprint(m.groupby('bad',dropna=False).size())\\ncompleted=m[~m.cancelled]\\nprint(completed.groupby('bad').agg(n=('flight_id','size'),delayed=('delay',lambda x:(x>15).sum()),rate=('delay',lambda x:100*(x>15).mean())))\\nprint('bad examples',m[m.bad==True][['flight_id','local_date','local_hour','origin','wx_code','visibility_mi','delay','cancelled']].to_string(index=False))\"\n },\n {\n  \"analyst\": \"S3\",\n  \"raw\": \"{\\\"bad_weather_rate\\\": 41.7, \\\"other_rate\\\": 6.8}\",\n  \"notes\": \"Converted AS scheduled UTC timestamps to local origin dates/hours using airport offsets, matched those local airport-hours to weather, and applied the documented bad-weather rule. Excluded the cancelled flight and classified delays as strictly more than 15 minutes; midnight-crossing actual departures were handled as next-day departures.\",\n  \"code\": \")\\ns=s.merge(wx[['airport','date','hour','bad']],left_on=['origin','ld','lh'],right_on=['airport','date','hour'],how='left')\\nr=s[s.ld.str[:7].isin(['2025-01','2025-02']) & ~s.cancelled].copy(); r['delay']=r.rawdiff>15\\nprint('aggregate\\\\n',r.groupby('bad').agg(n=('flight_id','size'),delayed=('delay','sum'),rate=('delay','mean')).to_string())\\nprint('bad flights\\\\n',r[r.bad][['flight_id','origin','sched_dep_utc','ld','lh','rawdiff','delay']].to_string(index=False))\\n# ----\\n# Recompute compact, fixing only clear midnight crossings (raw diff < -60)\\ns=pd.read_csv('airlines/AS.csv'); s['cancelled']=s.cancelled.astype(str).str.lower().eq('true')\\ndef mins(x):\\n t=x.str.split(':'); return pd.to_numeric(t.str[0])*60+pd.to_numeric(t.str[1])\\ns['sm']=mins(s.sched_dep_utc);s['am']=mins(s.actual_dep_utc);s['raw']=s.am-s.sm;s['delay']=s.raw.where(s.raw>=-60,s.raw+1440)\\napt=pd.read_csv('airports.csv'); wx=pd.read_csv('weather.csv');s=s.merge(apt[['airport','utc_offset_hours']],left_on='origin',right_on='airport')\\nst=pd.to_datetime(s.date_utc+' '+s.sched_dep_utc);s['loc']=st+pd.to_timedelta(s.utc_offset_hours,unit='h');s['ld']=s.loc.dt.strftime('%Y-%m-%d');s['lh']=s.loc.dt.hour\\nwx['bad']=wx.wx_code.isin(['TS','SN','+RA'])|((wx.wx_code=='FG')&(wx.visibility_mi<1.0))\\ns=s.merge(wx[['airport','date','hour','bad']],left_on=['origin','ld','lh'],right_on=['airport','date','hour'],how='left')\\nr=s[s.ld.str[:7].isin(['2025-01','2025-02']) & ~s.cancelled].copy();r['delayed']=r.delay>15\\nprint(r.groupby('bad').agg(n=('flight_id','size'),delayed=('delayed','sum')).reset_index().to_dict('records'))\\nprint('date range/count',r.ld.min(),r.ld.max(),len(r),'missing wx',r.bad.isna().sum())\\nprint('all flights JanFeb by local incl cancelled',len(s[s.ld.str[:7].isin(['2025-01','2025-02'])]), 'cancel',s[s.ld.str[:7].isin(['2025-01','2025-02'])].cancelled.sum())\\n# ----\\ns=pd.read_csv('airlines/AS.csv'); s['cancelled']=s.cancelled.astype(str).str.lower().eq('true')\\ndef mins(x):\\n t=x.str.split(':'); return pd.to_numeric(t.str[0])*60+pd.to_numeric(t.str[1])\\ns['sm']=mins(s.sched_dep_utc);s['am']=mins(s.actual_dep_utc);s['raw']=s.am-s.sm;s['delay']=s.raw.where(s.raw>=-60,s.raw+1440)\\napt=pd.read_csv('airports.csv'); wx=pd.read_csv('weather.csv');s=s.merge(apt[['airport','utc_offset_hours']],left_on='origin',right_on='airport')\\nst=pd.to_datetime(s.date_utc+' '+s.sched_dep_utc);s['local_ts']=st+pd.to_timedelta(s.utc_offset_hours,unit='h');s['ld']=s['local_ts'].dt.strftime('%Y-%m-%d');s['lh']=s['local_ts'].dt.hour\\nwx['bad']=wx.wx_code.isin(['TS','SN','+RA'])|((wx.wx_code=='FG')&(wx.visibility_mi<1.0))\\ns=s.merge(wx[['airport','date','hour','bad']],left_on=['origin','ld','lh'],right_on=['airport','date','hour'],how='left')\\nr=s[s.ld.str[:7].isin(['2025-01','2025-02']) & ~s.cancelled].copy();r['delayed']=r.delay>15\\nprint(r.groupby('bad').agg(n=('flight_id','size'),delayed=('delayed','sum')).reset_index().to_dict('records'))\\nprint('date range/count',r.ld.min(),r.ld.max(),len(r),'missing wx',r.bad.isna().sum())\"\n }\n]"
+  },
+  {
+   "agent": "critic",
+   "kind": "critique",
+   "critique": {
+    "issues": [
+     {
+      "analyst": "S1",
+      "problem": "The delay calculation constructs both scheduled and actual timestamps on the scheduled UTC date but never adjusts an actual departure occurring after midnight to the following day. This can turn an overnight delayed departure into a large negative delay and undercount delayed flights. This explains the 9/24 bad-weather numerator versus the 10/24 numerator reported by S2/S3."
+     },
+     {
+      "analyst": "S3",
+      "problem": "The rollover rule adds 1,440 minutes whenever the clock difference is less than -60 minutes. The documentation explicitly allows early departures, so an actual departure more than an hour early could be incorrectly treated as occurring the next day. A threshold of -60 is not justified by the data definition; S2's much more conservative -720 threshold is better supported, though any rollover rule should be documented and checked against the affected records."
+     }
+    ],
+    "disagreements": "S1 reports bad_weather_rate 37.5% (9/24), while S2 and S3 report 41.7% (10/24). They agree on other_rate = 6.8% and appear to agree on the weather classification, local scheduled-date/hour matching, cancellation exclusion, and the strict >15-minute delay definition. The bad-weather disagreement is attributable to overnight actual departures: S1 fails to adjust them, whereas S2 and S3 do. S2 and S3's matching results do not by themselves establish that S3's -60-minute rollover threshold is safe, because early departures are permitted.",
+    "best": "S2",
+    "correction": "Use S2's result: {\"bad_weather_rate\": 41.7, \"other_rate\": 6.8}. The calculation must account for completed flights whose actual departure is after midnight; retain the documented bad-weather rule and exclude cancellations from both rates. S2 is preferable to S3 because its -720-minute rollover cutoff is less likely to reinterpret legitimate early departures as next-day departures."
+   }
+  },
+  {
+   "agent": "solvers",
+   "kind": "handoff",
+   "to": "aggregator",
+   "content": "[\n {\n  \"analyst\": \"S1\",\n  \"raw\": \"{\\\"bad_weather_rate\\\": 37.5, \\\"other_rate\\\": 6.8}\",\n  \"notes\": \"Converted AS's explicitly UTC date/time fields to origin-local time using airports.csv offsets, selected locally scheduled dates in Jan-Feb 2025, and joined weather by origin/local date/scheduled local hour. Bad weather followed weather_codes.md (TS/SN/+RA, or FG with visibility <1.0 mi). Excluded the one cancelled flight; rates are 9/24 and 10/148, respectively.\"\n },\n {\n  \"analyst\": \"S2\",\n  \"raw\": \"{\\\"bad_weather_rate\\\": 41.7, \\\"other_rate\\\": 6.8}\",\n  \"notes\": \"Converted scheduled UTC timestamps to origin-local dates/hours using airports.csv offsets, joined the corresponding local weather hour, and applied the documented bad-weather rule. Computed delays from scheduled versus actual times (handling overnight clock rollover), excluded the one cancelled flight, and used delay >15 minutes.\"\n },\n {\n  \"analyst\": \"S3\",\n  \"raw\": \"{\\\"bad_weather_rate\\\": 41.7, \\\"other_rate\\\": 6.8}\",\n  \"notes\": \"Converted AS scheduled UTC timestamps to local origin dates/hours using airport offsets, matched those local airport-hours to weather, and applied the documented bad-weather rule. Excluded the cancelled flight and classified delays as strictly more than 15 minutes; midnight-crossing actual departures were handled as next-day departures.\"\n }\n]"
+  },
+  {
+   "agent": "critic",
+   "kind": "handoff",
+   "to": "aggregator",
+   "content": "{\n \"issues\": [\n  {\n   \"analyst\": \"S1\",\n   \"problem\": \"The delay calculation constructs both scheduled and actual timestamps on the scheduled UTC date but never adjusts an actual departure occurring after midnight to the following day. This can turn an overnight delayed departure into a large negative delay and undercount delayed flights. This explains the 9/24 bad-weather numerator versus the 10/24 numerator reported by S2/S3.\"\n  },\n  {\n   \"analyst\": \"S3\",\n   \"problem\": \"The rollover rule adds 1,440 minutes whenever the clock difference is less than -60 minutes. The documentation explicitly allows early departures, so an actual departure more than an hour early could be incorrectly treated as occurring the next day. A threshold of -60 is not justified by the data definition; S2's much more conservative -720 threshold is better supported, though any rollover rule should be documented and checked against the affected records.\"\n  }\n ],\n \"disagreements\": \"S1 reports bad_weather_rate 37.5% (9/24), while S2 and S3 report 41.7% (10/24). They agree on other_rate = 6.8% and appear to agree on the weather classification, local scheduled-date/hour matching, cancellation exclusion, and the strict >15-minute delay definition. The bad-weather disagreement is attributable to overnight actual departures: S1 fails to adjust them, whereas S2 and S3 do. S2 and S3's matching results do not by themselves establish that S3's -60-minute rollover threshold is safe, because early departures are permitted.\",\n \"best\": \"S2\",\n \"correction\": \"Use S2's result: {\\\"bad_weather_rate\\\": 41.7, \\\"other_rate\\\": 6.8}. The calculation must account for completed flights whose actual departure is after midnight; retain the documented bad-weather rule and exclude cancellations from both rates. S2 is preferable to S3 because its -720-minute rollover cutoff is less likely to reinterpret legitimate early departures as next-day departures.\"\n}"
+  },
+  {
+   "agent": "aggregator",
+   "kind": "final",
+   "output": {
+    "answer": {
+     "bad_weather_rate": 41.7,
+     "other_rate": 6.8
+    },
+    "chosen": "S2",
+    "rationale": "S2 correctly accounts for overnight actual departures, excludes the cancelled flight, and uses the documented strict >15-minute delay rule; its rollover handling is more conservative than S3's."
+   },
+   "raw": "{\"answer\":{\"bad_weather_rate\":41.7,\"other_rate\":6.8},\"chosen\":\"S2\",\"rationale\":\"S2 correctly accounts for overnight actual departures, excludes the cancelled flight, and uses the documented strict >15-minute delay rule; its rollover handling is more conservative than S3's.\"}"
+  }
+ ]
+}

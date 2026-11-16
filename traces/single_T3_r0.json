@@ -1,0 +1,111 @@
+{
+ "row": {
+  "system": "single",
+  "task": "T3",
+  "category": "distinct_roles",
+  "repeat": 0,
+  "score": 1.0,
+  "success": true,
+  "trap": "",
+  "calls": 5,
+  "input_tokens": 22486,
+  "output_tokens": 2089,
+  "cost_usd": 0.0032931,
+  "seconds": 23.7,
+  "handoffs": 0,
+  "comm_chars": 0,
+  "wall_s": 23.9,
+  "code_runs": 4
+ },
+ "final": {
+  "pct_in_bad_weather": 30.9
+ },
+ "grade_detail": {
+  "pct_in_bad_weather": true
+ },
+ "calls": [
+  {
+   "agent": "single",
+   "input_tokens": 788,
+   "output_tokens": 112,
+   "seconds": 1.94,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 2215,
+   "output_tokens": 660,
+   "seconds": 6.36,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 4591,
+   "output_tokens": 575,
+   "seconds": 7.11,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 7144,
+   "output_tokens": 425,
+   "seconds": 4.23,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 7748,
+   "output_tokens": 317,
+   "seconds": 4.07,
+   "status": "completed"
+  }
+ ],
+ "messages": [],
+ "events": [
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "import pandas as pd, os, glob\nprint(open('weather_codes.md').read())\nfor f in ['airlines/DL.csv','airlines/AA.csv','airlines/UA.csv','weather.csv']:\n df=pd.read_csv(f); print('\\n',f,df.shape,df.head(),df.dtypes.to_dict())\n",
+   "result": {
+    "ok": true,
+    "stdout": "# Weather codes (METAR style)\n\n| code | meaning |\n|---|---|\n| `CLR` | clear |\n| `-RA` | light rain |\n| `RA` | moderate rain |\n| `+RA` | heavy rain |\n| `BR` | mist |\n| `FG` | fog |\n| `SN` | snow |\n| `TS` | thunderstorm |\n\n`visibility_mi` is visibility in statute miles.\n\n## Bad weather\nAn airport-hour counts as **bad weather** if and only if:\n- `wx_code` is `TS`, `SN` or `+RA`; **or**\n- `wx_code` is `FG` **and** `visibility_mi` < 1.0.\n\nEverything else (`CLR`, `-RA`, `RA`, `BR`, and `FG` with visibility >= 1.0) is **not** bad weather.\n\n\n airlines/DL.csv (412, 7)   flight_id        date origin dest sched_dep actual_dep  cancelled\n0    DL1003  2025-01-01    LAX  ATL     07:55      08:09      False\n1    DL1002  2025-01-01    DFW  ATL     14:25      15:39      False\n2    DL1006  2025-01-01    ATL  SEA     18:45      19:34      False\n3    DL1007  2025-01-01    JFK  ATL     19:55      19:46      False\n4    DL1001  2025-01-01    ATL  JFK     20:05      20:20      False {'flight_id': <StringDtype(storage='python', na_value=nan)>, 'date': <StringDtype(storage='python', na_value=nan)>, 'origin': <StringDtype(storage='python', na_value=nan)>, 'dest': <StringDtype(storage='python', na_value=nan)>, 'sched_dep': <StringDtype(storage='python', na_value=nan)>, 'actual_dep': <StringDtype(storage='python', na_value=nan)>, 'cancelled': dtype('bool')}\n\n airlines/AA.csv (356, 7)   flight_id        date origin dest sched_dep actual_dep  cancelled\n0    AA1005  2025-01-01    DFW  SEA     09:35      09:31      False\n1    AA1004  2025-01-01    DFW  JFK     10:45      10:42      False\n2    AA1003  2025-01-01    DEN  DFW     14:05      19:14      False\n3    AA1007  2025-01-01    ATL  DFW     14:35      14:30      False\n4    AA1002  2025-01-01    JFK  DFW     15:50      17:59      False {'flight_id': <StringDtype(storage='python', na_value=nan)>, 'date': <StringDtype(storage='python', na_value=nan)>, 'origin': <StringDtype(storage='python', na_value=nan)>, 'dest': <StringDtype(storage='python', na_value=nan)>, 'sched_dep': <StringDtype(storage='python', na_value=nan)>, 'actual_dep': <StringDtype(storage='python', na_value=nan)>, 'cancelled': dtype('bool')}\n\n airlines/UA.csv (297, 7)   flight_id        date origin dest sched_dep actual_dep  cancelled\n0    UA1004  2025-01-01    ORD  LAX     05:40      05:39      False\n1    UA1005  2025-01-01    ORD  JFK     09:25      09:39      False\n2    UA1003  2025-01-01    ORD  ATL     09:35      09:36      False\n3    UA1001  2025-01-01    JFK  ORD     15:35      15:33      False\n4    UA1002  2025-01-01    ORD  LAX     18:05      18:38      False {'flight_id': <StringDtype(storage='python', na_value=nan)>, 'date': <StringDtype(storage='python', na_value=nan)>, 'origin': <StringDtype(storage='python', na_value=nan)>, 'dest': <StringDtype(storage='python', na_value=nan)>, 'sched_dep': <StringDtype(storage='python', na_value=nan)>, 'actual_dep': <StringDtype(storage='python', na_value=nan)>, 'cancelled': dtype('bool')}\n\n weather.csv (9912, 5)   airport        date  hour wx_code  visibility_mi\n0     ATL  2025-01-01     0     CLR           10.0\n1     ATL  2025-01-01     1     CLR           10.0\n2     ATL  2025-01-01     2     CLR           10.0\n3     ATL  2025-01-01     3     CLR           10.0\n4     ATL  2025-01-01     4     CLR           10.0 {'airport': <StringDtype(storage='python', na_value=nan)>, 'date': <StringDtype(storage='python', na_value=nan)>, 'hour': dtype('int64'), 'wx_code': <StringDtype(storage='python', na_value=nan)>, 'visibility_mi': dtype('float64')}\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "import pandas as pd, numpy as np\nfiles=['airlines/DL.csv','airlines/AA.csv','airlines/UA.csv']\nfl=pd.concat([pd.read_csv(f) for f in files],ignore_index=True)\nprint('rows',len(fl),'id dup',fl.flight_id.duplicated().sum(),'row dup',fl.duplicated().sum())\nprint(fl[fl.flight_id.duplicated(keep=False)].sort_values('flight_id').to_string(index=False) if fl.flight_id.duplicated().any() else 'none')\nw=pd.read_csv('weather.csv')\nprint('weather dup keys',w.duplicated(['airport','date','hour']).sum(),'rows',len(w))\n# calc\nfl=fl.drop_duplicates(subset='flight_id').copy()\nfl['sched_dt']=pd.to_datetime(fl['date']+' '+fl['sched_dep'])\nfl['actual_dt']=pd.to_datetime(fl['date']+' '+fl['actual_dep'],errors='coerce')\n# adjust actual if clock actual appears earlier than scheduled: assume after midnight; canceled nan\nmask=(~fl.cancelled)&(fl.actual_dt<fl.sched_dt)\nfl.loc[mask,'actual_dt'] += pd.Timedelta(days=1)\nfl['delay_min']=(fl.actual_dt-fl.sched_dt).dt.total_seconds()/60\nprint('cancelled',fl.cancelled.value_counts().to_dict(),'delay stats',fl.loc[~fl.cancelled,'delay_min'].describe().to_dict(),'weird missing',fl.actual_dt.isna().sum())\ndelayed=fl[(~fl.cancelled)&(fl.delay_min>15)].copy()\ndelayed['hour']=delayed.sched_dep.str[:2].astype(int)\nw2=w.copy(); w2['bad']=w2.wx_code.isin(['TS','SN','+RA']) | ((w2.wx_code=='FG')&(w2.visibility_mi<1.0))\nmerged=delayed.merge(w2,left_on=['origin','date','hour'],right_on=['airport','date','hour'],how='left',validate='many_to_one')\nprint('delayed',len(delayed),'weather missing',merged.bad.isna().sum(),'bad count',merged.bad.sum(),'pct',merged.bad.mean()*100)\nprint(merged[['flight_id','date','origin','sched_dep','delay_min','wx_code','visibility_mi','bad']].to_string(index=False))",
+   "result": {
+    "ok": true,
+    "stdout": "rows 1065 id dup 0 row dup 0\nnone\nweather dup keys 0 rows 9912\ncancelled {False: 1040, True: 25} delay stats {'count': 1040.0, 'mean': 421.30384615384617, 'std': 635.6547858094361, 'min': 0.0, '25%': 7.0, '50%': 20.0, '75%': 1431.0, 'max': 1439.0} weird missing 25\ndelayed 539 weather missing 0 bad count 94 pct 17.439703153988866\nflight_id       date origin sched_dep  delay_min wx_code  visibility_mi   bad\n   DL1002 2025-01-01    DFW     14:25       74.0     CLR          10.00 False\n   DL1006 2025-01-01    ATL     18:45       49.0     CLR          10.00 False\n   DL1007 2025-01-01    JFK     19:55     1431.0     CLR          10.00 False\n   DL1004 2025-01-01    JFK     21:25     1439.0     CLR          10.00 False\n   DL1013 2025-01-02    DFW     10:05       87.0     CLR          10.00 False\n   DL1010 2025-01-02    ATL     17:45      153.0     -RA           9.00 False\n   DL1011 2025-01-02    ATL     23:00      127.0     CLR          10.00 False\n   DL1014 2025-01-03    LAX     06:55      115.0     CLR          10.00 False\n   DL1016 2025-01-03    JFK     14:00      109.0     CLR          10.00 False\n   DL1018 2025-01-03    ATL     15:15       42.0     CLR          10.00 False\n   DL1020 2025-01-03    ATL     18:45       29.0      FG           0.75  True\n   DL1026 2025-01-04    ORD     05:25     1435.0     CLR          10.00 False\n   DL1027 2025-01-04    DFW     17:55     1432.0      BR           5.75 False\n   DL1021 2025-01-04    ATL     19:30       41.0     +RA           2.00  True\n   DL1024 2025-01-04    JFK     20:50      167.0      TS           4.25  True\n   DL1028 2025-01-04    LAX     20:50     1439.0     CLR          10.00 False\n   DL1023 2025-01-04    ATL     22:00       57.0     CLR          10.00 False\n   DL1029 2025-01-05    ATL     09:15     1438.0      RA           3.00 False\n   DL1033 2025-01-05    LAX     09:55     1430.0     CLR          10.00 False\n   DL1031 2025-01-05    ORD     11:45       38.0      SN           2.75  True\n   DL1032 2025-01-05    ATL     12:55       22.0      RA           5.50 False\n   DL1034 2025-01-05    ATL     18:25       20.0     CLR          10.00 False\n   DL1039 2025-01-06    ATL     05:50     1438.0     CLR          10.00 False\n   DL1041 2025-01-06    JFK     05:50      161.0      SN           2.00  True\n   DL1042 2025-01-06    ATL     07:10     1434.0     CLR          10.00 False\n   DL1038 2025-01-06    SEA     17:10     1437.0     CLR          10.00 False\n   DL1040 2025-01-06    ATL     17:50     1432.0     CLR          10.00 False\n   DL1049 2025-01-07    ORD     12:00       51.0      SN           2.75  True\n   DL1050 2025-01-07    JFK     21:10       42.0     CLR          10.00 False\n   DL1046 2025-01-07    ATL     22:50     1439.0     CLR          10.00 False\n   DL1051 2025-01-08    LAX     07:45     1436.0     CLR          10.00 False\n   DL1053 2025-01-08    LAX     12:50     1437.0     CLR          10.00 False\n   DL1055 2025-01-08    JFK     20:15       93.0      FG           1.50 False\n   DL1058 2025-01-08    ATL     20:20     1435.0      FG           2.50 False\n   DL1062 2025-01-09    ATL     06:50       30.0     CLR          10.00 False\n   DL1059 2025-01-09    ATL     14:35     1436.0     CLR          10.00 False\n   DL1064 2025-01-09    ATL     23:10      148.0     +RA           1.75  True\n   DL1060 2025-01-09    ATL     23:25     1436.0     +RA           1.75  True\n   DL1069 2025-01-10    LAX     09:35     1437.0     CLR          10.00 False\n   DL1066 2025-01-10    ATL     18:05     1435.0     CLR          10.00 False\n   DL1077 2025-01-11    ATL     09:45       42.0      TS           2.25  True\n   DL1074 2025-01-11    JFK     10:05     1431.0     CLR          10.00 False\n   DL1078 2025-01-11    ATL     11:30       27.0      TS           4.25  True\n   DL1073 2025-01-11    ATL     12:25       30.0     CLR          10.00 False\n   DL1079 2025-01-11    ATL     16:00       98.0     CLR          10.00 False\n   DL1082 2025-01-12    ATL     13:40     1438.0     CLR          10.00 False\n   \n...[truncated]"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "import pandas as pd\nfl=pd.concat([pd.read_csv(f) for f in ['airlines/DL.csv','airlines/AA.csv','airlines/UA.csv']],ignore_index=True)\nfl=fl[~fl.cancelled].copy(); fl['s']=fl.sched_dep.str[:2].astype(int)*60+fl.sched_dep.str[3:].astype(int); fl['a']=fl.actual_dep.str[:2].astype(int)*60+fl.actual_dep.str[3:].astype(int); fl['raw']=fl.a-fl.s\nprint(fl.raw.describe(percentiles=[.01,.05,.1,.25,.5,.75,.9,.95,.99]))\nprint('\\nnegative raw grouped:')\nprint(fl[fl.raw<0].sort_values('raw')[['flight_id','date','origin','sched_dep','actual_dep','raw']].to_string(index=False))\n",
+   "result": {
+    "ok": true,
+    "stdout": "count    1040.000000\nmean       -1.003846\nstd       148.586507\nmin     -1429.000000\n1%      -1229.600000\n5%         -9.000000\n10%        -7.000000\n25%        -2.000000\n50%         6.000000\n75%        14.000000\n90%        48.000000\n95%        76.050000\n99%       134.490000\nmax       309.000000\nName: raw, dtype: float64\n\nnegative raw grouped:\nflight_id       date origin sched_dep actual_dep   raw\n   AA1307 2025-02-20    DFW     23:50      00:01 -1429\n   AA1134 2025-01-23    DFW     23:45      00:00 -1425\n   UA1009 2025-01-02    ORD     23:30      00:06 -1404\n   DL1108 2025-01-16    ATL     23:20      00:03 -1397\n   AA1150 2025-01-25    ATL     23:25      00:17 -1388\n   AA1190 2025-02-01    JFK     23:25      00:49 -1356\n   AA1172 2025-01-29    JFK     22:50      00:17 -1353\n   UA1154 2025-01-31    JFK     23:25      01:13 -1332\n   UA1212 2025-02-12    DFW     22:25      00:19 -1326\n   DL1011 2025-01-02    ATL     23:00      01:07 -1313\n   DL1064 2025-01-09    ATL     23:10      01:38 -1292\n   UA1244 2025-02-18    ORD     22:55      04:03 -1132\n   AA1011 2025-01-02    DFW     23:45      23:35   -10\n   AA1241 2025-02-09    JFK     05:55      05:45   -10\n   UA1069 2025-01-15    LAX     15:40      15:30   -10\n   AA1105 2025-01-18    DFW     16:45      16:35   -10\n   UA1061 2025-01-13    DEN     20:10      20:00   -10\n   AA1097 2025-01-16    ATL     20:50      20:40   -10\n   DL1410 2025-02-28    ATL     14:25      14:15   -10\n   UA1048 2025-01-10    DEN     12:30      12:20   -10\n   AA1143 2025-01-24    DFW     19:05      18:55   -10\n   UA1065 2025-01-14    DEN     08:30      08:20   -10\n   AA1312 2025-02-21    DEN     19:30      19:20   -10\n   UA1128 2025-01-26    DEN     07:15      07:05   -10\n   AA1311 2025-02-21    DFW     10:20      10:10   -10\n   UA1156 2025-02-01    LAX     21:15      21:05   -10\n   AA1075 2025-01-13    SEA     21:35      21:25   -10\n   AA1309 2025-02-20    DFW     19:20      19:10   -10\n   UA1169 2025-02-03    ATL     21:55      21:45   -10\n   AA1303 2025-02-19    JFK     10:20      10:10   -10\n   AA1278 2025-02-16    DFW     10:40      10:30   -10\n   DL1033 2025-01-05    LAX     09:55      09:45   -10\n   UA1219 2025-02-13    LAX     08:45      08:35   -10\n   AA1022 2025-01-04    ORD     07:20      07:10   -10\n   UA1099 2025-01-21    LAX     05:55      05:45   -10\n   AA1315 2025-02-21    DFW     11:10      11:00   -10\n   AA1204 2025-02-03    SEA     13:00      12:51    -9\n   AA1202 2025-02-03    DFW     22:20      22:11    -9\n   AA1102 2025-01-17    ATL     19:00      18:51    -9\n   AA1174 2025-01-30    DFW     07:40      07:31    -9\n   UA1295 2025-02-28    ORD     16:55      16:46    -9\n   AA1096 2025-01-16    JFK     06:25      06:16    -9\n   AA1082 2025-01-14    ORD     20:40      20:31    -9\n   AA1080 2025-01-14    DFW     13:50      13:41    -9\n   DL1272 2025-02-08    DFW     08:05      07:56    -9\n   AA1067 2025-01-12    JFK     11:00      10:51    -9\n   AA1070 2025-01-12    DFW     09:05      08:56    -9\n   AA1052 2025-01-09    DFW     08:30      08:21    -9\n   AA1029 2025-01-05    DFW     05:55      05:46    -9\n   AA1175 2025-01-30    DFW     11:10      11:01    -9\n   AA1211 2025-02-05    LAX     08:35      08:26    -9\n   DL1007 2025-01-01    JFK     19:55      19:46    -9\n   DL1074 2025-01-11    JFK     10:05      09:56    -9\n   UA1262 2025-02-21    SEA     13:15      13:06    -9\n   UA1254 2025-02-20    ATL     22:30      22:21    -9\n   UA1234 2025-02-15    DFW     18:10      18:01    -9\n   UA1207 2025-02-11    JFK     09:25      09:16    -9\n   UA1198 2025-02-09    SEA     16:30      16:21    -9\n   UA1157 2025-02-01    DEN     21:40      21:31    -9\n   UA1134 2025-01-28    DEN     15:25      15:16    -9\n   UA1135 2025-01-28    DEN     13:50      13:41    -9\n   AA1218 2025-02-06    DFW     21:55      21:46    -9\n   UA1091 2025-01-19    LAX     19:30      19:21    -9\n   DL1330 2025-02-16    JFK     21:40      21:31    -9\n   UA1056 2025-01-11    ATL     21:30      21:21    -9\n   UA1054 2025-01-11    ORD\n...[truncated]"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "import pandas as pd\nfl=pd.concat([pd.read_csv(f) for f in ['airlines/DL.csv','airlines/AA.csv','airlines/UA.csv']],ignore_index=True)\nfl=fl[~fl.cancelled].copy(); fl['s']=fl.sched_dep.str[:2].astype(int)*60+fl.sched_dep.str[3:].astype(int); fl['a']=fl.actual_dep.str[:2].astype(int)*60+fl.actual_dep.str[3:].astype(int); fl['delay']=fl.a-fl.s; fl.loc[fl.delay < -720,'delay']+=1440\n# delayed, weather\nD=fl[fl.delay>15].copy(); D['hour']=D.sched_dep.str[:2].astype(int)\nw=pd.read_csv('weather.csv'); w['bad']=w.wx_code.isin(['TS','SN','+RA'])|((w.wx_code=='FG')&(w.visibility_mi<1))\nm=D.merge(w,left_on=['origin','date','hour'],right_on=['airport','date','hour'],how='left',validate='many_to_one')\nprint('completed',len(fl),'delayed',len(D),'bad',int(m.bad.sum()),'pct',round(100*m.bad.mean(),10))\nprint('bad codes',m[m.bad].wx_code.value_counts().to_dict())\nprint('delayed by carrier',D.flight_id.str[:2].value_counts().to_dict())\n# list any negative and threshold\nprint('delay ranges',D.delay.describe().to_dict(),'missing weather',m.bad.isna().sum())",
+   "result": {
+    "ok": true,
+    "stdout": "completed 1040 delayed 246 bad 76 pct 30.8943089431\nbad codes {'SN': 33, 'TS': 19, '+RA': 18, 'FG': 6}\ndelayed by carrier {'DL': 93, 'UA': 79, 'AA': 74}\ndelay ranges {'count': 246.0, 'mean': 57.548780487804876, 'std': 43.2336280034819, 'min': 16.0, '25%': 29.0, '50%': 43.5, '75%': 73.75, 'max': 309.0} missing weather 0\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "submit",
+   "answer": {
+    "pct_in_bad_weather": 30.9
+   },
+   "raw": "{\"pct_in_bad_weather\": 30.9}",
+   "notes": "Combined DL, AA, and UA records, excluded 25 cancellations, and calculated delays from scheduled/actual local clock times. For actual times just after midnight following late-night schedules, treated the departure as next-day (the clearly large negative clock differences). Among 246 flights delayed >15 minutes, 76 had origin-hour weather meeting the documented bad-weather rule (TS, SN, +RA, or FG with visibility <1 mi), giving 76/246 = 30.9%."
+  }
+ ]
+}

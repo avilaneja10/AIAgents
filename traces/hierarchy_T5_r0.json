@@ -1,0 +1,235 @@
+{
+ "row": {
+  "system": "hierarchy",
+  "task": "T5",
+  "category": "integration",
+  "repeat": 0,
+  "score": 1.0,
+  "success": true,
+  "trap": "",
+  "calls": 9,
+  "input_tokens": 47135,
+  "output_tokens": 3575,
+  "cost_usd": 0.006501000000000001,
+  "seconds": 40.6,
+  "handoffs": 2,
+  "comm_chars": 3918,
+  "wall_s": 40.9,
+  "plan_ok": true,
+  "n_workers": 1,
+  "invalid_files": "[]",
+  "files_overlap": 0,
+  "workers_no_result": 0,
+  "worker_caps": "[18]",
+  "worker_calls_used": "[7]",
+  "caveats_passed": "[\"threshold_15\", \"cancelled\", \"utc\", \"dedup\", \"midnight\"]"
+ },
+ "final": {
+  "network_rate": 23.9
+ },
+ "grade_detail": {
+  "network_rate": true
+ },
+ "calls": [
+  {
+   "agent": "manager",
+   "input_tokens": 1067,
+   "output_tokens": 652,
+   "seconds": 6.65,
+   "status": "completed"
+  },
+  {
+   "agent": "w1",
+   "input_tokens": 627,
+   "output_tokens": 139,
+   "seconds": 2.02,
+   "status": "completed"
+  },
+  {
+   "agent": "w1",
+   "input_tokens": 2170,
+   "output_tokens": 963,
+   "seconds": 8.9,
+   "status": "completed"
+  },
+  {
+   "agent": "w1",
+   "input_tokens": 4854,
+   "output_tokens": 318,
+   "seconds": 4.54,
+   "status": "completed"
+  },
+  {
+   "agent": "w1",
+   "input_tokens": 6980,
+   "output_tokens": 368,
+   "seconds": 4.57,
+   "status": "completed"
+  },
+  {
+   "agent": "w1",
+   "input_tokens": 9007,
+   "output_tokens": 186,
+   "seconds": 2.62,
+   "status": "completed"
+  },
+  {
+   "agent": "w1",
+   "input_tokens": 9647,
+   "output_tokens": 566,
+   "seconds": 5.58,
+   "status": "completed"
+  },
+  {
+   "agent": "w1",
+   "input_tokens": 10519,
+   "output_tokens": 368,
+   "seconds": 4.69,
+   "status": "completed"
+  },
+  {
+   "agent": "manager",
+   "input_tokens": 2264,
+   "output_tokens": 15,
+   "seconds": 1.07,
+   "status": "completed"
+  }
+ ],
+ "messages": [
+  {
+   "frm": "manager",
+   "to": "w1",
+   "chars": 1603
+  },
+  {
+   "frm": "workers",
+   "to": "manager",
+   "chars": 2315
+  }
+ ],
+ "events": [
+  {
+   "agent": "manager",
+   "kind": "plan",
+   "plan": {
+    "subtasks": [
+     {
+      "worker": "w1",
+      "files": [
+       "README.md",
+       "airlines/AA.csv",
+       "airlines/AS.csv",
+       "airlines/B6.csv",
+       "airlines/DL.csv",
+       "airlines/UA.csv",
+       "airlines/WN.csv",
+       "airports.csv"
+      ],
+      "instructions": "Compute the overall network departure delay rate for January 2025 and February 2025 combined across all six carriers (AA, AS, B6, DL, UA, WN). Use the documented definition: a completed flight is non-cancelled; delay minutes = actual departure minus scheduled departure; a flight is delayed only if delay is more than 15 minutes; rate = delayed completed flights / completed flights. Dates/months refer to local time at the origin airport. For AA, B6, DL, UA, and WN, date and times are local. For AS, date_utc, sched_dep_utc, and actual_dep_utc are UTC; convert each flight's scheduled and actual departure to local origin time using the origin airport's utc_offset_hours, including date rollover, before assigning it to January or February and calculating delay. Exclude cancelled flights from both numerator and denominator. Handle departures crossing midnight correctly. Check for any duplicate flight_id/repeated records and follow the documentation's one-flight-per-unique-flight_id rule without double-counting repeated records. Compute monthly counts as a check, then the combined numerator and denominator and percentage rounded to 1 decimal. Weather files are not needed. Return only valid JSON matching the requested information, with enough count fields to audit the result.",
+      "return_format": "{\"jan\": {\"delayed\": <integer>, \"completed\": <integer>, \"rate_percent\": <number>}, \"feb\": {\"delayed\": <integer>, \"completed\": <integer>, \"rate_percent\": <number>}, \"combined\": {\"delayed\": <integer>, \"completed\": <integer>, \"rate_percent\": <number>}, \"duplicate_handling\": \"<brief note>\"}"
+     }
+    ],
+    "synthesis_plan": "Use the worker's combined delayed and completed counts, verify that AS UTC timestamps were converted to local origin time and that cancellations and midnight crossings were handled. The final response must contain only the required JSON object, setting network_rate to the combined rate rounded to one decimal place."
+   },
+   "raw": "{\"subtasks\":[{\"worker\":\"w1\",\"files\":[\"README.md\",\"airlines/AA.csv\",\"airlines/AS.csv\",\"airlines/B6.csv\",\"airlines/DL.csv\",\"airlines/UA.csv\",\"airlines/WN.csv\",\"airports.csv\"],\"instructions\":\"Compute the overall network departure delay rate for January 2025 and February 2025 combined across all six carriers (AA, AS, B6, DL, UA, WN). Use the documented definition: a completed flight is non-cancelled; delay minutes = actual departure minus scheduled departure; a flight is delayed only if delay is more than 15 minutes; rate = delayed completed flights / completed flights. Dates/months refer to local time at the origin airport. For AA, B6, DL, UA, and WN, date and times are local. For AS, date_utc, sched_dep_utc, and actual_dep_utc are UTC; convert each flight's scheduled and actual departure to local origin time using the origin airport's utc_offset_hours, including date rollover, before assigning it to January or February and calculating delay. Exclude cancelled flights from both numerator and denominator. Handle departures crossing midnight correctly. Check for any duplicate flight_id/repeated records and follow the documentation's one-flight-per-unique-flight_id rule without double-counting repeated records. Compute monthly counts as a check, then the combined numerator and denominator and percentage rounded to 1 decimal. Weather files are not needed. Return only valid JSON matching the requested information, with enough count fields to audit the result.\",\"return_format\":\"{\\\"jan\\\": {\\\"delayed\\\": <integer>, \\\"completed\\\": <integer>, \\\"rate_percent\\\": <number>}, \\\"feb\\\": {\\\"delayed\\\": <integer>, \\\"completed\\\": <integer>, \\\"rate_percent\\\": <number>}, \\\"combined\\\": {\\\"delayed\\\": <integer>, \\\"completed\\\": <integer>, \\\"rate_percent\\\": <number>}, \\\"duplicate_handling\\\": \\\"<brief note>\\\"}\"}],\"synthesis_plan\":\"Use the worker's combined delayed and completed counts, verify that AS UTC timestamps were converted to local origin time and that cancellations and midnight crossings were handled. The final response must contain only the required JSON object, setting network_rate to the combined rate rounded to one decimal place.\"}"
+  },
+  {
+   "agent": "manager",
+   "kind": "handoff",
+   "to": "w1",
+   "content": "SUBTASK\nCompute the overall network departure delay rate for January 2025 and February 2025 combined across all six carriers (AA, AS, B6, DL, UA, WN). Use the documented definition: a completed flight is non-cancelled; delay minutes = actual departure minus scheduled departure; a flight is delayed only if delay is more than 15 minutes; rate = delayed completed flights / completed flights. Dates/months refer to local time at the origin airport. For AA, B6, DL, UA, and WN, date and times are local. For AS, date_utc, sched_dep_utc, and actual_dep_utc are UTC; convert each flight's scheduled and actual departure to local origin time using the origin airport's utc_offset_hours, including date rollover, before assigning it to January or February and calculating delay. Exclude cancelled flights from both numerator and denominator. Handle departures crossing midnight correctly. Check for any duplicate flight_id/repeated records and follow the documentation's one-flight-per-unique-flight_id rule without double-counting repeated records. Compute monthly counts as a check, then the combined numerator and denominator and percentage rounded to 1 decimal. Weather files are not needed. Return only valid JSON matching the requested information, with enough count fields to audit the result.\n\nRETURN FORMAT (JSON)\n{\"jan\": {\"delayed\": <integer>, \"completed\": <integer>, \"rate_percent\": <number>}, \"feb\": {\"delayed\": <integer>, \"completed\": <integer>, \"rate_percent\": <number>}, \"combined\": {\"delayed\": <integer>, \"completed\": <integer>, \"rate_percent\": <number>}, \"duplicate_handling\": \"<brief note>\"}"
+  },
+  {
+   "agent": "w1",
+   "kind": "run_python",
+   "code": "import pandas as pd, os\nprint(open('README.md').read())\nfor f in ['AA','AS','B6','DL','UA','WN']:\n p=f'airlines/{f}.csv'; df=pd.read_csv(p); print('\\n',f,df.shape,df.columns.tolist()); print(df.head(2).to_dict('records'))\nprint('airports',pd.read_csv('airports.csv').head(),pd.read_csv('airports.csv').columns.tolist())",
+   "result": {
+    "ok": true,
+    "stdout": "# Flight operations dataset (January-February 2025)\n\n## Files\n| file | contents |\n|---|---|\n| `airlines/<CARRIER>.csv` | one file per carrier: DL (Delta), AA (American), UA (United), WN (Southwest), B6 (JetBlue), AS (Alaska) |\n| `weather.csv` | hourly weather observation at each airport |\n| `airports.csv` | airport metadata: `airport, city, timezone, utc_offset_hours` |\n| `weather_codes.md` | meaning of weather codes and the definition of **bad weather** |\n\n### Flights columns\n`flight_id, date, origin, dest, sched_dep, actual_dep, cancelled`\n- `flight_id` is unique: every flight appears exactly once. The export may contain repeated records.\n- `date` is the scheduled departure date; `sched_dep` / `actual_dep` are clock times `HH:MM`.\n- A delayed flight may depart after midnight, i.e. on the day after `date`.\n- `actual_dep` is empty if the flight was cancelled. `cancelled` is `true` / `false`.\n- Times are local time at the origin airport, **unless the column name ends in `_utc`**.\n\n### Weather columns\n`airport, date, hour, wx_code, visibility_mi` -- local time at that airport; `hour` h covers h:00-h:59.\n\n## Conventions\n- Departure delay (minutes) = actual departure - scheduled departure. Early departures are negative.\n- A flight is **delayed** if its departure delay is **more than 15 minutes**.\n- **Delay rate** = delayed flights / completed (non-cancelled) flights. Cancelled flights are excluded\n  from both numerator and denominator. Report rates as percentages with 1 decimal.\n- Dates, months and hours refer to local time at the origin airport.\n\n\n AA (356, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled']\n[{'flight_id': 'AA1005', 'date': '2025-01-01', 'origin': 'DFW', 'dest': 'SEA', 'sched_dep': '09:35', 'actual_dep': '09:31', 'cancelled': False}, {'flight_id': 'AA1004', 'date': '2025-01-01', 'origin': 'DFW', 'dest': 'JFK', 'sched_dep': '10:45', 'actual_dep': '10:42', 'cancelled': False}]\n\n AS (173, 7) ['flight_id', 'date_utc', 'origin', 'dest', 'sched_dep_utc', 'actual_dep_utc', 'cancelled']\n[{'flight_id': 'AS1002', 'date_utc': '2025-01-01', 'origin': 'JFK', 'dest': 'SEA', 'sched_dep_utc': '10:45', 'actual_dep_utc': '10:56', 'cancelled': False}, {'flight_id': 'AS1001', 'date_utc': '2025-01-01', 'origin': 'DEN', 'dest': 'SEA', 'sched_dep_utc': '22:40', 'actual_dep_utc': '22:55', 'cancelled': False}]\n\n B6 (181, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled']\n[{'flight_id': 'B61002', 'date': '2025-01-01', 'origin': 'JFK', 'dest': 'ATL', 'sched_dep': '08:35', 'actual_dep': '08:35', 'cancelled': False}, {'flight_id': 'B61001', 'date': '2025-01-01', 'origin': 'JFK', 'dest': 'LAX', 'sched_dep': '21:00', 'actual_dep': '21:03', 'cancelled': False}]\n\n DL (412, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled']\n[{'flight_id': 'DL1003', 'date': '2025-01-01', 'origin': 'LAX', 'dest': 'ATL', 'sched_dep': '07:55', 'actual_dep': '08:09', 'cancelled': False}, {'flight_id': 'DL1002', 'date': '2025-01-01', 'origin': 'DFW', 'dest': 'ATL', 'sched_dep': '14:25', 'actual_dep': '15:39', 'cancelled': False}]\n\n UA (297, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled']\n[{'flight_id': 'UA1004', 'date': '2025-01-01', 'origin': 'ORD', 'dest': 'LAX', 'sched_dep': '05:40', 'actual_dep': '05:39', 'cancelled': False}, {'flight_id': 'UA1005', 'date': '2025-01-01', 'origin': 'ORD', 'dest': 'JFK', 'sched_dep': '09:25', 'actual_dep': '09:39', 'cancelled': False}]\n\n WN (525, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled']\n[{'flight_id': 'WN1009', 'date': '2025-01-01', 'origin': 'DEN', 'dest': 'DFW', 'sched_dep': '10:10', 'actual_dep': '10:18', 'cancelled': False}, {'flight_id': 'WN1007', 'date': '2025-01-01', 'origin': 'ORD', 'dest': 'DEN', 'sched_dep': '15:35', 'actual_dep': '15:54', 'cancelled': False}]\nairports   airport               city          timezone  utc_offset_hours\n0     ATL            A\n...[truncated]"
+   }
+  },
+  {
+   "agent": "w1",
+   "kind": "run_python",
+   "code": "import pandas as pd, numpy as np\nfrom datetime import timedelta\naps=pd.read_csv('airports.csv').set_index('airport')\nallres=[]\nfor c in ['AA','AS','B6','DL','UA','WN']:\n df=pd.read_csv(f'airlines/{c}.csv')\n print(c,'rows',len(df),'unique ids',df.flight_id.nunique(),'dupes',df.flight_id[df.flight_id.duplicated(keep=False)].tolist()[:20], 'cancel vals',df.cancelled.unique())\n # one unique flight id: retain first; inspect differing duplicate rows\n if df.flight_id.duplicated().any():\n  print(df[df.flight_id.duplicated(False)].sort_values('flight_id').to_string(index=False))\n df=df.drop_duplicates('flight_id',keep='first').copy()\n if c=='AS':\n  off=df.origin.map(aps.utc_offset_hours)\n  # UTC naive then local by offset\n  sched=pd.to_datetime(df.date_utc+' '+df.sched_dep_utc)+pd.to_timedelta(off,unit='h')\n  # cancelled actual may blank; parse separately\n  actual=pd.to_datetime(df.date_utc+' '+df.actual_dep_utc, errors='coerce')+pd.to_timedelta(off,unit='h')\n else:\n  sched=pd.to_datetime(df.date+' '+df.sched_dep)\n  actual=pd.to_datetime(df.date+' '+df.actual_dep,errors='coerce')\n  # local clock crossing midnight: if actual clock earlier than scheduled, add day\n  # actual date initially same source date\n  mask=actual.notna() & (actual < sched)\n  actual.loc[mask]=actual.loc[mask]+pd.Timedelta(days=1)\n # AS actual local date may naturally next date; no adjustment needed because absolute UTC timestamps\n # Need delay absolute local diff\n delay=(actual-sched).dt.total_seconds()/60\n df['sched_local']=sched; df['actual_local']=actual; df['delay']=delay\n df['month']=sched.dt.month\n # only Jan Feb, completed\n df['completed']=~df.cancelled.astype(bool)\n allres.append(df.assign(carrier=c))\nres=pd.concat(allres,ignore_index=True)\nprint('\\nlocal date range',res.sched_local.min(),res.sched_local.max(),res.month.value_counts().sort_index().to_dict())\nfor m in [1,2]:\n x=res[(res.month==m)&res.completed]\n print('MONTH',m,'delayed',int((x.delay>15).sum()),'completed',len(x),'rate',100*(x.delay>15).mean())\n print('carrier',x.groupby('carrier').apply(lambda z: pd.Series({'delayed':(z.delay>15).sum(),'completed':len(z)})))\nx=res[res.completed & res.month.isin([1,2])]\nprint('COMB',int((x.delay>15).sum()),len(x),100*(x.delay>15).mean())\nprint('cross midnight rows',res[(res.actual_local.notna()) & (res.actual_local.dt.date!=res.sched_local.dt.date)][['carrier','flight_id','sched_local','actual_local','delay','cancelled']].to_string(index=False))\nprint('negative/large delay',res[res.completed].delay.describe())",
+   "result": {
+    "ok": true,
+    "stdout": "AA rows 356 unique ids 356 dupes [] cancel vals [False  True]\nAS rows 173 unique ids 173 dupes [] cancel vals [False  True]\nB6 rows 181 unique ids 169 dupes ['B61008', 'B61008', 'B61037', 'B61037', 'B61045', 'B61045', 'B61052', 'B61052', 'B61065', 'B61065', 'B61072', 'B61072', 'B61089', 'B61089', 'B61127', 'B61127', 'B61129', 'B61129', 'B61161', 'B61161'] cancel vals [False  True]\nflight_id       date origin dest sched_dep actual_dep  cancelled\n   B61008 2025-01-04    JFK  LAX     15:50      15:44      False\n   B61008 2025-01-04    JFK  LAX     15:50      15:44      False\n   B61037 2025-01-15    JFK  SEA     13:45      13:51      False\n   B61037 2025-01-15    JFK  SEA     13:45      13:51      False\n   B61045 2025-01-18    JFK  LAX     16:10      16:20      False\n   B61045 2025-01-18    JFK  LAX     16:10      16:20      False\n   B61052 2025-01-21    JFK  LAX     13:10      13:05      False\n   B61052 2025-01-21    JFK  LAX     13:10      13:05      False\n   B61065 2025-01-25    SEA  JFK     20:55      20:53      False\n   B61065 2025-01-25    SEA  JFK     20:55      20:53      False\n   B61072 2025-01-27    LAX  JFK     06:45      06:40      False\n   B61072 2025-01-27    LAX  JFK     06:45      06:40      False\n   B61089 2025-02-02    JFK  LAX     15:50      15:51      False\n   B61089 2025-02-02    JFK  LAX     15:50      15:51      False\n   B61127 2025-02-15    JFK  LAX     10:20      10:23      False\n   B61127 2025-02-15    JFK  LAX     10:20      10:23      False\n   B61129 2025-02-15    LAX  JFK     21:15      21:17      False\n   B61129 2025-02-15    LAX  JFK     21:15      21:17      False\n   B61161 2025-02-25    LAX  JFK     11:50      11:52      False\n   B61161 2025-02-25    LAX  JFK     11:50      11:52      False\n   B61164 2025-02-27    ORD  JFK     10:25      10:31      False\n   B61164 2025-02-27    ORD  JFK     10:25      10:31      False\n   B61169 2025-02-28    JFK  ORD     14:35      14:28      False\n   B61169 2025-02-28    JFK  ORD     14:35      14:28      False\nDL rows 412 unique ids 412 dupes [] cancel vals [False  True]\nUA rows 297 unique ids 297 dupes [] cancel vals [False  True]\nWN rows 525 unique ids 525 dupes [] cancel vals [False  True]\n\nlocal date range 2025-01-01 05:40:00 2025-02-28 23:30:00 {1: 1003, 2: 929}\nMONTH 1 delayed 501 completed 982 rate 51.01832993890021\ncarrier          delayed  completed\ncarrier                    \nAA            95        180\nAS             6         87\nB6            39         84\nDL           109        211\nUA            92        153\nWN           160        267\nMONTH 2 delayed 422 completed 912 rate 46.271929824561404\ncarrier          delayed  completed\ncarrier                    \nAA            82        168\nAS            13         85\nB6            32         81\nDL            91        188\nUA            70        140\nWN           134        250\nCOMB 923 1894 48.73284054910243\ncross midnight rows carrier flight_id         sched_local        actual_local   delay  cancelled\n     AA    AA1005 2025-01-01 09:35:00 2025-01-02 09:31:00  1436.0      False\n     AA    AA1004 2025-01-01 10:45:00 2025-01-02 10:42:00  1437.0      False\n     AA    AA1007 2025-01-01 14:35:00 2025-01-02 14:30:00  1435.0      False\n     AA    AA1012 2025-01-02 15:45:00 2025-01-03 15:43:00  1438.0      False\n     AA    AA1011 2025-01-02 23:45:00 2025-01-03 23:35:00  1430.0      False\n     AA    AA1022 2025-01-04 07:20:00 2025-01-05 07:10:00  1430.0      False\n     AA    AA1024 2025-01-04 07:55:00 2025-01-05 07:52:00  1437.0      False\n     AA    AA1029 2025-01-05 05:55:00 2025-01-06 05:46:00  1431.0      False\n     AA    AA1027 2025-01-05 18:50:00 2025-01-06 18:47:00  1437.0      False\n     AA    AA1031 2025-01-06 07:25:00 2025-01-07 07:17:00  1432.0      False\n     AA    AA1037 2025-01-07 20:25:00 2025-01-08 20:18:00  1433.0      False\n     AA    AA1046 2025-01-08 09:00:00 2025-01-09 08:52:00  1432.0      False\n     AA    AA1045 2025-01-08 16:45:00 2025-01-09 16:41:00  1436.0      False\n     AA    AA1053 20\n...[truncated]"
+   }
+  },
+  {
+   "agent": "w1",
+   "kind": "run_python",
+   "code": "# reconstruct raw local and inspect clock-lower cases\nfor c in ['AA','B6','DL','UA','WN']:\n d=pd.read_csv(f'airlines/{c}.csv').drop_duplicates('flight_id')\n s=pd.to_datetime(d.date+' '+d.sched_dep); a=pd.to_datetime(d.date+' '+d.actual_dep,errors='coerce')\n q=d[a.notna()&(a<s)].copy(); q['delta_clock']=(a-s).dt.total_seconds()/60\n print('\\n',c,len(q)); print(q[['flight_id','date','sched_dep','actual_dep','cancelled']].head(30).to_string(index=False))\n# AS UTC cases local actual natural next day\n",
+   "result": {
+    "ok": true,
+    "stdout": "\n AA 108\nflight_id       date sched_dep actual_dep  cancelled\n   AA1005 2025-01-01     09:35      09:31      False\n   AA1004 2025-01-01     10:45      10:42      False\n   AA1007 2025-01-01     14:35      14:30      False\n   AA1012 2025-01-02     15:45      15:43      False\n   AA1011 2025-01-02     23:45      23:35      False\n   AA1022 2025-01-04     07:20      07:10      False\n   AA1024 2025-01-04     07:55      07:52      False\n   AA1029 2025-01-05     05:55      05:46      False\n   AA1027 2025-01-05     18:50      18:47      False\n   AA1031 2025-01-06     07:25      07:17      False\n   AA1037 2025-01-07     20:25      20:18      False\n   AA1046 2025-01-08     09:00      08:52      False\n   AA1045 2025-01-08     16:45      16:41      False\n   AA1053 2025-01-09     05:35      05:28      False\n   AA1052 2025-01-09     08:30      08:21      False\n   AA1058 2025-01-10     17:40      17:38      False\n   AA1055 2025-01-10     22:35      22:30      False\n   AA1062 2025-01-11     09:10      09:07      False\n   AA1063 2025-01-11     12:25      12:20      False\n   AA1060 2025-01-11     12:40      12:39      False\n   AA1070 2025-01-12     09:05      08:56      False\n   AA1068 2025-01-12     09:35      09:28      False\n   AA1067 2025-01-12     11:00      10:51      False\n   AA1077 2025-01-13     12:15      12:09      False\n   AA1075 2025-01-13     21:35      21:25      False\n   AA1080 2025-01-14     13:50      13:41      False\n   AA1082 2025-01-14     20:40      20:31      False\n   AA1089 2025-01-15     11:00      10:53      False\n   AA1096 2025-01-16     06:25      06:16      False\n   AA1094 2025-01-16     15:35      15:29      False\n\n B6 55\nflight_id       date sched_dep actual_dep  cancelled\n   B61008 2025-01-04     15:50      15:44      False\n   B61014 2025-01-07     05:40      05:32      False\n   B61021 2025-01-09     21:25      21:21      False\n   B61026 2025-01-11     21:35      21:33      False\n   B61030 2025-01-12     07:45      07:39      False\n   B61034 2025-01-14     11:55      11:52      False\n   B61038 2025-01-15     10:40      10:33      False\n   B61043 2025-01-17     10:25      10:17      False\n   B61044 2025-01-18     12:25      12:22      False\n   B61046 2025-01-18     21:45      21:40      False\n   B61047 2025-01-19     10:55      10:52      False\n   B61052 2025-01-21     13:10      13:05      False\n   B61053 2025-01-21     19:10      19:03      False\n   B61054 2025-01-21     21:25      21:22      False\n   B61055 2025-01-22     05:20      05:18      False\n   B61059 2025-01-23     21:25      21:15      False\n   B61066 2025-01-25     18:30      18:25      False\n   B61065 2025-01-25     20:55      20:53      False\n   B61064 2025-01-25     23:10      23:02      False\n   B61067 2025-01-26     05:50      05:44      False\n   B61070 2025-01-26     11:30      11:21      False\n   B61069 2025-01-26     14:35      14:27      False\n   B61072 2025-01-27     06:45      06:40      False\n   B61078 2025-01-29     06:20      06:15      False\n   B61077 2025-01-29     22:55      22:51      False\n   B61076 2025-01-29     23:45      23:42      False\n   B61079 2025-01-30     12:50      12:42      False\n   B61081 2025-01-30     15:35      15:25      False\n   B61084 2025-01-31     12:20      12:10      False\n   B61082 2025-01-31     22:55      22:53      False\n\n DL 110\nflight_id       date sched_dep actual_dep  cancelled\n   DL1007 2025-01-01     19:55      19:46      False\n   DL1004 2025-01-01     21:25      21:24      False\n   DL1011 2025-01-02     23:00      01:07      False\n   DL1026 2025-01-04     05:25      05:20      False\n   DL1027 2025-01-04     17:55      17:47      False\n   DL1028 2025-01-04     20:50      20:49      False\n   DL1029 2025-01-05     09:15      09:13      False\n   DL1033 2025-01-05     09:55      09:45      False\n   DL1039 2025-01-06     05:50      05:48      False\n   DL1042 2025-01-06     07:10      07:04      False\n   DL1038 2025-01-06     17:10      17:07      False\n   DL1040 2025-01-06     17:50      17:42      False\n...[truncated]"
+   }
+  },
+  {
+   "agent": "w1",
+   "kind": "run_python",
+   "code": "# inspect raw negative differences min and rows <-15 for local\nfor c in ['AA','B6','DL','UA','WN']:\n d=pd.read_csv(f'airlines/{c}.csv').drop_duplicates('flight_id'); s=pd.to_datetime(d.date+' '+d.sched_dep); a=pd.to_datetime(d.date+' '+d.actual_dep,errors='coerce'); q=d[a.notna() & ((a-s).dt.total_seconds()/60 < -15)].copy(); q['raw']=(a-s).dt.total_seconds()/60\n print(c, len(q)); print(q[['flight_id','sched_dep','actual_dep','raw']].to_string(index=False))",
+   "result": {
+    "ok": true,
+    "stdout": "AA 5\nflight_id sched_dep actual_dep     raw\n   AA1134     23:45      00:00 -1425.0\n   AA1150     23:25      00:17 -1388.0\n   AA1172     22:50      00:17 -1353.0\n   AA1190     23:25      00:49 -1356.0\n   AA1307     23:50      00:01 -1429.0\nB6 169\nflight_id sched_dep actual_dep   raw\n      NaN       NaN        NaN   0.0\n      NaN       NaN        NaN   3.0\n      NaN       NaN        NaN  12.0\n      NaN       NaN        NaN   7.0\n      NaN       NaN        NaN  15.0\n      NaN       NaN        NaN   1.0\n      NaN       NaN        NaN  11.0\n      NaN       NaN        NaN  -6.0\n      NaN       NaN        NaN   1.0\n      NaN       NaN        NaN   6.0\n      NaN       NaN        NaN   7.0\n      NaN       NaN        NaN  26.0\n      NaN       NaN        NaN   4.0\n      NaN       NaN        NaN  -8.0\n      NaN       NaN        NaN  19.0\n      NaN       NaN        NaN   1.0\n      NaN       NaN        NaN   5.0\n      NaN       NaN        NaN   9.0\n      NaN       NaN        NaN   4.0\n      NaN       NaN        NaN  -4.0\n      NaN       NaN        NaN  71.0\n      NaN       NaN        NaN  12.0\n      NaN       NaN        NaN  10.0\n      NaN       NaN        NaN  12.0\n      NaN       NaN        NaN  29.0\n      NaN       NaN        NaN   9.0\n      NaN       NaN        NaN  -2.0\n      NaN       NaN        NaN   0.0\n      NaN       NaN        NaN  -6.0\n      NaN       NaN        NaN  15.0\n      NaN       NaN        NaN  11.0\n      NaN       NaN        NaN   8.0\n      NaN       NaN        NaN   2.0\n      NaN       NaN        NaN  -3.0\n      NaN       NaN        NaN   6.0\n      NaN       NaN        NaN   1.0\n      NaN       NaN        NaN  -7.0\n      NaN       NaN        NaN   6.0\n      NaN       NaN        NaN   3.0\n      NaN       NaN        NaN  12.0\n      NaN       NaN        NaN  14.0\n      NaN       NaN        NaN   5.0\n      NaN       NaN        NaN  -8.0\n      NaN       NaN        NaN  -3.0\n      NaN       NaN        NaN  10.0\n      NaN       NaN        NaN  -5.0\n      NaN       NaN        NaN  22.0\n      NaN       NaN        NaN  -3.0\n      NaN       NaN        NaN  21.0\n      NaN       NaN        NaN  15.0\n      NaN       NaN        NaN   0.0\n      NaN       NaN        NaN  -5.0\n      NaN       NaN        NaN  -7.0\n      NaN       NaN        NaN  -3.0\n      NaN       NaN        NaN  -2.0\n      NaN       NaN        NaN  72.0\n      NaN       NaN        NaN  12.0\n      NaN       NaN        NaN  48.0\n      NaN       NaN        NaN   7.0\n      NaN       NaN        NaN -10.0\n      NaN       NaN        NaN   0.0\n      NaN       NaN        NaN   1.0\n      NaN       NaN        NaN   9.0\n      NaN       NaN        NaN  -5.0\n      NaN       NaN        NaN  -2.0\n      NaN       NaN        NaN  -8.0\n      NaN       NaN        NaN  -6.0\n      NaN       NaN        NaN  -9.0\n      NaN       NaN        NaN  -8.0\n      NaN       NaN        NaN   7.0\n      NaN       NaN        NaN   2.0\n      NaN       NaN        NaN  -5.0\n      NaN       NaN        NaN 142.0\n      NaN       NaN        NaN   2.0\n      NaN       NaN        NaN   0.0\n      NaN       NaN        NaN  -5.0\n      NaN       NaN        NaN  -4.0\n      NaN       NaN        NaN  -3.0\n      NaN       NaN        NaN   9.0\n      NaN       NaN        NaN  -8.0\n      NaN       NaN        NaN -10.0\n      NaN       NaN        NaN   3.0\n      NaN       NaN        NaN -10.0\n      NaN       NaN        NaN  -2.0\n      NaN       NaN        NaN  -9.0\n      NaN       NaN        NaN   5.0\n      NaN       NaN        NaN   5.0\n      NaN       NaN        NaN   2.0\n      NaN       NaN        NaN   6.0\n      NaN       NaN        NaN   1.0\n      NaN       NaN        NaN -10.0\n      NaN       NaN        NaN  -8.0\n      NaN       NaN        NaN   7.0\n      NaN       NaN        NaN  -7.0\n      NaN       NaN        NaN  12.0\n      NaN       NaN        NaN   7.0\n      NaN       NaN        NaN   0.0\n      NaN       NaN        NaN  15.0\n      NaN       NaN        NaN  62.0\n      NaN       NaN        NaN   2.0\n      NaN       N\n...[truncated]"
+   }
+  },
+  {
+   "agent": "w1",
+   "kind": "run_python",
+   "code": "for c in ['AA','B6','DL','UA','WN']:\n d=pd.read_csv(f'airlines/{c}.csv').drop_duplicates('flight_id'); s=pd.to_datetime(d.date+' '+d.sched_dep); a=pd.to_datetime(d.date+' '+d.actual_dep,errors='coerce'); raw=(a-s).dt.total_seconds()/60; q=d.loc[a.notna() & (raw < -15), ['flight_id','sched_dep','actual_dep']].copy();q['raw']=raw[a.notna() & (raw < -15)].values\n print(c,len(q)); print(q.to_string(index=False))",
+   "result": {
+    "ok": true,
+    "stdout": "AA 5\nflight_id sched_dep actual_dep     raw\n   AA1134     23:45      00:00 -1425.0\n   AA1150     23:25      00:17 -1388.0\n   AA1172     22:50      00:17 -1353.0\n   AA1190     23:25      00:49 -1356.0\n   AA1307     23:50      00:01 -1429.0\nB6 0\nEmpty DataFrame\nColumns: [flight_id, sched_dep, actual_dep, raw]\nIndex: []\nDL 3\nflight_id sched_dep actual_dep     raw\n   DL1011     23:00      01:07 -1313.0\n   DL1064     23:10      01:38 -1292.0\n   DL1108     23:20      00:03 -1397.0\nUA 4\nflight_id sched_dep actual_dep     raw\n   UA1009     23:30      00:06 -1404.0\n   UA1154     23:25      01:13 -1332.0\n   UA1212     22:25      00:19 -1326.0\n   UA1244     22:55      04:03 -1132.0\nWN 5\nflight_id sched_dep actual_dep     raw\n   WN1059     23:40      01:31 -1329.0\n   WN1082     23:55      00:00 -1435.0\n   WN1249     23:50      00:00 -1430.0\n   WN1358     23:40      00:50 -1370.0\n   WN1513     23:55      00:07 -1428.0\n"
+   }
+  },
+  {
+   "agent": "w1",
+   "kind": "run_python",
+   "code": "aps=pd.read_csv('airports.csv').set_index('airport'); out=[]\nfor c in ['AA','AS','B6','DL','UA','WN']:\n d=pd.read_csv(f'airlines/{c}.csv').drop_duplicates('flight_id').copy()\n if c=='AS':\n  off=d.origin.map(aps.utc_offset_hours)\n  sched_utc=pd.to_datetime(d.date_utc+' '+d.sched_dep_utc)\n  act_utc=pd.to_datetime(d.date_utc+' '+d.actual_dep_utc,errors='coerce')\n  sched=sched_utc+pd.to_timedelta(off,unit='h'); act=act_utc+pd.to_timedelta(off,unit='h')\n else:\n  sched=pd.to_datetime(d.date+' '+d.sched_dep); act=pd.to_datetime(d.date+' '+d.actual_dep,errors='coerce')\n  raw=(act-sched).dt.total_seconds()/60\n  # actual clock crossing midnight only when clock difference strongly negative\n  act.loc[raw < -15]=act.loc[raw < -15]+pd.Timedelta(days=1)\n d['sched_local']=sched; d['delay']=(act-sched).dt.total_seconds()/60; d['month']=sched.dt.month; d['completed']=~d.cancelled.astype(bool); d['carrier']=c\n out.append(d)\nr=pd.concat(out,ignore_index=True); r=r[r.month.isin([1,2])]\nfor m in [1,2]:\n z=r[(r.month==m)&r.completed]; n=int((z.delay>15).sum()); den=len(z); print(m,n,den,round(100*n/den,1)); print(z.groupby('carrier').apply(lambda x: pd.Series({'delayed':int((x.delay>15).sum()),'completed':len(x)})).to_dict('index'))\nz=r[r.completed]; n=int((z.delay>15).sum()); den=len(z); print('combined',n,den,round(100*n/den,1),100*n/den)\nprint('AS local sched date month counts',r[r.carrier=='AS'].groupby('month').size().to_dict())\nprint('cross',r[(r.delay>1000)&r.completed][['carrier','flight_id','sched_local','delay']].to_string(index=False))",
+   "result": {
+    "ok": true,
+    "stdout": "1 239 982 24.3\n{'AA': {'delayed': 37, 'completed': 180}, 'AS': {'delayed': 6, 'completed': 87}, 'B6': {'delayed': 9, 'completed': 84}, 'DL': {'delayed': 55, 'completed': 211}, 'UA': {'delayed': 44, 'completed': 153}, 'WN': {'delayed': 88, 'completed': 267}}\n2 213 912 23.4\n{'AA': {'delayed': 37, 'completed': 168}, 'AS': {'delayed': 13, 'completed': 85}, 'B6': {'delayed': 7, 'completed': 81}, 'DL': {'delayed': 38, 'completed': 188}, 'UA': {'delayed': 35, 'completed': 140}, 'WN': {'delayed': 83, 'completed': 250}}\ncombined 452 1894 23.9 23.864836325237594\nAS local sched date month counts {1: 88, 2: 85}\ncross Empty DataFrame\nColumns: [carrier, flight_id, sched_local, delay]\nIndex: []\n"
+   }
+  },
+  {
+   "agent": "w1",
+   "kind": "submit",
+   "answer": {
+    "jan": {
+     "delayed": 239,
+     "completed": 982,
+     "rate_percent": 24.3
+    },
+    "feb": {
+     "delayed": 213,
+     "completed": 912,
+     "rate_percent": 23.4
+    },
+    "combined": {
+     "delayed": 452,
+     "completed": 1894,
+     "rate_percent": 23.9
+    },
+    "duplicate_handling": "Deduplicated by flight_id, retaining one record per unique ID; B6 contained 12 repeated records (181 rows reduced to 169 unique flights), while other carriers had no duplicate IDs."
+   },
+   "raw": "{\"jan\":{\"delayed\":239,\"completed\":982,\"rate_percent\":24.3},\"feb\":{\"delayed\":213,\"completed\":912,\"rate_percent\":23.4},\"combined\":{\"delayed\":452,\"completed\":1894,\"rate_percent\":23.9},\"duplicate_handling\":\"Deduplicated by flight_id, retaining one record per unique ID; B6 contained 12 repeated records (181 rows reduced to 169 unique flights), while other carriers had no duplicate IDs.\"}",
+   "notes": "Parsed local timestamps for five carriers, converted AS UTC timestamps to origin-local time using airports.utc_offset_hours (including date rollover), assigned months by local scheduled departure, handled local departures crossing midnight, excluded cancelled flights, and counted delays strictly greater than 15 minutes. Rates are rounded to 1 decimal."
+  },
+  {
+   "agent": "workers",
+   "kind": "handoff",
+   "to": "manager",
+   "content": "[\n {\n  \"worker\": \"w1\",\n  \"files\": [\n   \"README.md\",\n   \"airlines/AA.csv\",\n   \"airlines/AS.csv\",\n   \"airlines/B6.csv\",\n   \"airlines/DL.csv\",\n   \"airlines/UA.csv\",\n   \"airlines/WN.csv\",\n   \"airports.csv\"\n  ],\n  \"instructions\": \"Compute the overall network departure delay rate for January 2025 and February 2025 combined across all six carriers (AA, AS, B6, DL, UA, WN). Use the documented definition: a completed flight is non-cancelled; delay minutes = actual departure minus scheduled departure; a flight is delayed only if delay is more than 15 minutes; rate = delayed completed flights / completed flights. Dates/months refer to local time at the origin airport. For AA, B6, DL, UA, and WN, date and times are local. For AS, date_utc, sched_dep_utc, and actual_dep_utc are UTC; convert each flight's scheduled and actual departure to local origin time using the origin airport's utc_offset_hours, including date rollover, before assigning it to January or February and calculating delay. Exclude cancelled flights from both numerator and denominator. Handle departures crossing midnight correctly. Check for any duplicate flight_id/repeated records and follow the documentation's one-flight-per-unique-flight_id rule without double-counting repeated records. Compute monthly counts as a check, then the combined numerator and denominator and percentage rounded to 1 decimal. Weather files are not needed. Return only valid JSON matching the requested information, with enough count fields to audit the result.\",\n  \"result\": \"{\\\"jan\\\":{\\\"delayed\\\":239,\\\"completed\\\":982,\\\"rate_percent\\\":24.3},\\\"feb\\\":{\\\"delayed\\\":213,\\\"completed\\\":912,\\\"rate_percent\\\":23.4},\\\"combined\\\":{\\\"delayed\\\":452,\\\"completed\\\":1894,\\\"rate_percent\\\":23.9},\\\"duplicate_handling\\\":\\\"Deduplicated by flight_id, retaining one record per unique ID; B6 contained 12 repeated records (181 rows reduced to 169 unique flights), while other carriers had no duplicate IDs.\\\"}\",\n  \"notes\": \"Parsed local timestamps for five carriers, converted AS UTC timestamps to origin-local time using airports.utc_offset_hours (including date rollover), assigned months by local scheduled departure, handled local departures crossing midnight, excluded cancelled flights, and counted delays strictly greater than 15 minutes. Rates are rounded to 1 decimal.\"\n }\n]"
+  },
+  {
+   "agent": "manager",
+   "kind": "final",
+   "output": {
+    "network_rate": 23.9
+   },
+   "raw": "{\"network_rate\":23.9}"
+  }
+ ]
+}

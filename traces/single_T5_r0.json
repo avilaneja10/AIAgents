@@ -1,0 +1,95 @@
+{
+ "row": {
+  "system": "single",
+  "task": "T5",
+  "category": "integration",
+  "repeat": 0,
+  "score": 1.0,
+  "success": true,
+  "trap": "",
+  "calls": 4,
+  "input_tokens": 12273,
+  "output_tokens": 1570,
+  "cost_usd": 0.0020123,
+  "seconds": 17.7,
+  "handoffs": 0,
+  "comm_chars": 0,
+  "wall_s": 17.8,
+  "code_runs": 3
+ },
+ "final": {
+  "network_rate": 24.0
+ },
+ "grade_detail": {
+  "network_rate": true
+ },
+ "calls": [
+  {
+   "agent": "single",
+   "input_tokens": 755,
+   "output_tokens": 96,
+   "seconds": 1.71,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 1836,
+   "output_tokens": 653,
+   "seconds": 6.44,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 3996,
+   "output_tokens": 600,
+   "seconds": 6.66,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 5686,
+   "output_tokens": 221,
+   "seconds": 2.9,
+   "status": "completed"
+  }
+ ],
+ "messages": [],
+ "events": [
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "import pandas as pd, glob, os\nfiles=glob.glob('airlines/*.csv')\nprint(files)\nfor f in files:\n    df=pd.read_csv(f)\n    print(os.path.basename(f), df.shape, df.columns.tolist(), df.head(2).to_dict('records'))",
+   "result": {
+    "ok": true,
+    "stdout": "['airlines/B6.csv', 'airlines/DL.csv', 'airlines/AS.csv', 'airlines/UA.csv', 'airlines/WN.csv', 'airlines/AA.csv']\nB6.csv (181, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'B61002', 'date': '2025-01-01', 'origin': 'JFK', 'dest': 'ATL', 'sched_dep': '08:35', 'actual_dep': '08:35', 'cancelled': False}, {'flight_id': 'B61001', 'date': '2025-01-01', 'origin': 'JFK', 'dest': 'LAX', 'sched_dep': '21:00', 'actual_dep': '21:03', 'cancelled': False}]\nDL.csv (412, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'DL1003', 'date': '2025-01-01', 'origin': 'LAX', 'dest': 'ATL', 'sched_dep': '07:55', 'actual_dep': '08:09', 'cancelled': False}, {'flight_id': 'DL1002', 'date': '2025-01-01', 'origin': 'DFW', 'dest': 'ATL', 'sched_dep': '14:25', 'actual_dep': '15:39', 'cancelled': False}]\nAS.csv (173, 7) ['flight_id', 'date_utc', 'origin', 'dest', 'sched_dep_utc', 'actual_dep_utc', 'cancelled'] [{'flight_id': 'AS1002', 'date_utc': '2025-01-01', 'origin': 'JFK', 'dest': 'SEA', 'sched_dep_utc': '10:45', 'actual_dep_utc': '10:56', 'cancelled': False}, {'flight_id': 'AS1001', 'date_utc': '2025-01-01', 'origin': 'DEN', 'dest': 'SEA', 'sched_dep_utc': '22:40', 'actual_dep_utc': '22:55', 'cancelled': False}]\nUA.csv (297, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'UA1004', 'date': '2025-01-01', 'origin': 'ORD', 'dest': 'LAX', 'sched_dep': '05:40', 'actual_dep': '05:39', 'cancelled': False}, {'flight_id': 'UA1005', 'date': '2025-01-01', 'origin': 'ORD', 'dest': 'JFK', 'sched_dep': '09:25', 'actual_dep': '09:39', 'cancelled': False}]\nWN.csv (525, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'WN1009', 'date': '2025-01-01', 'origin': 'DEN', 'dest': 'DFW', 'sched_dep': '10:10', 'actual_dep': '10:18', 'cancelled': False}, {'flight_id': 'WN1007', 'date': '2025-01-01', 'origin': 'ORD', 'dest': 'DEN', 'sched_dep': '15:35', 'actual_dep': '15:54', 'cancelled': False}]\nAA.csv (356, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'AA1005', 'date': '2025-01-01', 'origin': 'DFW', 'dest': 'SEA', 'sched_dep': '09:35', 'actual_dep': '09:31', 'cancelled': False}, {'flight_id': 'AA1004', 'date': '2025-01-01', 'origin': 'DFW', 'dest': 'JFK', 'sched_dep': '10:45', 'actual_dep': '10:42', 'cancelled': False}]\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "import pandas as pd, glob, os\nallrows=[]\nfor f in glob.glob('airlines/*.csv'):\n    x=pd.read_csv(f, dtype={'cancelled':'boolean'})\n    carrier=os.path.basename(f)[:2]\n    x['carrier']=carrier\n    datecol='date_utc' if 'date_utc' in x else 'date'\n    sched='sched_dep_utc' if 'sched_dep_utc' in x else 'sched_dep'\n    actual='actual_dep_utc' if 'actual_dep_utc' in x else 'actual_dep'\n    x['date_used']=x[datecol]\n    x['sched_used']=x[sched]; x['actual_used']=x[actual]\n    allrows.append(x[['flight_id','carrier','date_used','sched_used','actual_used','cancelled']])\ndf=pd.concat(allrows, ignore_index=True)\nprint('rows',len(df),'unique ids',df.flight_id.nunique(),'duplicates',df.flight_id.duplicated().sum())\nprint('date range',df.date_used.min(),df.date_used.max(), 'cancelled',df.cancelled.value_counts(dropna=False).to_dict())\nprint('duplicate IDs',df.loc[df.flight_id.duplicated(keep=False)].sort_values('flight_id').to_dict('records'))\n# parse and delay\nsched_dt=pd.to_datetime(df.date_used+' '+df.sched_used, errors='coerce')\nactual_dt=pd.to_datetime(df.date_used+' '+df.actual_used, errors='coerce')\ndf['delay']=(actual_dt-sched_dt).dt.total_seconds()/60\n# identify missing/non cancelled and negative suspicious\nprint('missing delays noncancel',df.loc[(~df.cancelled)&df.delay.isna()].to_dict('records'))\nprint(df.groupby('carrier').agg(rows=('flight_id','size'), unique=('flight_id','nunique'), cancelled=('cancelled',lambda x: (x==True).sum()), completed=('cancelled',lambda x: (x==False).sum()), delayed=('delay',lambda x: (x>15).sum()), delay_sum=('delay','sum')))\ncompleted=df[df.cancelled==False]\nprint('network completed',len(completed),'delayed', (completed.delay>15).sum(),'rate',100*(completed.delay>15).mean())",
+   "result": {
+    "ok": true,
+    "stdout": "rows 1944 unique ids 1932 duplicates 12\ndate range 2025-01-01 2025-03-01 cancelled {np.False_: 1906, np.True_: 38}\nduplicate IDs [{'flight_id': 'B61008', 'carrier': 'B6', 'date_used': '2025-01-04', 'sched_used': '15:50', 'actual_used': '15:44', 'cancelled': False}, {'flight_id': 'B61008', 'carrier': 'B6', 'date_used': '2025-01-04', 'sched_used': '15:50', 'actual_used': '15:44', 'cancelled': False}, {'flight_id': 'B61037', 'carrier': 'B6', 'date_used': '2025-01-15', 'sched_used': '13:45', 'actual_used': '13:51', 'cancelled': False}, {'flight_id': 'B61037', 'carrier': 'B6', 'date_used': '2025-01-15', 'sched_used': '13:45', 'actual_used': '13:51', 'cancelled': False}, {'flight_id': 'B61045', 'carrier': 'B6', 'date_used': '2025-01-18', 'sched_used': '16:10', 'actual_used': '16:20', 'cancelled': False}, {'flight_id': 'B61045', 'carrier': 'B6', 'date_used': '2025-01-18', 'sched_used': '16:10', 'actual_used': '16:20', 'cancelled': False}, {'flight_id': 'B61052', 'carrier': 'B6', 'date_used': '2025-01-21', 'sched_used': '13:10', 'actual_used': '13:05', 'cancelled': False}, {'flight_id': 'B61052', 'carrier': 'B6', 'date_used': '2025-01-21', 'sched_used': '13:10', 'actual_used': '13:05', 'cancelled': False}, {'flight_id': 'B61065', 'carrier': 'B6', 'date_used': '2025-01-25', 'sched_used': '20:55', 'actual_used': '20:53', 'cancelled': False}, {'flight_id': 'B61065', 'carrier': 'B6', 'date_used': '2025-01-25', 'sched_used': '20:55', 'actual_used': '20:53', 'cancelled': False}, {'flight_id': 'B61072', 'carrier': 'B6', 'date_used': '2025-01-27', 'sched_used': '06:45', 'actual_used': '06:40', 'cancelled': False}, {'flight_id': 'B61072', 'carrier': 'B6', 'date_used': '2025-01-27', 'sched_used': '06:45', 'actual_used': '06:40', 'cancelled': False}, {'flight_id': 'B61089', 'carrier': 'B6', 'date_used': '2025-02-02', 'sched_used': '15:50', 'actual_used': '15:51', 'cancelled': False}, {'flight_id': 'B61089', 'carrier': 'B6', 'date_used': '2025-02-02', 'sched_used': '15:50', 'actual_used': '15:51', 'cancelled': False}, {'flight_id': 'B61127', 'carrier': 'B6', 'date_used': '2025-02-15', 'sched_used': '10:20', 'actual_used': '10:23', 'cancelled': False}, {'flight_id': 'B61127', 'carrier': 'B6', 'date_used': '2025-02-15', 'sched_used': '10:20', 'actual_used': '10:23', 'cancelled': False}, {'flight_id': 'B61129', 'carrier': 'B6', 'date_used': '2025-02-15', 'sched_used': '21:15', 'actual_used': '21:17', 'cancelled': False}, {'flight_id': 'B61129', 'carrier': 'B6', 'date_used': '2025-02-15', 'sched_used': '21:15', 'actual_used': '21:17', 'cancelled': False}, {'flight_id': 'B61161', 'carrier': 'B6', 'date_used': '2025-02-25', 'sched_used': '11:50', 'actual_used': '11:52', 'cancelled': False}, {'flight_id': 'B61161', 'carrier': 'B6', 'date_used': '2025-02-25', 'sched_used': '11:50', 'actual_used': '11:52', 'cancelled': False}, {'flight_id': 'B61164', 'carrier': 'B6', 'date_used': '2025-02-27', 'sched_used': '10:25', 'actual_used': '10:31', 'cancelled': False}, {'flight_id': 'B61164', 'carrier': 'B6', 'date_used': '2025-02-27', 'sched_used': '10:25', 'actual_used': '10:31', 'cancelled': False}, {'flight_id': 'B61169', 'carrier': 'B6', 'date_used': '2025-02-28', 'sched_used': '14:35', 'actual_used': '14:28', 'cancelled': False}, {'flight_id': 'B61169', 'carrier': 'B6', 'date_used': '2025-02-28', 'sched_used': '14:35', 'actual_used': '14:28', 'cancelled': False}]\nmissing delays noncancel []\n         rows  unique  cancelled  completed  delayed  delay_sum\ncarrier                                                        \nAA        356     356          8        348       71    -2003.0\nAS        173     173          1        172       19    -1372.0\nB6        181     169          4        177       16     1211.0\nDL        412     412         13        399       90     1729.0\nUA        297     297          4        293       75     -770.0\nWN        525     525          8        517      169     3103.0\nnetwork completed 1906 delayed 440 rate 23.084994753410285\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "# Deduplicate by unique flight_id, retain first (verify duplicate rows identical)\ndf2=df.drop_duplicates('flight_id').copy()\n# month filter scheduled date Jan-Feb\nm=df2['date_used'].between('2025-01-01','2025-02-28')\nx=df2[m].copy()\nraw=x.delay.copy()\nprint('dedup total',len(df2),'JanFeb',len(x),'date counts',x.date_used.str[:7].value_counts().sort_index().to_dict())\nprint('cancel JanFeb',x.cancelled.value_counts().to_dict())\nprint('raw delay min/max',raw.min(),raw.max(),'very negative',x.loc[raw<-120,['flight_id','date_used','sched_used','actual_used','delay']].to_dict('records'))\n# corrected for next-day if raw less than -12h; calculate\nx['delay_corrected']=raw.where(raw>=-720,raw+1440)\ncomp=x[x.cancelled==False]\nprint('completed',len(comp),'delayed raw',(comp.delay>15).sum(),'delayed corrected',(comp.delay_corrected>15).sum(),'rate corrected',round(100*(comp.delay_corrected>15).sum()/len(comp),10))\nprint('by carrier',x.groupby('carrier').apply(lambda z: pd.Series({'completed':(z.cancelled==False).sum(),'delayed':((z.cancelled==False)&(z.delay_corrected>15)).sum()}),include_groups=False))",
+   "result": {
+    "ok": true,
+    "stdout": "dedup total 1932 JanFeb 1929 date counts {'2025-01': 1001, '2025-02': 928}\ncancel JanFeb {np.False_: 1891, np.True_: 38}\nraw delay min/max -1435.0 309.0 very negative [{'flight_id': 'DL1011', 'date_used': '2025-01-02', 'sched_used': '23:00', 'actual_used': '01:07', 'delay': -1313.0}, {'flight_id': 'DL1064', 'date_used': '2025-01-09', 'sched_used': '23:10', 'actual_used': '01:38', 'delay': -1292.0}, {'flight_id': 'DL1108', 'date_used': '2025-01-16', 'sched_used': '23:20', 'actual_used': '00:03', 'delay': -1397.0}, {'flight_id': 'AS1018', 'date_used': '2025-01-07', 'sched_used': '22:45', 'actual_used': '01:18', 'delay': -1287.0}, {'flight_id': 'AS1123', 'date_used': '2025-02-13', 'sched_used': '23:50', 'actual_used': '00:01', 'delay': -1429.0}, {'flight_id': 'UA1009', 'date_used': '2025-01-02', 'sched_used': '23:30', 'actual_used': '00:06', 'delay': -1404.0}, {'flight_id': 'UA1154', 'date_used': '2025-01-31', 'sched_used': '23:25', 'actual_used': '01:13', 'delay': -1332.0}, {'flight_id': 'UA1212', 'date_used': '2025-02-12', 'sched_used': '22:25', 'actual_used': '00:19', 'delay': -1326.0}, {'flight_id': 'UA1244', 'date_used': '2025-02-18', 'sched_used': '22:55', 'actual_used': '04:03', 'delay': -1132.0}, {'flight_id': 'WN1059', 'date_used': '2025-01-07', 'sched_used': '23:40', 'actual_used': '01:31', 'delay': -1329.0}, {'flight_id': 'WN1082', 'date_used': '2025-01-10', 'sched_used': '23:55', 'actual_used': '00:00', 'delay': -1435.0}, {'flight_id': 'WN1249', 'date_used': '2025-01-29', 'sched_used': '23:50', 'actual_used': '00:00', 'delay': -1430.0}, {'flight_id': 'WN1358', 'date_used': '2025-02-10', 'sched_used': '23:40', 'actual_used': '00:50', 'delay': -1370.0}, {'flight_id': 'WN1513', 'date_used': '2025-02-27', 'sched_used': '23:55', 'actual_used': '00:07', 'delay': -1428.0}, {'flight_id': 'AA1134', 'date_used': '2025-01-23', 'sched_used': '23:45', 'actual_used': '00:00', 'delay': -1425.0}, {'flight_id': 'AA1150', 'date_used': '2025-01-25', 'sched_used': '23:25', 'actual_used': '00:17', 'delay': -1388.0}, {'flight_id': 'AA1172', 'date_used': '2025-01-29', 'sched_used': '22:50', 'actual_used': '00:17', 'delay': -1353.0}, {'flight_id': 'AA1190', 'date_used': '2025-02-01', 'sched_used': '23:25', 'actual_used': '00:49', 'delay': -1356.0}, {'flight_id': 'AA1307', 'date_used': '2025-02-20', 'sched_used': '23:50', 'actual_used': '00:01', 'delay': -1429.0}]\ncompleted 1891 delayed raw 440 delayed corrected 453 rate corrected 23.9555790587\nby carrier          completed  delayed\ncarrier                    \nAA             348       74\nAS             169       20\nB6             165       16\nDL             399       93\nUA             293       79\nWN             517      171\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "submit",
+   "answer": {
+    "network_rate": 24.0
+   },
+   "raw": "{\"network_rate\": 24.0}",
+   "notes": "Combined all six carrier files, removed 12 repeated flight records by flight_id, restricted scheduled dates to January-February 2025, excluded 38 cancellations, and computed actual-minus-scheduled departure delay. I accounted for departures after midnight by treating large negative clock differences as next-day departures. Result: 453 delayed completed flights / 1,891 completed flights = 24.0% (rounded to 1 decimal)."
+  }
+ ]
+}

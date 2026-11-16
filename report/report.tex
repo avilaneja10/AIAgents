@@ -1,0 +1,285 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{booktabs,tabularx,array,multirow}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{enumitem}
+\usepackage{xcolor,float}
+\usepackage[font=small,skip=3pt]{caption}
+\usepackage[hidelinks]{hyperref}
+\setlength{\textfloatsep}{6pt}\setlength{\intextsep}{6pt}
+\setlist{nosep,leftmargin=1.2em}
+\setlength{\parskip}{3pt}
+\setlength{\parindent}{0pt}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcommand{\good}[1]{\textbf{#1}}
+\newcommand{\bad}[1]{\textcolor{red}{#1}}
+
+\title{\vspace{-2.2em}CS839 HW2}
+\author{YOUR NAME (aaneja4@wisc.edu)}
+\date{\vspace{-1.5em}}
+
+\begin{document}
+\maketitle
+
+%=====================================================================
+\section{Setup}
+
+\textbf{Domain.} Airline flight operations, extended from the domain we set up in Assignment 1. Since we want
+to compare multi-agent systems with a single agent, we split the data into one CSV per airline and added a
+separate kind of data, hourly weather at every airport. This gives natural ways to divide the work: by airline,
+or by role (a flight analyst and a weather analyst). We generated the data synthetically, so we know the true
+answer to every question. Every task must be answered by running Python on the files, so each answer is a
+number or a list we can grade exactly.
+
+\textbf{Data.} 6 US airlines, 7 airports (ATL, DEN, DFW, JFK, LAX, ORD, SEA), January--February 2025.
+
+\begin{table}[H]
+\centering\small
+\begin{tabularx}{\linewidth}{l l Y}
+\toprule
+File & Size & What it holds \\
+\midrule
+\texttt{airlines/\{WN,DL,AA,UA,B6,AS\}.csv} & 1,944 flights & One file per airline: flight id, date, origin, dest, scheduled and actual departure, cancelled \\
+\texttt{weather.csv} & 9,912 rows & Hourly weather code and visibility at each airport \\
+\texttt{airports.csv} & 7 rows & Airport, city, time zone, UTC offset \\
+\texttt{README.md}, \texttt{weather\_codes.md} & docs & Column meanings, ``delayed = more than 15 min'', the exact bad-weather rule \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Definitions (from the README).} \emph{Departure delay} = actual departure $-$ scheduled departure, in
+minutes; early departures are negative. A flight is \emph{delayed} if its departure delay is more than 15 minutes.
+\emph{Delay rate} = delayed flights / completed flights, as a percentage. Cancelled flights are left out of both
+the top and the bottom.
+
+\textbf{Traps.} Simple counts over these files would be easy for any agent, so we added four traps. Each
+one is a piece of information that has to be carried from the docs to whichever agent does the work, and each
+is a mistake that several agents can easily make the same way. All four are written in the README, so a careful
+agent can avoid them:
+\begin{itemize}
+\item \textbf{UTC:} Alaska (AS) stores times in UTC; all other airlines use local time.
+\item \textbf{Duplicates:} JetBlue (B6) has 12 repeated rows.
+\item \textbf{Midnight:} only clock times are stored. A flight scheduled 23:40 that leaves 01:31 gives
+  $-1329$ min by plain subtraction; the real delay is $+111$ (add one day). But a flight that leaves 6 min early
+  really is $-6$; adding a day there (``over-wrap'') makes it look 1434 min late.
+\item \textbf{Weather rule:} ``bad weather'' is an exact rule (TS, SN, +RA, or fog with visibility $<$ 1 mile),
+  not ``any rain or fog''.
+\end{itemize}
+
+%=====================================================================
+\section{Agent Systems}
+
+All three systems use the same model (\texttt{gpt-5.6-luna}, OpenAI Responses API) and the same budget of
+\textbf{20 model calls per task}. Every helper agent is one-shot: it gets one message, does its job, returns
+a result, and is gone. Agents talk only through JSON that our Python code passes between them.
+
+\textbf{Tools.} \texttt{run\_python} runs code in a sandbox folder that holds only the files that agent is
+allowed to see. \texttt{submit\_answer} returns the final JSON answer. Every tool result also says how many
+calls are left, and the last call is forced to be a submit.
+
+\begin{table}[H]
+\centering\small
+\begin{tabularx}{\linewidth}{l l l Y l}
+\toprule
+System & Agent & Tools & What it sees & Calls \\
+\midrule
+Single & Solver & python, submit & All files, README, the question & 20 \\
+\midrule
+\multirow{2}{*}{A: Hierarchy} & Manager & none (writes JSON) & Question, README, file list with columns; later the worker reports & 2 \\
+ & Workers (1--3) & python, submit & Only their files and the manager's instructions (not the question) & 18 shared \\
+\midrule
+\multirow{3}{*}{B: Debate} & Solvers (3) & python, submit & Same as single, each works alone & 18 shared \\
+ & Critic & none (writes JSON) & The 3 solvers' code, results and notes, plus the docs & 1 \\
+ & Aggregator & none (writes JSON) & The 3 answers and the critique & 1 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{itemize}
+\item \textbf{Single agent.} One agent with everything. It decides itself when to check its work and when to stop.
+\item \textbf{A: Hierarchy.} The manager splits the question into up to 3 subtasks, picks the files for each
+  worker and writes their instructions. Workers run one after another. The manager then combines their reports
+  in the same conversation, so it still remembers its plan.
+\item \textbf{B: Debate.} Three solvers answer the full question on their own. The critic looks for bugs without
+  running code. The aggregator picks the final answer.
+\end{itemize}
+
+\textbf{Budget split.} Shared pools are split evenly, and calls an agent does not use roll over to the next one.
+We added this after a pilot with 11 calls per task: team agents got only 3 calls each, ran out, and submitted
+``unable to compute''.
+
+%=====================================================================
+\section{Task Suite}
+
+Eight tasks, two per category. Each category is picked to favour a different kind of system, so we can see
+when a team helps and when it does not.
+
+\begin{table}[H]
+\centering\small
+\begin{tabularx}{\linewidth}{l l Y Y Y l}
+\toprule
+ID & Category & What it asks & Why we picked it & Where it can fail & We expect \\
+\midrule
+T1 & Separable & Feb delay rate per airline & Each airline is its own piece, easy to split & Midnight, UTC, duplicates & Single (cheaper) \\
+T2 & Separable & Per airline: busiest route and worst-delay route & More work per airline, still splits cleanly & Midnight, duplicates & Single (cheaper) \\
+T3 & Distinct roles & DL+AA+UA: \% of delayed flights that left in bad weather & Needs a flight expert and a weather expert & Loose weather rule, midnight & Hierarchy \\
+T4 & Distinct roles & AS only: delay rate in bad vs.\ other weather & Hardest join: UTC + weather + delay & UTC, weather rule, midnight & Hierarchy \\
+T5 & Integration & One delay rate for the whole network & Parts must be merged the right way & Averaging airline rates instead of pooling counts & Single / debate \\
+T6 & Integration & Top 5 routes over all airlines & Parts must be merged the right way & Merging per-airline top-3 lists & Single / debate \\
+T7 & Wasteful & B6 cancellations on Feb 14 & One filter; a team can only add cost & Nothing & Single \\
+T8 & Shared mistake & Average departure delay, all flights & One easy-to-make bug everyone can share & Midnight (forget it or overdo it) & Debate (hope) \\
+\bottomrule
+\end{tabularx}
+\caption{The task suite, why each task is there, and which system we expect to do best.}
+\end{table}
+
+From this we wrote three hypotheses:
+\textbf{H1:} hierarchy beats single on distinct-role tasks (T3, T4), because each worker gets a small, focused job.
+\textbf{H2:} debate catches the shared mistake (T8), because the critic compares three independent solutions.
+\textbf{H3:} on easy or separable tasks (T1, T2, T7) teams get the same score for 2--4$\times$ the cost.
+
+\subsection{How we evaluate}
+\begin{itemize}
+\item \textbf{Score.} Graded by code against the known answer. Numbers must be within $\pm0.1$. Answers with
+  several parts (6 airlines, 5 routes) get partial credit per part. 1.0 means fully right.
+\item \textbf{Trap match.} We also compute the answer each trap would give. If a wrong answer equals one of them,
+  we know which mistake the agent made.
+\item \textbf{Cost.} Model calls, input/output tokens, and dollars (\$0.10 / \$0.50 per 1M tokens).
+\item \textbf{Coordination.} Handoffs and characters passed between agents. For hierarchy: how many workers the
+  manager used and which README caveats it passed down. For debate: how many different answers the solvers gave
+  and whether the final answer matched the majority.
+\item \textbf{Repeats.} T4 and T8 were the closest comparisons, so we ran them 3 times for every system.
+\end{itemize}
+
+%=====================================================================
+\section{Results}
+
+We first ran everything with the model's default reasoning. All three systems scored about 100\% (single 1.00,
+hierarchy 1.00, debate 0.99), so there was nothing to compare. We then reran every agent with \textbf{low
+reasoning effort}. The table below is from those runs.
+
+\begin{table}[H]
+\centering\small
+\begin{tabularx}{\linewidth}{l ccc Y}
+\toprule
+Task & Single & Hierarchy & Debate & What happened and why \\
+\midrule
+T1 & 1.00 & 1.00 & 1.00 & One Python loop covers all 6 files, so splitting adds nothing. \\
+T2 & 1.00 & 1.00 & 1.00 & Same. The only task where the manager used more than one worker. \\
+T3 & 1.00 & 1.00 & 1.00 & The weather rule is written out exactly, so nobody got it wrong. \\
+T4 (3 runs) & 0.67 & \good{1.00} & 0.67 & The manager turned every README caveat into a checklist for its worker. Single once over-wrapped. Debate once had all 3 solvers wrong. \\
+T5 & 1.00 & 1.00 & 1.00 & The merge trap never fired: the manager used 1 worker, so nothing was merged. \\
+T6 & 1.00 & 1.00 & 1.00 & Same. \\
+T7 & 1.00 & 1.00 & 1.00 & Everyone right, but debate cost 5$\times$ more than single. \\
+T8 (3 runs) & 0.67 & 0.67 & 0.67 & The same wrong numbers (1.0 min, 13.9 min) showed up in all systems. In debate the critic picked a wrong solver over a correct majority. \\
+\midrule
+Mean score & 0.83 & \good{0.92} & 0.83 & \\
+Calls per task & 4.8 & 7.9 & 16.7 & \\
+Cost per task (\$) & \good{.0020} & .0034 & .0075 & \\
+Handoffs / chars passed & 0 / 0 & 2.2 / 4.4k & 3 / 12.2k & \\
+\bottomrule
+\end{tabularx}
+\caption{Per-task score at low reasoning (1 run per cell unless marked).}
+\end{table}
+
+\textbf{Coordination.} The hierarchy manager almost never split the work: it used 1 worker on 7 of 8 tasks.
+Its real job became rewriting the README as clear instructions. On every T4 run it passed all six caveats we
+track (threshold, cancellations, UTC, duplicates, midnight, weather rule).
+
+%=====================================================================
+\section{Topology Surgery}
+
+We made two structural changes, each aimed at a problem we saw in Section 4, and reran only the tasks it affects,
+3 times each at low reasoning.
+\begin{itemize}
+\item \textbf{Hierarchy $\rightarrow$ forced split.} The manager kept using 1 worker, so the integration traps never
+  got tested. We now require exactly 3 workers with 2 airlines each. Nothing else changes.
+\item \textbf{Debate $\rightarrow$ majority vote.} The critic was making wrong calls, so we removed the critic and
+  aggregator. The final answer is a plain vote over the 3 solvers (if all differ, take solver 1).
+\end{itemize}
+
+\begin{table}[H]
+\centering\small
+\begin{tabular}{l cc | l cc}
+\toprule
+Task & Hierarchy (Sec.\ 4) & Forced split & Task & Debate (Sec.\ 4) & Majority vote \\
+\midrule
+T2 & 1.00 & 0.86 & T1 & 1.00 & \bad{0.44} \\
+T5 & 1.00 & \bad{0.33} & T2 & 1.00 & 1.00 \\
+T6 & 1.00 & 0.93 & T4 & 0.67 & \good{1.00} \\
+   &      &      & T8 & 0.67 & \good{1.00} \\
+\midrule
+Mean score & \good{1.00} & 0.71 & Mean score & 0.75 & \good{0.86} \\
+Cost per task (\$) & \good{.0034} & .0059 & Cost per task (\$) & .0086 & \good{.0071} \\
+\bottomrule
+\end{tabular}
+\caption{Surgery vs.\ the Section 4 result on the same tasks. Surgery columns are 3 runs per task.}
+\end{table}
+
+\textbf{Forced split: worse and costlier.} The manager obeyed every time, and it always merged raw counts
+correctly, so the averaging trap still never fired. It failed in other ways:
+\begin{itemize}
+\item \textbf{One bad worker spoils the total} (T5, 2 of 3 runs). One worker over-wrapped and reported 55\% delays
+  for its airlines (true is about 24\%). The manager added it in without noticing.
+\item \textbf{Adding by hand} (T6). The manager cannot run code, added about 30 route counts in its head, and got one wrong.
+\item \textbf{A missing piece} (T2). One worker returned nothing; the manager left 2 airlines blank rather than guess.
+\end{itemize}
+
+\textbf{Majority vote: better on T4 and T8, worse on T1.} Without the critic there is nobody to overrule a correct
+majority, so T4 and T8 went to 3/3. But on T1 two solvers made the exact same over-wrap mistake, and the vote locked
+it in. In the original debate the critic had rescued T1. A vote only works when mistakes are independent.
+
+%=====================================================================
+\section{Trajectories}
+
+Three runs that show, step by step, how a team can help, hurt, or repeat a mistake. Full traces are in \texttt{traces/}.
+
+\textbf{1. A team beat the single agent (T4, low reasoning).}
+\begin{itemize}
+\item \textbf{Single, run 0:} converted AS times from UTC and applied the weather rule correctly. But it added a day
+  to \emph{every} negative delay, so flights that left a few minutes early counted as almost a day late. Score 0.
+\item \textbf{Hierarchy:} the manager used one worker and wrote it a checklist: convert UTC, wrap midnight only for
+  real overnight departures, delayed means more than 15 min, the exact bad-weather rule. The worker followed it and
+  got 41.7\% (bad weather) vs.\ 6.8\% (other) on all 3 runs.
+\item \textbf{Why:} the manager added no new data work. It helped because it turned the README into clear steps.
+\end{itemize}
+
+\textbf{2. Coordination hurt (debate T8, low reasoning, run 0).}
+\begin{itemize}
+\item Solvers 1 and 3 both got the right answer, 15.4 min. Solver 2 got 13.9 min (only half fixed the midnight wrap).
+\item The critic cannot run code. Reading the code, it judged solver 2's method ``best supported''.
+\item The aggregator followed the critic instead of the 2-of-3 majority. Final answer 13.9, score 0.
+\item \textbf{Why:} the review step had more power than the solvers but less evidence. It overruled correct work.
+\end{itemize}
+
+\textbf{3. Agents repeated the same mistake (majority vote T1, low reasoning, run 0).}
+\begin{itemize}
+\item Solvers 2 and 3, working separately, produced \emph{identical} wrong answers (WN 53.6, DL 48.4, AA 48.8, \ldots),
+  about 50\% delays for every airline, by over-wrapping early flights.
+\item Solver 1 was right (WN 33.2, DL 20.2, \ldots). The vote went 2 to 1 for the wrong answer. Score 0.
+\item \textbf{Why:} the solvers are the same model with the same prompt, so they make the same mistake. The same
+  over-wrap also showed up in single T4 and in hierarchy workers. A vote cannot fix a mistake the majority shares.
+\end{itemize}
+
+%=====================================================================
+\section{Takeaways}
+
+\begin{enumerate}
+\item \textbf{H1, hierarchy on distinct roles (T3, T4): partly true.} We expected it to win because each worker
+  gets one job. It did win T4 (3/3 vs.\ 2/3), but not for that reason: it used one worker, not two experts. It won
+  because the manager rewrote the README as a short checklist. When we forced it to really split, it got worse,
+  because each extra worker is one more chance to make a mistake that nobody checks.
+\item \textbf{H2, debate catches the shared mistake (T8): false.} We expected the critic to spot the midnight bug.
+  Instead the critic, who cannot run code, twice picked a wrong answer over right ones. Removing it fixed T8 but
+  let a shared wrong answer win on T1. Three solvers from the same model tend to make the \emph{same} mistake, so
+  neither a critic nor a vote is a reliable check.
+\item \textbf{H3, teams waste budget on easy tasks (T1, T2, T7): true.} Every system scored 1.0 on these. Hierarchy
+  cost about 1.7$\times$ single on average and debate about 3.7$\times$, up to 5$\times$ on T7. A team only pays off
+  when the extra agent adds real information (like the manager's checklist) or a check that can actually run code.
+\end{enumerate}
+
+\textbf{Limits.} Most cells are 1 run, so small gaps may be noise; only T4 and T8 have repeats. Total API cost for
+all runs, including the pilot: about \$0.50.
+
+\end{document}

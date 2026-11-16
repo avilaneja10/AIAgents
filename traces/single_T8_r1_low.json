@@ -1,0 +1,145 @@
+{
+ "row": {
+  "system": "single",
+  "task": "T8",
+  "category": "shared_mistake",
+  "effort": "low",
+  "repeat": 1,
+  "score": 1.0,
+  "success": true,
+  "trap": "",
+  "calls": 7,
+  "input_tokens": 25509,
+  "output_tokens": 1902,
+  "cost_usd": 0.0035019,
+  "seconds": 39.5,
+  "handoffs": 0,
+  "comm_chars": 0,
+  "wall_s": 39.6,
+  "code_runs": 6
+ },
+ "final": {
+  "avg_delay_min": 15.4
+ },
+ "grade_detail": {
+  "avg_delay_min": true
+ },
+ "calls": [
+  {
+   "agent": "single",
+   "input_tokens": 769,
+   "output_tokens": 96,
+   "seconds": 15.34,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 1850,
+   "output_tokens": 533,
+   "seconds": 6.07,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 2862,
+   "output_tokens": 623,
+   "seconds": 7.38,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 3613,
+   "output_tokens": 312,
+   "seconds": 3.47,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 4351,
+   "output_tokens": 122,
+   "seconds": 2.37,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 4543,
+   "output_tokens": 106,
+   "seconds": 2.25,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 7521,
+   "output_tokens": 110,
+   "seconds": 2.63,
+   "status": "completed"
+  }
+ ],
+ "messages": [],
+ "events": [
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "import pandas as pd, glob, os\nfiles=glob.glob('airlines/*.csv')\nprint(files)\nfor f in files:\n d=pd.read_csv(f)\n print(os.path.basename(f), d.shape, d.columns.tolist(), d.head(2).to_dict('records'))\n",
+   "result": {
+    "ok": true,
+    "stdout": "['airlines/B6.csv', 'airlines/DL.csv', 'airlines/AS.csv', 'airlines/UA.csv', 'airlines/WN.csv', 'airlines/AA.csv']\nB6.csv (181, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'B61002', 'date': '2025-01-01', 'origin': 'JFK', 'dest': 'ATL', 'sched_dep': '08:35', 'actual_dep': '08:35', 'cancelled': False}, {'flight_id': 'B61001', 'date': '2025-01-01', 'origin': 'JFK', 'dest': 'LAX', 'sched_dep': '21:00', 'actual_dep': '21:03', 'cancelled': False}]\nDL.csv (412, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'DL1003', 'date': '2025-01-01', 'origin': 'LAX', 'dest': 'ATL', 'sched_dep': '07:55', 'actual_dep': '08:09', 'cancelled': False}, {'flight_id': 'DL1002', 'date': '2025-01-01', 'origin': 'DFW', 'dest': 'ATL', 'sched_dep': '14:25', 'actual_dep': '15:39', 'cancelled': False}]\nAS.csv (173, 7) ['flight_id', 'date_utc', 'origin', 'dest', 'sched_dep_utc', 'actual_dep_utc', 'cancelled'] [{'flight_id': 'AS1002', 'date_utc': '2025-01-01', 'origin': 'JFK', 'dest': 'SEA', 'sched_dep_utc': '10:45', 'actual_dep_utc': '10:56', 'cancelled': False}, {'flight_id': 'AS1001', 'date_utc': '2025-01-01', 'origin': 'DEN', 'dest': 'SEA', 'sched_dep_utc': '22:40', 'actual_dep_utc': '22:55', 'cancelled': False}]\nUA.csv (297, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'UA1004', 'date': '2025-01-01', 'origin': 'ORD', 'dest': 'LAX', 'sched_dep': '05:40', 'actual_dep': '05:39', 'cancelled': False}, {'flight_id': 'UA1005', 'date': '2025-01-01', 'origin': 'ORD', 'dest': 'JFK', 'sched_dep': '09:25', 'actual_dep': '09:39', 'cancelled': False}]\nWN.csv (525, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'WN1009', 'date': '2025-01-01', 'origin': 'DEN', 'dest': 'DFW', 'sched_dep': '10:10', 'actual_dep': '10:18', 'cancelled': False}, {'flight_id': 'WN1007', 'date': '2025-01-01', 'origin': 'ORD', 'dest': 'DEN', 'sched_dep': '15:35', 'actual_dep': '15:54', 'cancelled': False}]\nAA.csv (356, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'AA1005', 'date': '2025-01-01', 'origin': 'DFW', 'dest': 'SEA', 'sched_dep': '09:35', 'actual_dep': '09:31', 'cancelled': False}, {'flight_id': 'AA1004', 'date': '2025-01-01', 'origin': 'DFW', 'dest': 'JFK', 'sched_dep': '10:45', 'actual_dep': '10:42', 'cancelled': False}]\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "import pandas as pd, glob\nrows=[]\nfor f in glob.glob('airlines/*.csv'):\n d=pd.read_csv(f); d['carrier']=f.split('/')[-1].split('.')[0]\n # identify fields and parse date/time as given; difference across midnight\n datecol='date_utc' if 'date_utc' in d else 'date'; s='sched_dep_utc' if 'sched_dep_utc' in d else 'sched_dep'; a='actual_dep_utc' if 'actual_dep_utc' in d else 'actual_dep'\n d['sched_dt']=pd.to_datetime(d[datecol]+' '+d[s], errors='coerce', utc=True)\n d['actual_dt']=pd.to_datetime(d[datecol]+' '+d[a], errors='coerce', utc=True)\n d['delay']=(d['actual_dt']-d['sched_dt']).dt.total_seconds()/60\n rows.append(d)\nx=pd.concat(rows,ignore_index=True)\nprint('rows',len(x),'unique ids',x.flight_id.nunique(),'dupes',x.flight_id.duplicated().sum())\nprint('cancel values',x.cancelled.value_counts(dropna=False).to_dict(),'missing delay completed',x.loc[~x.cancelled,'delay'].isna().sum())\nprint(x.loc[~x.cancelled,'delay'].describe())\nprint('sum/count/mean',x.loc[~x.cancelled,'delay'].sum(),x.loc[~x.cancelled,'delay'].count(),x.loc[~x.cancelled,'delay'].mean())\nprint('cross midnight candidates',x.loc[(~x.cancelled)&(x.delay.abs()>300),['flight_id','carrier','date_utc' if 'date_utc' in x else 'date','sched_dt','actual_dt','delay']].head())\n",
+   "result": {
+    "ok": true,
+    "stdout": "rows 1944 unique ids 1932 dupes 12\ncancel values {False: 1906, True: 38} missing delay completed 0\ncount    1906.000000\nmean        0.995803\nstd       139.944631\nmin     -1435.000000\n25%        -2.000000\n50%         7.000000\n75%        15.000000\nmax       309.000000\nName: delay, dtype: float64\nsum/count/mean 1898.0 1906 0.9958027282266527\ncross midnight candidates     flight_id carrier    date_utc                  sched_dt  \\\n193    DL1011      DL         NaN 2025-01-02 23:00:00+00:00   \n243    DL1064      DL         NaN 2025-01-09 23:10:00+00:00   \n294    DL1108      DL         NaN 2025-01-16 23:20:00+00:00   \n610    AS1018      AS  2025-01-07 2025-01-07 22:45:00+00:00   \n716    AS1123      AS  2025-02-13 2025-02-13 23:50:00+00:00   \n\n                    actual_dt   delay  \n193 2025-01-02 01:07:00+00:00 -1313.0  \n243 2025-01-09 01:38:00+00:00 -1292.0  \n294 2025-01-16 00:03:00+00:00 -1397.0  \n610 2025-01-07 01:18:00+00:00 -1287.0  \n716 2025-02-13 00:01:00+00:00 -1429.0  \n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "# recompute with clock difference, rollover for raw <= -60, inspect duplicates\nparts=[]\nfor f in glob.glob('airlines/*.csv'):\n d=pd.read_csv(f); d['carrier']=f.split('/')[-1].split('.')[0]\n s='sched_dep_utc' if 'sched_dep_utc' in d.columns else 'sched_dep'; a='actual_dep_utc' if 'actual_dep_utc' in d.columns else 'actual_dep'\n mins=lambda z: z.str[:2].astype(int)*60+z.str[3:5].astype(int)\n d['raw']=mins(d[a])-mins(d[s]); d['delay']=d['raw']+(d['raw']<=-60)*1440\n parts.append(d)\nx=pd.concat(parts,ignore_index=True)\nprint('rollovers', (x.raw<=-60).sum(), 'raw min',x.raw.min(), 'delay stats',x.loc[~x.cancelled,'delay'].describe().to_dict())\nprint('all sum count mean',x.loc[~x.cancelled,'delay'].sum(),x.loc[~x.cancelled,'delay'].count(),x.loc[~x.cancelled,'delay'].mean())\nprint('duplicates sample')\nprint(x[x.flight_id.duplicated(False)].sort_values('flight_id')[['flight_id','carrier','cancelled','sched_dep' if 'sched_dep' in x else 'sched_dep_utc','actual_dep' if 'actual_dep' in x else 'actual_dep_utc','delay']].to_string(index=False))\n",
+   "result": {
+    "ok": false,
+    "stdout": "",
+    "error": "Traceback (most recent call last):\n  File \"/var/folders/ql/8_mlfx5s0hlckrlfb0lldh9w0000gn/T/ipykernel_74530/3513064669.py\", line 16, in run_python\n    exec(code, self.ns)\n  File \"<string>\", line 7, in <module>\nValueError: cannot convert float NaN to integer\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "parts=[]\nfor f in glob.glob('airlines/*.csv'):\n d=pd.read_csv(f); d['carrier']=f.split('/')[-1].split('.')[0]\n s='sched_dep_utc' if 'sched_dep_utc' in d.columns else 'sched_dep'; a='actual_dep_utc' if 'actual_dep_utc' in d.columns else 'actual_dep'\n sm=d[s].str[:2].astype(int)*60+d[s].str[3:5].astype(int)\n am=pd.to_numeric(d[a].str[:2],errors='coerce')*60+pd.to_numeric(d[a].str[3:5],errors='coerce')\n d['raw']=am-sm; d['delay']=d['raw']+(d['raw']<=-60)*1440\n parts.append(d)\nx=pd.concat(parts,ignore_index=True)\nq=x.loc[~x.cancelled]\nprint('rollovers', (x.raw<=-60).sum(), 'mean',q.delay.mean(),'sum',q.delay.sum(),'n',q.delay.count())\nprint('duplicates',x.flight_id.duplicated().sum())\nprint(x[x.flight_id.duplicated(False)].sort_values('flight_id')[['flight_id','carrier','cancelled','delay']].to_string(index=False))",
+   "result": {
+    "ok": true,
+    "stdout": "rollovers 19 mean 15.350472193074502 sum 29258.0 n 1906\nduplicates 12\nflight_id carrier  cancelled  delay\n   B61008      B6      False   -6.0\n   B61008      B6      False   -6.0\n   B61037      B6      False    6.0\n   B61037      B6      False    6.0\n   B61045      B6      False   10.0\n   B61045      B6      False   10.0\n   B61052      B6      False   -5.0\n   B61052      B6      False   -5.0\n   B61065      B6      False   -2.0\n   B61065      B6      False   -2.0\n   B61072      B6      False   -5.0\n   B61072      B6      False   -5.0\n   B61089      B6      False    1.0\n   B61089      B6      False    1.0\n   B61127      B6      False    3.0\n   B61127      B6      False    3.0\n   B61129      B6      False    2.0\n   B61129      B6      False    2.0\n   B61161      B6      False    2.0\n   B61161      B6      False    2.0\n   B61164      B6      False    6.0\n   B61164      B6      False    6.0\n   B61169      B6      False   -7.0\n   B61169      B6      False   -7.0\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "u=x.drop_duplicates('flight_id',keep='first'); q=u.loc[~u.cancelled]; print(len(u),len(q),q.delay.sum(),q.delay.mean()); print(u.cancelled.value_counts())",
+   "result": {
+    "ok": true,
+    "stdout": "1932 1894 29253.0 15.445089757127771\ncancelled\nFalse    1894\nTrue       38\nName: count, dtype: int64\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "print(x.loc[(x.raw<0)&(x.raw>-60),['flight_id','carrier','raw','delay']].delay.value_counts().sort_index().to_dict()); print('negative raw ranges',x.raw[x.raw<0].sort_values().to_list())",
+   "result": {
+    "ok": true,
+    "stdout": "{-10.0: 44, -9.0: 60, -8.0: 57, -7.0: 47, -6.0: 42, -5.0: 59, -4.0: 54, -3.0: 61, -2.0: 57, -1.0: 48}\nnegative raw ranges [-1435.0, -1430.0, -1429.0, -1429.0, -1428.0, -1425.0, -1404.0, -1397.0, -1388.0, -1370.0, -1356.0, -1353.0, -1332.0, -1329.0, -1326.0, -1313.0, -1292.0, -1287.0, -1132.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -9.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -8.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -7.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -6.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -5.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -4.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0]\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "submit",
+   "answer": {
+    "avg_delay_min": 15.4
+   },
+   "raw": "{\"avg_delay_min\":15.4}",
+   "notes": "Concatenated all carrier files, deduplicated repeated flight_id records, excluded cancelled flights, and computed actual minus scheduled departure in minutes. For completed flights whose clock time crossed midnight, added 1,440 minutes; the resulting mean was 15.4451 minutes, rounded to 1 decimal."
+  }
+ ]
+}

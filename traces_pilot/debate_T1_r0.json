@@ -1,0 +1,292 @@
+{
+ "row": {
+  "system": "debate",
+  "task": "T1",
+  "category": "separable",
+  "repeat": 0,
+  "score": 0.0,
+  "success": false,
+  "trap": "",
+  "calls": 11,
+  "input_tokens": 21369,
+  "output_tokens": 5411,
+  "cost_usd": 0.0048424,
+  "seconds": 55.6,
+  "handoffs": 3,
+  "comm_chars": 11528,
+  "wall_s": 55.8,
+  "distinct_answers": 2,
+  "solvers_no_result": 0,
+  "solver_scores": "[0.0, 0.0, 0.0]",
+  "critic_best": "none",
+  "agg_chosen": "combined",
+  "final_is_majority": true,
+  "final_matches_a_solver": true
+ },
+ "final": {
+  "WN": null,
+  "DL": null,
+  "AA": null,
+  "UA": null,
+  "B6": null,
+  "AS": null
+ },
+ "grade_detail": {
+  "WN": false,
+  "DL": false,
+  "AA": false,
+  "UA": false,
+  "B6": false,
+  "AS": false
+ },
+ "calls": [
+  {
+   "agent": "S1",
+   "input_tokens": 777,
+   "output_tokens": 510,
+   "seconds": 4.56,
+   "status": "completed"
+  },
+  {
+   "agent": "S1",
+   "input_tokens": 1946,
+   "output_tokens": 151,
+   "seconds": 2.17,
+   "status": "completed"
+  },
+  {
+   "agent": "S1",
+   "input_tokens": 2459,
+   "output_tokens": 302,
+   "seconds": 3.76,
+   "status": "completed"
+  },
+  {
+   "agent": "S2",
+   "input_tokens": 777,
+   "output_tokens": 539,
+   "seconds": 4.65,
+   "status": "completed"
+  },
+  {
+   "agent": "S2",
+   "input_tokens": 1981,
+   "output_tokens": 592,
+   "seconds": 5.06,
+   "status": "completed"
+  },
+  {
+   "agent": "S2",
+   "input_tokens": 3312,
+   "output_tokens": 345,
+   "seconds": 4.16,
+   "status": "completed"
+  },
+  {
+   "agent": "S3",
+   "input_tokens": 777,
+   "output_tokens": 609,
+   "seconds": 4.87,
+   "status": "completed"
+  },
+  {
+   "agent": "S3",
+   "input_tokens": 1926,
+   "output_tokens": 448,
+   "seconds": 4.62,
+   "status": "completed"
+  },
+  {
+   "agent": "S3",
+   "input_tokens": 3188,
+   "output_tokens": 352,
+   "seconds": 3.96,
+   "status": "completed"
+  },
+  {
+   "agent": "critic",
+   "input_tokens": 3334,
+   "output_tokens": 1406,
+   "seconds": 14.82,
+   "status": "completed"
+  },
+  {
+   "agent": "aggregator",
+   "input_tokens": 892,
+   "output_tokens": 157,
+   "seconds": 2.99,
+   "status": "completed"
+  }
+ ],
+ "messages": [
+  {
+   "frm": "solvers",
+   "to": "critic",
+   "chars": 8504
+  },
+  {
+   "frm": "solvers",
+   "to": "aggregator",
+   "chars": 867
+  },
+  {
+   "frm": "critic",
+   "to": "aggregator",
+   "chars": 2157
+  }
+ ],
+ "events": [
+  {
+   "agent": "S1",
+   "kind": "run_python",
+   "code": "import pandas as pd, glob, os\nfiles=glob.glob('airlines/*.csv')\nprint(files)\nfor f in files:\n    df=pd.read_csv(f)\n    print(os.path.basename(f), df.shape, df.dtypes.to_dict(), df.head(2).to_dict('records'))\n    print('duplicate flight ids',df.flight_id.duplicated().sum(),'dates',df.date.min(),df.date.max(),'cancelled',df.cancelled.value_counts(dropna=False).to_dict())\n\n# Compute February after deduplication and inspect parsing/negative raw differences\nout={}\nfor f in files:\n    c=os.path.basename(f)[:-4]\n    d=pd.read_csv(f)\n    d=d.drop_duplicates('flight_id').copy()\n    d['date_dt']=pd.to_datetime(d['date'], errors='coerce')\n    x=d[(d.date_dt.dt.year==2025)&(d.date_dt.dt.month==2)].copy()\n    x['cancel_bool']=x['cancelled'].astype(str).str.lower().eq('true')\n    completed=x[~x.cancel_bool & x.actual_dep.notna()].copy()\n    def mins(s):\n        h,m=map(int,str(s).split(':')); return h*60+m\n    completed['sched_m']=completed.sched_dep.map(mins)\n    completed['actual_m']=completed.actual_dep.map(mins)\n    completed['delay']=completed.actual_m-completed.sched_m\n    completed.loc[completed.delay<0,'delay'] += 1440\n    delayed=(completed.delay>15).sum()\n    out[c]=round(100*delayed/len(completed),1)\n    print(c,'feb rows',len(x),'completed',len(completed),'delayed',delayed,'rate',out[c], 'raw neg',((completed.actual_m-completed.sched_m)<0).sum(),'delay range', (completed.delay.min(),completed.delay.max()))\nprint('RESULT',out)",
+   "result": {
+    "ok": false,
+    "stdout": ": 177, True: 4}\nDL.csv (412, 7) {'flight_id': <StringDtype(storage='python', na_value=nan)>, 'date': <StringDtype(storage='python', na_value=nan)>, 'origin': <StringDtype(storage='python', na_value=nan)>, 'dest': <StringDtype(storage='python', na_value=nan)>, 'sched_dep': <StringDtype(storage='python', na_value=nan)>, 'actual_dep': <StringDtype(storage='python', na_value=nan)>, 'cancelled': dtype('bool')} [{'flight_id': 'DL1003', 'date': '2025-01-01', 'origin': 'LAX', 'dest': 'ATL', 'sched_dep': '07:55', 'actual_dep': '08:09', 'cancelled': False}, {'flight_id': 'DL1002', 'date': '2025-01-01', 'origin': 'DFW', 'dest': 'ATL', 'sched_dep': '14:25', 'actual_dep': '15:39', 'cancelled': False}]\nduplicate flight ids 0 dates 2025-01-01 2025-02-28 cancelled {False: 399, True: 13}\nAS.csv (173, 7) {'flight_id': <StringDtype(storage='python', na_value=nan)>, 'date_utc': <StringDtype(storage='python', na_value=nan)>, 'origin': <StringDtype(storage='python', na_value=nan)>, 'dest': <StringDtype(storage='python', na_value=nan)>, 'sched_dep_utc': <StringDtype(storage='python', na_value=nan)>, 'actual_dep_utc': <StringDtype(storage='python', na_value=nan)>, 'cancelled': dtype('bool')} [{'flight_id': 'AS1002', 'date_utc': '2025-01-01', 'origin': 'JFK', 'dest': 'SEA', 'sched_dep_utc': '10:45', 'actual_dep_utc': '10:56', 'cancelled': False}, {'flight_id': 'AS1001', 'date_utc': '2025-01-01', 'origin': 'DEN', 'dest': 'SEA', 'sched_dep_utc': '22:40', 'actual_dep_utc': '22:55', 'cancelled': False}]\n",
+    "error": "Traceback (most recent call last):\n  File \"/var/folders/ql/8_mlfx5s0hlckrlfb0lldh9w0000gn/T/ipykernel_67371/3513064669.py\", line 16, in run_python\n    exec(code, self.ns)\n  File \"<string>\", line 7, in <module>\nAttributeError: 'DataFrame' object has no attribute 'date'\n"
+   }
+  },
+  {
+   "agent": "S1",
+   "kind": "run_python",
+   "code": "import pandas as pd, glob, os\nfor f in glob.glob('airlines/*.csv'):\n d=pd.read_csv(f); print(os.path.basename(f),list(d.columns),d.shape,'dupes',d.flight_id.duplicated().sum())\nprint(pd.read_csv('airports.csv').to_string(index=False))",
+   "result": {
+    "ok": true,
+    "stdout": "B6.csv ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] (181, 7) dupes 12\nDL.csv ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] (412, 7) dupes 0\nAS.csv ['flight_id', 'date_utc', 'origin', 'dest', 'sched_dep_utc', 'actual_dep_utc', 'cancelled'] (173, 7) dupes 0\nUA.csv ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] (297, 7) dupes 0\nWN.csv ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] (525, 7) dupes 0\nAA.csv ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] (356, 7) dupes 0\nairport              city            timezone  utc_offset_hours\n    ATL           Atlanta    America/New_York                -5\n    JFK          New York    America/New_York                -5\n    ORD           Chicago     America/Chicago                -6\n    DFW Dallas-Fort Worth     America/Chicago                -6\n    DEN            Denver      America/Denver                -7\n    LAX       Los Angeles America/Los_Angeles                -8\n    SEA           Seattle America/Los_Angeles                -8\n"
+   }
+  },
+  {
+   "agent": "S1",
+   "kind": "submit",
+   "answer": {},
+   "raw": "{}",
+   "notes": "Unable to provide the computed rates in this submission."
+  },
+  {
+   "agent": "S2",
+   "kind": "run_python",
+   "code": "import pandas as pd, glob, os\nfiles=glob.glob('airlines/*.csv')\nprint(files)\nfor f in files:\n    df=pd.read_csv(f)\n    print(os.path.basename(f), df.shape, df.dtypes.to_dict(), 'dup_ids', df.flight_id.duplicated().sum(), 'cancelled', df.cancelled.value_counts(dropna=False).to_dict(), 'dates', df.date.min(),df.date.max())\n    print(df.head(2).to_dict('records'))\n\n# Compute February rates, deduplicate repeated export records by unique flight_id.\nout={}\nchecks={}\nfor f in files:\n    carrier=os.path.basename(f)[:-4]\n    df=pd.read_csv(f).drop_duplicates('flight_id').copy()\n    df['date_dt']=pd.to_datetime(df['date'], errors='coerce')\n    feb=df[(df.date_dt.dt.year==2025)&(df.date_dt.dt.month==2)].copy()\n    # normalize booleans robustly\n    canc=feb.cancelled.astype(str).str.lower().eq('true')\n    comp=feb.loc[~canc & feb.actual_dep.notna()].copy()\n    s=pd.to_timedelta(comp.sched_dep.astype(str)+':00')\n    a=pd.to_timedelta(comp.actual_dep.astype(str)+':00')\n    delay=(a-s).dt.total_seconds()/60\n    # only likely midnight wrap; document says may depart next day\n    delay=delay.where(delay>=0, delay+1440)\n    n=len(comp); delayed=(delay>15).sum()\n    out[carrier]=round(100*delayed/n,1) if n else None\n    checks[carrier]={'feb_rows':len(feb),'completed':n,'delayed':int(delayed),'rate_raw':100*delayed/n if n else None,'negative_after_wrap':int((delay<0).sum())}\nprint('CHECKS',checks)\nprint('ANSWER',out)",
+   "result": {
+    "ok": false,
+    "stdout": " (181, 7) {'flight_id': <StringDtype(storage='python', na_value=nan)>, 'date': <StringDtype(storage='python', na_value=nan)>, 'origin': <StringDtype(storage='python', na_value=nan)>, 'dest': <StringDtype(storage='python', na_value=nan)>, 'sched_dep': <StringDtype(storage='python', na_value=nan)>, 'actual_dep': <StringDtype(storage='python', na_value=nan)>, 'cancelled': dtype('bool')} dup_ids 12 cancelled {False: 177, True: 4} dates 2025-01-01 2025-02-28\n[{'flight_id': 'B61002', 'date': '2025-01-01', 'origin': 'JFK', 'dest': 'ATL', 'sched_dep': '08:35', 'actual_dep': '08:35', 'cancelled': False}, {'flight_id': 'B61001', 'date': '2025-01-01', 'origin': 'JFK', 'dest': 'LAX', 'sched_dep': '21:00', 'actual_dep': '21:03', 'cancelled': False}]\nDL.csv (412, 7) {'flight_id': <StringDtype(storage='python', na_value=nan)>, 'date': <StringDtype(storage='python', na_value=nan)>, 'origin': <StringDtype(storage='python', na_value=nan)>, 'dest': <StringDtype(storage='python', na_value=nan)>, 'sched_dep': <StringDtype(storage='python', na_value=nan)>, 'actual_dep': <StringDtype(storage='python', na_value=nan)>, 'cancelled': dtype('bool')} dup_ids 0 cancelled {False: 399, True: 13} dates 2025-01-01 2025-02-28\n[{'flight_id': 'DL1003', 'date': '2025-01-01', 'origin': 'LAX', 'dest': 'ATL', 'sched_dep': '07:55', 'actual_dep': '08:09', 'cancelled': False}, {'flight_id': 'DL1002', 'date': '2025-01-01', 'origin': 'DFW', 'dest': 'ATL', 'sched_dep': '14:25', 'actual_dep': '15:39', 'cancelled': False}]\n",
+    "error": "Traceback (most recent call last):\n  File \"/var/folders/ql/8_mlfx5s0hlckrlfb0lldh9w0000gn/T/ipykernel_67371/3513064669.py\", line 16, in run_python\n    exec(code, self.ns)\n  File \"<string>\", line 6, in <module>\nAttributeError: 'DataFrame' object has no attribute 'date'\n"
+   }
+  },
+  {
+   "agent": "S2",
+   "kind": "run_python",
+   "code": "import pandas as pd, glob, os\nfor f in glob.glob('airlines/*.csv'):\n    df=pd.read_csv(f)\n    print(repr(f), df.shape, list(df.columns), df.head(1).to_dict('records'))\n\n# robust computation only files with expected schema; verify carrier mapping from basename\nanswer={}; checks={}\nfor f in glob.glob('airlines/*.csv'):\n    carrier=os.path.basename(f).split('.')[0]\n    df=pd.read_csv(f)\n    assert set(['flight_id','date','sched_dep','actual_dep','cancelled']).issubset(df.columns), (f,df.columns)\n    dup=df.flight_id.duplicated().sum()\n    df=df.drop_duplicates('flight_id').copy()\n    dates=pd.to_datetime(df['date'], errors='coerce')\n    feb=df[(dates.dt.year==2025)&(dates.dt.month==2)].copy()\n    completed=feb[(~feb['cancelled']) & feb['actual_dep'].notna()].copy()\n    s=pd.to_timedelta(completed['sched_dep'].astype(str)+':00')\n    a=pd.to_timedelta(completed['actual_dep'].astype(str)+':00')\n    d=(a-s).dt.total_seconds()/60\n    # handle documented post-midnight departure\n    d=d.where(d>=0,d+1440)\n    delayed=int((d>15).sum()); n=len(d)\n    answer[carrier]=round(100*delayed/n,1)\n    checks[carrier]={'source_rows':len(df)+dup,'duplicates_removed':dup,'feb':len(feb),'cancelled':int(feb.cancelled.sum()),'completed':n,'delayed':delayed,'raw_pct':100*delayed/n,'remaining_negative':int((d<0).sum())}\nprint(checks)\nprint(answer)",
+   "result": {
+    "ok": false,
+    "stdout": "id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'B61002', 'date': '2025-01-01', 'origin': 'JFK', 'dest': 'ATL', 'sched_dep': '08:35', 'actual_dep': '08:35', 'cancelled': False}]\n'airlines/DL.csv' (412, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'DL1003', 'date': '2025-01-01', 'origin': 'LAX', 'dest': 'ATL', 'sched_dep': '07:55', 'actual_dep': '08:09', 'cancelled': False}]\n'airlines/AS.csv' (173, 7) ['flight_id', 'date_utc', 'origin', 'dest', 'sched_dep_utc', 'actual_dep_utc', 'cancelled'] [{'flight_id': 'AS1002', 'date_utc': '2025-01-01', 'origin': 'JFK', 'dest': 'SEA', 'sched_dep_utc': '10:45', 'actual_dep_utc': '10:56', 'cancelled': False}]\n'airlines/UA.csv' (297, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'UA1004', 'date': '2025-01-01', 'origin': 'ORD', 'dest': 'LAX', 'sched_dep': '05:40', 'actual_dep': '05:39', 'cancelled': False}]\n'airlines/WN.csv' (525, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'WN1009', 'date': '2025-01-01', 'origin': 'DEN', 'dest': 'DFW', 'sched_dep': '10:10', 'actual_dep': '10:18', 'cancelled': False}]\n'airlines/AA.csv' (356, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'AA1005', 'date': '2025-01-01', 'origin': 'DFW', 'dest': 'SEA', 'sched_dep': '09:35', 'actual_dep': '09:31', 'cancelled': False}]\n",
+    "error": "Traceback (most recent call last):\n  File \"/var/folders/ql/8_mlfx5s0hlckrlfb0lldh9w0000gn/T/ipykernel_67371/3513064669.py\", line 16, in run_python\n    exec(code, self.ns)\n  File \"<string>\", line 11, in <module>\nAssertionError: ('airlines/AS.csv', Index(['flight_id', 'date_utc', 'origin', 'dest', 'sched_dep_utc',\n       'actual_dep_utc', 'cancelled'],\n      dtype='str'))\n"
+   }
+  },
+  {
+   "agent": "S2",
+   "kind": "submit",
+   "answer": {
+    "WN": null,
+    "DL": null,
+    "AA": null,
+    "UA": null,
+    "B6": null,
+    "AS": null
+   },
+   "raw": "{\"WN\": null, \"DL\": null, \"AA\": null, \"UA\": null, \"B6\": null, \"AS\": null}",
+   "notes": "I could not complete the calculation because AS.csv uses UTC-suffixed columns while the other carrier files use local-time columns; the required normalization step was interrupted before producing the rates."
+  },
+  {
+   "agent": "S3",
+   "kind": "run_python",
+   "code": "import pandas as pd, glob, os\nfiles=glob.glob('airlines/*.csv')\nprint(files)\nfor f in files:\n    df=pd.read_csv(f)\n    print(os.path.basename(f), df.shape, df.columns.tolist(), 'dup_ids', df.flight_id.duplicated().sum(), 'dates', df.date.min(), df.date.max(), 'cancelvals', df.cancelled.astype(str).value_counts().to_dict())\n    print(df.head(2).to_dict('records'))\n\n# Compute February after inspecting: dedupe flight IDs, parse local clock times with next-day adjustment if actual clock < sched clock.\nres={}\nchecks={}\nfor f in files:\n    carrier=os.path.basename(f)[:-4]\n    df=pd.read_csv(f)\n    df=df.drop_duplicates('flight_id', keep='first').copy()\n    feb=df[pd.to_datetime(df['date']).dt.month.eq(2) & pd.to_datetime(df['date']).dt.year.eq(2025)].copy()\n    # normalize cancellation robustly\n    cancelled=feb['cancelled'].astype(str).str.lower().eq('true')\n    comp=feb.loc[~cancelled].copy()\n    sched=pd.to_datetime(comp['date'].astype(str)+' '+comp['sched_dep'].astype(str), errors='coerce')\n    actual=pd.to_datetime(comp['date'].astype(str)+' '+comp['actual_dep'].astype(str), errors='coerce')\n    # Since local date unknown and delays could exceed 24h, clock time comparison captures documented day-after case; add one day when actual clock earlier\n    sched_t=pd.to_datetime(comp['sched_dep'], format='%H:%M')\n    actual_t=pd.to_datetime(comp['actual_dep'], format='%H:%M')\n    delay=(actual_t.dt.hour*60+actual_t.dt.minute)-(sched_t.dt.hour*60+sched_t.dt.minute)\n    delay=delay.where(delay>=0, delay+1440)\n    delayed=delay>15\n    res[carrier]=round(100*delayed.sum()/len(comp),1)\n    checks[carrier]={'rows_feb':len(feb),'completed':len(comp),'delayed':int(delayed.sum()),'min_delay':int(delay.min()) if len(delay) else None,'max_delay':int(delay.max()) if len(delay) else None,'cancelled':int(cancelled.sum())}\nprint('CHECKS',checks)\nprint('RESULT',res)",
+   "result": {
+    "ok": false,
+    "stdout": "['airlines/B6.csv', 'airlines/DL.csv', 'airlines/AS.csv', 'airlines/UA.csv', 'airlines/WN.csv', 'airlines/AA.csv']\nB6.csv (181, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] dup_ids 12 dates 2025-01-01 2025-02-28 cancelvals {'False': 177, 'True': 4}\n[{'flight_id': 'B61002', 'date': '2025-01-01', 'origin': 'JFK', 'dest': 'ATL', 'sched_dep': '08:35', 'actual_dep': '08:35', 'cancelled': False}, {'flight_id': 'B61001', 'date': '2025-01-01', 'origin': 'JFK', 'dest': 'LAX', 'sched_dep': '21:00', 'actual_dep': '21:03', 'cancelled': False}]\nDL.csv (412, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] dup_ids 0 dates 2025-01-01 2025-02-28 cancelvals {'False': 399, 'True': 13}\n[{'flight_id': 'DL1003', 'date': '2025-01-01', 'origin': 'LAX', 'dest': 'ATL', 'sched_dep': '07:55', 'actual_dep': '08:09', 'cancelled': False}, {'flight_id': 'DL1002', 'date': '2025-01-01', 'origin': 'DFW', 'dest': 'ATL', 'sched_dep': '14:25', 'actual_dep': '15:39', 'cancelled': False}]\n",
+    "error": "Traceback (most recent call last):\n  File \"/var/folders/ql/8_mlfx5s0hlckrlfb0lldh9w0000gn/T/ipykernel_67371/3513064669.py\", line 16, in run_python\n    exec(code, self.ns)\n  File \"<string>\", line 6, in <module>\nAttributeError: 'DataFrame' object has no attribute 'date'\n"
+   }
+  },
+  {
+   "agent": "S3",
+   "kind": "run_python",
+   "code": "import pandas as pd, glob, os\nfor f in glob.glob('airlines/*.csv'):\n    raw=pd.read_csv(f)\n    print(os.path.basename(f), raw.shape, raw.columns.tolist(), 'headcols', raw.head(1).to_dict('records'))\n\nres={}; checks={}\nfor f in glob.glob('airlines/*.csv'):\n    c=os.path.basename(f)[:-4]; df=pd.read_csv(f).drop_duplicates('flight_id').copy()\n    df['date_parsed']=pd.to_datetime(df['date'], errors='coerce')\n    feb=df[df.date_parsed.between('2025-02-01','2025-02-28')].copy()\n    # bool conversion direct handles CSV booleans\n    cancelled=feb['cancelled'].astype(str).str.lower().eq('true')\n    comp=feb.loc[~cancelled].copy()\n    sm=comp.sched_dep.str.split(':').str[0].astype(int)*60+comp.sched_dep.str.split(':').str[1].astype(int)\n    am=comp.actual_dep.str.split(':').str[0].astype(int)*60+comp.actual_dep.str.split(':').str[1].astype(int)\n    delay=(am-sm).where((am-sm)>=0,(am-sm)+1440)\n    res[c]=round(100*(delay>15).sum()/len(comp),1)\n    checks[c]={'feb_unique':len(feb),'completed':len(comp),'delayed':int((delay>15).sum()),'cancelled':int(cancelled.sum()),'rate_raw':100*(delay>15).sum()/len(comp)}\nprint(checks)\nprint(res)",
+   "result": {
+    "ok": false,
+    "stdout": "_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] headcols [{'flight_id': 'B61002', 'date': '2025-01-01', 'origin': 'JFK', 'dest': 'ATL', 'sched_dep': '08:35', 'actual_dep': '08:35', 'cancelled': False}]\nDL.csv (412, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] headcols [{'flight_id': 'DL1003', 'date': '2025-01-01', 'origin': 'LAX', 'dest': 'ATL', 'sched_dep': '07:55', 'actual_dep': '08:09', 'cancelled': False}]\nAS.csv (173, 7) ['flight_id', 'date_utc', 'origin', 'dest', 'sched_dep_utc', 'actual_dep_utc', 'cancelled'] headcols [{'flight_id': 'AS1002', 'date_utc': '2025-01-01', 'origin': 'JFK', 'dest': 'SEA', 'sched_dep_utc': '10:45', 'actual_dep_utc': '10:56', 'cancelled': False}]\nUA.csv (297, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] headcols [{'flight_id': 'UA1004', 'date': '2025-01-01', 'origin': 'ORD', 'dest': 'LAX', 'sched_dep': '05:40', 'actual_dep': '05:39', 'cancelled': False}]\nWN.csv (525, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] headcols [{'flight_id': 'WN1009', 'date': '2025-01-01', 'origin': 'DEN', 'dest': 'DFW', 'sched_dep': '10:10', 'actual_dep': '10:18', 'cancelled': False}]\nAA.csv (356, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] headcols [{'flight_id': 'AA1005', 'date': '2025-01-01', 'origin': 'DFW', 'dest': 'SEA', 'sched_dep': '09:35', 'actual_dep': '09:31', 'cancelled': False}]\n",
+    "error": "Traceback (most recent call last):\n  File \"/Users/avilaneja/Study/University/Sem4/CS839_aiAgents/HW1/.venv/lib/python3.12/site-packages/pandas/core/indexes/base.py\", line 3641, in get_loc\n    return self._engine.get_loc(casted_key)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"pandas/_libs/index.pyx\", line 168, in pandas._libs.index.IndexEngine.get_loc\nKeyError: 'date'\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/var/folders/ql/8_mlfx5s0hlckrlfb0lldh9w0000gn/T/ipykernel_67371/3513064669.py\", line 16, in run_python\n    exec(code, self.ns)\n  File \"<string>\", line 9, in <module>\nKeyError: 'date'\n"
+   }
+  },
+  {
+   "agent": "S3",
+   "kind": "submit",
+   "answer": {
+    "WN": null,
+    "DL": null,
+    "AA": null,
+    "UA": null,
+    "B6": null,
+    "AS": null
+   },
+   "raw": "{\"WN\": null, \"DL\": null, \"AA\": null, \"UA\": null, \"B6\": null, \"AS\": null}",
+   "notes": "I could not complete the required computation because the carrier files are not schema-uniform: AS uses date_utc/sched_dep_utc/actual_dep_utc while the other files use local-time column names, and the required final submission had to be made before further data processing."
+  },
+  {
+   "agent": "solvers",
+   "kind": "handoff",
+   "to": "critic",
+   "content": "[\n {\n  \"analyst\": \"S1\",\n  \"raw\": \"{}\",\n  \"notes\": \"Unable to provide the computed rates in this submission.\",\n  \"code\": \"import pandas as pd, glob, os\\nfiles=glob.glob('airlines/*.csv')\\nprint(files)\\nfor f in files:\\n    df=pd.read_csv(f)\\n    print(os.path.basename(f), df.shape, df.dtypes.to_dict(), df.head(2).to_dict('records'))\\n    print('duplicate flight ids',df.flight_id.duplicated().sum(),'dates',df.date.min(),df.date.max(),'cancelled',df.cancelled.value_counts(dropna=False).to_dict())\\n\\n# Compute February after deduplication and inspect parsing/negative raw differences\\nout={}\\nfor f in files:\\n    c=os.path.basename(f)[:-4]\\n    d=pd.read_csv(f)\\n    d=d.drop_duplicates('flight_id').copy()\\n    d['date_dt']=pd.to_datetime(d['date'], errors='coerce')\\n    x=d[(d.date_dt.dt.year==2025)&(d.date_dt.dt.month==2)].copy()\\n    x['cancel_bool']=x['cancelled'].astype(str).str.lower().eq('true')\\n    completed=x[~x.cancel_bool & x.actual_dep.notna()].copy()\\n    def mins(s):\\n        h,m=map(int,str(s).split(':')); return h*60+m\\n    completed['sched_m']=completed.sched_dep.map(mins)\\n    completed['actual_m']=completed.actual_dep.map(mins)\\n    completed['delay']=completed.actual_m-completed.sched_m\\n    completed.loc[completed.delay<0,'delay'] += 1440\\n    delayed=(completed.delay>15).sum()\\n    out[c]=round(100*delayed/len(completed),1)\\n    print(c,'feb rows',len(x),'completed',len(completed),'delayed',delayed,'rate',out[c], 'raw neg',((completed.actual_m-completed.sched_m)<0).sum(),'delay range', (completed.delay.min(),completed.delay.max()))\\nprint('RESULT',out)\\n# ----\\nimport pandas as pd, glob, os\\nfor f in glob.glob('airlines/*.csv'):\\n d=pd.read_csv(f); print(os.path.basename(f),list(d.columns),d.shape,'dupes',d.flight_id.duplicated().sum())\\nprint(pd.read_csv('airports.csv').to_string(index=False))\"\n },\n {\n  \"analyst\": \"S2\",\n  \"raw\": \"{\\\"WN\\\": null, \\\"DL\\\": null, \\\"AA\\\": null, \\\"UA\\\": null, \\\"B6\\\": null, \\\"AS\\\": null}\",\n  \"notes\": \"I could not complete the calculation because AS.csv uses UTC-suffixed columns while the other carrier files use local-time columns; the required normalization step was interrupted before producing the rates.\",\n  \"code\": \"import pandas as pd, glob, os\\nfiles=glob.glob('airlines/*.csv')\\nprint(files)\\nfor f in files:\\n    df=pd.read_csv(f)\\n    print(os.path.basename(f), df.shape, df.dtypes.to_dict(), 'dup_ids', df.flight_id.duplicated().sum(), 'cancelled', df.cancelled.value_counts(dropna=False).to_dict(), 'dates', df.date.min(),df.date.max())\\n    print(df.head(2).to_dict('records'))\\n\\n# Compute February rates, deduplicate repeated export records by unique flight_id.\\nout={}\\nchecks={}\\nfor f in files:\\n    carrier=os.path.basename(f)[:-4]\\n    df=pd.read_csv(f).drop_duplicates('flight_id').copy()\\n    df['date_dt']=pd.to_datetime(df['date'], errors='coerce')\\n    feb=df[(df.date_dt.dt.year==2025)&(df.date_dt.dt.month==2)].copy()\\n    # normalize booleans robustly\\n    canc=feb.cancelled.astype(str).str.lower().eq('true')\\n    comp=feb.loc[~canc & feb.actual_dep.notna()].copy()\\n    s=pd.to_timedelta(comp.sched_dep.astype(str)+':00')\\n    a=pd.to_timedelta(comp.actual_dep.astype(str)+':00')\\n    delay=(a-s).dt.total_seconds()/60\\n    # only likely midnight wrap; document says may depart next day\\n    delay=delay.where(delay>=0, delay+1440)\\n    n=len(comp); delayed=(delay>15).sum()\\n    out[carrier]=round(100*delayed/n,1) if n else None\\n    checks[carrier]={'feb_rows':len(feb),'completed':n,'delayed':int(delayed),'rate_raw':100*delayed/n if n else None,'negative_after_wrap':int((delay<0).sum())}\\nprint('CHECKS',checks)\\nprint('ANSWER',out)\\n# ----\\nimport pandas as pd, glob, os\\nfor f in glob.glob('airlines/*.csv'):\\n    df=pd.read_csv(f)\\n    print(repr(f), df.shape, list(df.columns), df.head(1).to_dict('records'))\\n\\n# robust computation only files with expected schema; verify carrier mapping from basename\\nanswer={}; checks={}\\nfor f in glob.glob('airlines/*.csv'):\\n    carrier=os.path.basename(f).split('.')[0]\\n    df=pd.read_csv(f)\\n    assert set(['flight_id','date','sched_dep','actual_dep','cancelled']).issubset(df.columns), (f,df.columns)\\n    dup=df.flight_id.duplicated().sum()\\n    df=df.drop_duplicates('flight_id').copy()\\n    dates=pd.to_datetime(df['date'], errors='coerce')\\n    feb=df[(dates.dt.year==2025)&(dates.dt.month==2)].copy()\\n    completed=feb[(~feb['cancelled']) & feb['actual_dep'].notna()].copy()\\n    s=pd.to_timedelta(completed['sched_dep'].astype(str)+':00')\\n    a=pd.to_timedelta(completed['actual_dep'].astype(str)+':00')\\n    d=(a-s).dt.total_seconds()/60\\n    # handle documented post-midnight departure\\n    d=d.where(d>=0,d+1440)\\n    delayed=int((d>15).sum()); n=len(d)\\n    answer[carrier]=round(100*delayed/n,1)\\n    checks[carrier]={'source_rows':len(df)+dup,'duplicates_removed':dup,'feb':len(feb),'cancelled':int(feb.cancelled.sum()),'completed':n,'delayed':delayed,'raw_pct':100*delayed/n,'remaining_negative':int((d<0).sum())}\\nprint(checks)\\nprint(answer)\"\n },\n {\n  \"analyst\": \"S3\",\n  \"raw\": \"{\\\"WN\\\": null, \\\"DL\\\": null, \\\"AA\\\": null, \\\"UA\\\": null, \\\"B6\\\": null, \\\"AS\\\": null}\",\n  \"notes\": \"I could not complete the required computation because the carrier files are not schema-uniform: AS uses date_utc/sched_dep_utc/actual_dep_utc while the other files use local-time column names, and the required final submission had to be made before further data processing.\",\n  \"code\": \", glob, os\\nfiles=glob.glob('airlines/*.csv')\\nprint(files)\\nfor f in files:\\n    df=pd.read_csv(f)\\n    print(os.path.basename(f), df.shape, df.columns.tolist(), 'dup_ids', df.flight_id.duplicated().sum(), 'dates', df.date.min(), df.date.max(), 'cancelvals', df.cancelled.astype(str).value_counts().to_dict())\\n    print(df.head(2).to_dict('records'))\\n\\n# Compute February after inspecting: dedupe flight IDs, parse local clock times with next-day adjustment if actual clock < sched clock.\\nres={}\\nchecks={}\\nfor f in files:\\n    carrier=os.path.basename(f)[:-4]\\n    df=pd.read_csv(f)\\n    df=df.drop_duplicates('flight_id', keep='first').copy()\\n    feb=df[pd.to_datetime(df['date']).dt.month.eq(2) & pd.to_datetime(df['date']).dt.year.eq(2025)].copy()\\n    # normalize cancellation robustly\\n    cancelled=feb['cancelled'].astype(str).str.lower().eq('true')\\n    comp=feb.loc[~cancelled].copy()\\n    sched=pd.to_datetime(comp['date'].astype(str)+' '+comp['sched_dep'].astype(str), errors='coerce')\\n    actual=pd.to_datetime(comp['date'].astype(str)+' '+comp['actual_dep'].astype(str), errors='coerce')\\n    # Since local date unknown and delays could exceed 24h, clock time comparison captures documented day-after case; add one day when actual clock earlier\\n    sched_t=pd.to_datetime(comp['sched_dep'], format='%H:%M')\\n    actual_t=pd.to_datetime(comp['actual_dep'], format='%H:%M')\\n    delay=(actual_t.dt.hour*60+actual_t.dt.minute)-(sched_t.dt.hour*60+sched_t.dt.minute)\\n    delay=delay.where(delay>=0, delay+1440)\\n    delayed=delay>15\\n    res[carrier]=round(100*delayed.sum()/len(comp),1)\\n    checks[carrier]={'rows_feb':len(feb),'completed':len(comp),'delayed':int(delayed.sum()),'min_delay':int(delay.min()) if len(delay) else None,'max_delay':int(delay.max()) if len(delay) else None,'cancelled':int(cancelled.sum())}\\nprint('CHECKS',checks)\\nprint('RESULT',res)\\n# ----\\nimport pandas as pd, glob, os\\nfor f in glob.glob('airlines/*.csv'):\\n    raw=pd.read_csv(f)\\n    print(os.path.basename(f), raw.shape, raw.columns.tolist(), 'headcols', raw.head(1).to_dict('records'))\\n\\nres={}; checks={}\\nfor f in glob.glob('airlines/*.csv'):\\n    c=os.path.basename(f)[:-4]; df=pd.read_csv(f).drop_duplicates('flight_id').copy()\\n    df['date_parsed']=pd.to_datetime(df['date'], errors='coerce')\\n    feb=df[df.date_parsed.between('2025-02-01','2025-02-28')].copy()\\n    # bool conversion direct handles CSV booleans\\n    cancelled=feb['cancelled'].astype(str).str.lower().eq('true')\\n    comp=feb.loc[~cancelled].copy()\\n    sm=comp.sched_dep.str.split(':').str[0].astype(int)*60+comp.sched_dep.str.split(':').str[1].astype(int)\\n    am=comp.actual_dep.str.split(':').str[0].astype(int)*60+comp.actual_dep.str.split(':').str[1].astype(int)\\n    delay=(am-sm).where((am-sm)>=0,(am-sm)+1440)\\n    res[c]=round(100*(delay>15).sum()/len(comp),1)\\n    checks[c]={'feb_unique':len(feb),'completed':len(comp),'delayed':int((delay>15).sum()),'cancelled':int(cancelled.sum()),'rate_raw':100*(delay>15).sum()/len(comp)}\\nprint(checks)\\nprint(res)\"\n }\n]"
+  },
+  {
+   "agent": "critic",
+   "kind": "critique",
+   "critique": {
+    "issues": [
+     {
+      "analyst": "S1",
+      "problem": "No answer was produced; the raw result is {}. The computation also assumes every file has local-time date, sched_dep, and actual_dep columns, so it cannot correctly process AS if its columns are UTC-suffixed. It adds 1440 minutes to every negative clock difference, which can incorrectly turn a genuinely early departure into a next-day delay."
+     },
+     {
+      "analyst": "S2",
+      "problem": "The submitted result contains null for every carrier, so it does not satisfy the required JSON answer. The code does not normalize AS's UTC date/time fields into local origin time or select February by local scheduled date. Like S1, it converts every negative clock difference to a next-day departure, potentially misclassifying early departures."
+     },
+     {
+      "analyst": "S3",
+      "problem": "The submitted result contains null for every carrier. The code assumes local-time columns and therefore cannot process AS's UTC-suffixed schema. In addition, its completed-flight filter excludes cancelled flights but does not exclude rows with missing actual_dep, so non-cancelled incomplete rows can enter the denominator. It also converts every negative clock difference into a 1,440-minute delay."
+     }
+    ],
+    "disagreements": "There are no numerical disagreements: all three analysts failed to produce rates. S1 and S2 correctly attempted to exclude missing actual_dep in their main computations, whereas S3 did not. All methods fail to handle the AS UTC schema and share the questionable blanket midnight-wrap treatment.",
+    "best": "none",
+    "correction": "Recompute and return six numeric values, rounded to one decimal, in the exact requested key order. Deduplicate by flight_id, convert AS UTC date/times to local origin time using the airport offset, select flights whose local scheduled date is in February 2025, exclude cancelled and otherwise incomplete flights, and use delayed flights with delay strictly greater than 15 minutes divided by completed flights. Do not treat every negative clock difference as a next-day departure; distinguish documented post-midnight departures from genuinely early departures."
+   }
+  },
+  {
+   "agent": "solvers",
+   "kind": "handoff",
+   "to": "aggregator",
+   "content": "[\n {\n  \"analyst\": \"S1\",\n  \"raw\": \"{}\",\n  \"notes\": \"Unable to provide the computed rates in this submission.\"\n },\n {\n  \"analyst\": \"S2\",\n  \"raw\": \"{\\\"WN\\\": null, \\\"DL\\\": null, \\\"AA\\\": null, \\\"UA\\\": null, \\\"B6\\\": null, \\\"AS\\\": null}\",\n  \"notes\": \"I could not complete the calculation because AS.csv uses UTC-suffixed columns while the other carrier files use local-time columns; the required normalization step was interrupted before producing the rates.\"\n },\n {\n  \"analyst\": \"S3\",\n  \"raw\": \"{\\\"WN\\\": null, \\\"DL\\\": null, \\\"AA\\\": null, \\\"UA\\\": null, \\\"B6\\\": null, \\\"AS\\\": null}\",\n  \"notes\": \"I could not complete the required computation because the carrier files are not schema-uniform: AS uses date_utc/sched_dep_utc/actual_dep_utc while the other files use local-time column names, and the required final submission had to be made before further data processing.\"\n }\n]"
+  },
+  {
+   "agent": "critic",
+   "kind": "handoff",
+   "to": "aggregator",
+   "content": "{\n \"issues\": [\n  {\n   \"analyst\": \"S1\",\n   \"problem\": \"No answer was produced; the raw result is {}. The computation also assumes every file has local-time date, sched_dep, and actual_dep columns, so it cannot correctly process AS if its columns are UTC-suffixed. It adds 1440 minutes to every negative clock difference, which can incorrectly turn a genuinely early departure into a next-day delay.\"\n  },\n  {\n   \"analyst\": \"S2\",\n   \"problem\": \"The submitted result contains null for every carrier, so it does not satisfy the required JSON answer. The code does not normalize AS's UTC date/time fields into local origin time or select February by local scheduled date. Like S1, it converts every negative clock difference to a next-day departure, potentially misclassifying early departures.\"\n  },\n  {\n   \"analyst\": \"S3\",\n   \"problem\": \"The submitted result contains null for every carrier. The code assumes local-time columns and therefore cannot process AS's UTC-suffixed schema. In addition, its completed-flight filter excludes cancelled flights but does not exclude rows with missing actual_dep, so non-cancelled incomplete rows can enter the denominator. It also converts every negative clock difference into a 1,440-minute delay.\"\n  }\n ],\n \"disagreements\": \"There are no numerical disagreements: all three analysts failed to produce rates. S1 and S2 correctly attempted to exclude missing actual_dep in their main computations, whereas S3 did not. All methods fail to handle the AS UTC schema and share the questionable blanket midnight-wrap treatment.\",\n \"best\": \"none\",\n \"correction\": \"Recompute and return six numeric values, rounded to one decimal, in the exact requested key order. Deduplicate by flight_id, convert AS UTC date/times to local origin time using the airport offset, select flights whose local scheduled date is in February 2025, exclude cancelled and otherwise incomplete flights, and use delayed flights with delay strictly greater than 15 minutes divided by completed flights. Do not treat every negative clock difference as a next-day departure; distinguish documented post-midnight departures from genuinely early departures.\"\n}"
+  },
+  {
+   "agent": "aggregator",
+   "kind": "final",
+   "output": {
+    "answer": {
+     "WN": null,
+     "DL": null,
+     "AA": null,
+     "UA": null,
+     "B6": null,
+     "AS": null
+    },
+    "chosen": "combined",
+    "rationale": "None of the analysts produced numeric rates; all returned unavailable results, and the required source-data normalization and computation were incomplete."
+   },
+   "raw": "{\"answer\":{\"WN\":null,\"DL\":null,\"AA\":null,\"UA\":null,\"B6\":null,\"AS\":null},\"chosen\":\"combined\",\"rationale\":\"None of the analysts produced numeric rates; all returned unavailable results, and the required source-data normalization and computation were incomplete.\"}"
+  }
+ ]
+}

@@ -1,0 +1,159 @@
+{
+ "row": {
+  "system": "single",
+  "task": "T6",
+  "category": "integration",
+  "effort": "low",
+  "repeat": 0,
+  "score": 1.0,
+  "success": true,
+  "trap": "",
+  "calls": 7,
+  "input_tokens": 20195,
+  "output_tokens": 1518,
+  "cost_usd": 0.0027785,
+  "seconds": 20.9,
+  "handoffs": 0,
+  "comm_chars": 0,
+  "wall_s": 21.1,
+  "code_runs": 6
+ },
+ "final": {
+  "top5": [
+   "DFW-LAX",
+   "DEN-SEA",
+   "DEN-LAX",
+   "ATL-JFK",
+   "ATL-DFW"
+  ]
+ },
+ "grade_detail": {
+  "missing": [],
+  "extra": []
+ },
+ "calls": [
+  {
+   "agent": "single",
+   "input_tokens": 788,
+   "output_tokens": 209,
+   "seconds": 2.8,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 2096,
+   "output_tokens": 237,
+   "seconds": 3.45,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 2533,
+   "output_tokens": 260,
+   "seconds": 3.45,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 3112,
+   "output_tokens": 209,
+   "seconds": 3.32,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 3444,
+   "output_tokens": 227,
+   "seconds": 2.91,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 3808,
+   "output_tokens": 217,
+   "seconds": 2.51,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 4414,
+   "output_tokens": 159,
+   "seconds": 2.51,
+   "status": "completed"
+  }
+ ],
+ "messages": [],
+ "events": [
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "import pandas as pd, glob, os\nfiles=glob.glob('airlines/*.csv')\nprint(files)\nfor f in files:\n d=pd.read_csv(f); print(os.path.basename(f), d.shape, d.columns.tolist(), d.head(2).to_dict('records'))\n# combine and dedup? documentation repeated records export; flight_id unique every flight appears exactly once but export may repeated records. Need likely drop duplicates flight_id.\nall_df=pd.concat([pd.read_csv(f) for f in files], ignore_index=True)\nprint('combined',all_df.shape,'unique ids',all_df.flight_id.nunique(),'dupe rows',all_df.duplicated().sum(),'dupe ids',all_df.flight_id.duplicated().sum())\nprint(all_df[['date','origin','dest','cancelled']].head())",
+   "result": {
+    "ok": true,
+    "stdout": "['airlines/B6.csv', 'airlines/DL.csv', 'airlines/AS.csv', 'airlines/UA.csv', 'airlines/WN.csv', 'airlines/AA.csv']\nB6.csv (181, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'B61002', 'date': '2025-01-01', 'origin': 'JFK', 'dest': 'ATL', 'sched_dep': '08:35', 'actual_dep': '08:35', 'cancelled': False}, {'flight_id': 'B61001', 'date': '2025-01-01', 'origin': 'JFK', 'dest': 'LAX', 'sched_dep': '21:00', 'actual_dep': '21:03', 'cancelled': False}]\nDL.csv (412, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'DL1003', 'date': '2025-01-01', 'origin': 'LAX', 'dest': 'ATL', 'sched_dep': '07:55', 'actual_dep': '08:09', 'cancelled': False}, {'flight_id': 'DL1002', 'date': '2025-01-01', 'origin': 'DFW', 'dest': 'ATL', 'sched_dep': '14:25', 'actual_dep': '15:39', 'cancelled': False}]\nAS.csv (173, 7) ['flight_id', 'date_utc', 'origin', 'dest', 'sched_dep_utc', 'actual_dep_utc', 'cancelled'] [{'flight_id': 'AS1002', 'date_utc': '2025-01-01', 'origin': 'JFK', 'dest': 'SEA', 'sched_dep_utc': '10:45', 'actual_dep_utc': '10:56', 'cancelled': False}, {'flight_id': 'AS1001', 'date_utc': '2025-01-01', 'origin': 'DEN', 'dest': 'SEA', 'sched_dep_utc': '22:40', 'actual_dep_utc': '22:55', 'cancelled': False}]\nUA.csv (297, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'UA1004', 'date': '2025-01-01', 'origin': 'ORD', 'dest': 'LAX', 'sched_dep': '05:40', 'actual_dep': '05:39', 'cancelled': False}, {'flight_id': 'UA1005', 'date': '2025-01-01', 'origin': 'ORD', 'dest': 'JFK', 'sched_dep': '09:25', 'actual_dep': '09:39', 'cancelled': False}]\nWN.csv (525, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'WN1009', 'date': '2025-01-01', 'origin': 'DEN', 'dest': 'DFW', 'sched_dep': '10:10', 'actual_dep': '10:18', 'cancelled': False}, {'flight_id': 'WN1007', 'date': '2025-01-01', 'origin': 'ORD', 'dest': 'DEN', 'sched_dep': '15:35', 'actual_dep': '15:54', 'cancelled': False}]\nAA.csv (356, 7) ['flight_id', 'date', 'origin', 'dest', 'sched_dep', 'actual_dep', 'cancelled'] [{'flight_id': 'AA1005', 'date': '2025-01-01', 'origin': 'DFW', 'dest': 'SEA', 'sched_dep': '09:35', 'actual_dep': '09:31', 'cancelled': False}, {'flight_id': 'AA1004', 'date': '2025-01-01', 'origin': 'DFW', 'dest': 'JFK', 'sched_dep': '10:45', 'actual_dep': '10:42', 'cancelled': False}]\ncombined (1944, 10) unique ids 1932 dupe rows 12 dupe ids 12\n         date origin dest  cancelled\n0  2025-01-01    JFK  ATL      False\n1  2025-01-01    JFK  LAX      False\n2  2025-01-02    JFK  SEA      False\n3  2025-01-02    LAX  JFK      False\n4  2025-01-02    JFK  LAX      False\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "# normalize differing AS schema and dedup IDs\nframes=[]\nfor f in files:\n d=pd.read_csv(f)\n if 'date_utc' in d: d=d.rename(columns={'date_utc':'date','sched_dep_utc':'sched_dep','actual_dep_utc':'actual_dep'})\n frames.append(d)\ndf=pd.concat(frames,ignore_index=True).drop_duplicates('flight_id')\ndf['route']=df.apply(lambda r:'-'.join(sorted([r['origin'],r['dest']])),axis=1)\ncounts=df.groupby('route').size().sort_values(ascending=False)\nprint('rows',len(df),'date range',df.date.min(),df.date.max(),'routes',len(counts))\nprint(counts.head(15).to_string())\nprint('top5',counts.head(5).index.tolist())",
+   "result": {
+    "ok": true,
+    "stdout": "rows 1932 date range 2025-01-01 2025-03-01 routes 19\nroute\nDFW-LAX    200\nDEN-SEA    170\nDEN-LAX    169\nATL-JFK    161\nATL-DFW    160\nDEN-DFW    144\nDFW-ORD    121\nLAX-SEA     95\nATL-LAX     95\nATL-ORD     90\nJFK-LAX     83\nDEN-ORD     70\nJFK-ORD     70\nDFW-JFK     68\nLAX-ORD     66\ntop5 ['DFW-LAX', 'DEN-SEA', 'DEN-LAX', 'ATL-JFK', 'ATL-DFW']\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "as0=pd.read_csv('airlines/AS.csv'); print(as0[as0.date_utc=='2025-03-01'].to_string(index=False)); print('AS date counts',as0.date_utc.min(),as0.date_utc.max(),as0.date_utc.value_counts().sort_index().tail())\nprint(pd.read_csv('airports.csv').to_string(index=False))",
+   "result": {
+    "ok": true,
+    "stdout": "flight_id   date_utc origin dest sched_dep_utc actual_dep_utc  cancelled\n   AS1172 2025-03-01    JFK  SEA         01:10          01:15      False\n   AS1173 2025-03-01    LAX  SEA         04:20          04:32      False\n   AS1171 2025-03-01    LAX  SEA         07:10          07:22      False\nAS date counts 2025-01-01 2025-03-01 date_utc\n2025-02-25    4\n2025-02-26    2\n2025-02-27    2\n2025-02-28    4\n2025-03-01    3\nName: count, dtype: int64\nairport              city            timezone  utc_offset_hours\n    ATL           Atlanta    America/New_York                -5\n    JFK          New York    America/New_York                -5\n    ORD           Chicago     America/Chicago                -6\n    DFW Dallas-Fort Worth     America/Chicago                -6\n    DEN            Denver      America/Denver                -7\n    LAX       Los Angeles America/Los_Angeles                -8\n    SEA           Seattle America/Los_Angeles                -8\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "# Calculate local date for AS based fixed documented offsets (Jan/Feb no DST issue relevant offsets table fixed)\nair=pd.read_csv('airports.csv').set_index('airport')\na=pd.read_csv('airlines/AS.csv'); a['offset']=a.origin.map(air.utc_offset_hours)\na['local_dt']=pd.to_datetime(a.date_utc+' '+a.sched_dep_utc)-pd.to_timedelta(a.offset,unit='h') # UTC minus negative = plus, wait offset UTC local: local=UTC+offset\n# correction\n# above uses minus; redo\n a=None",
+   "result": {
+    "ok": false,
+    "stdout": "",
+    "error": "Traceback (most recent call last):\n  File \"/var/folders/ql/8_mlfx5s0hlckrlfb0lldh9w0000gn/T/ipykernel_74530/3513064669.py\", line 16, in run_python\n    exec(code, self.ns)\n  File \"<string>\", line 7\n    a=None\nIndentationError: unexpected indent\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "a=pd.read_csv('airlines/AS.csv'); a['offset']=a.origin.map(air.utc_offset_hours)\na['local_dt']=pd.to_datetime(a.date_utc+' '+a.sched_dep_utc)+pd.to_timedelta(a.offset,unit='h')\nprint(a.sort_values('local_dt').head(5)[['flight_id','date_utc','origin','sched_dep_utc','local_dt']].to_string(index=False))\nprint(a.sort_values('local_dt').tail(5)[['flight_id','date_utc','origin','sched_dep_utc','local_dt']].to_string(index=False))\nprint('local dates outside',a.local_dt.dt.date.min(),a.local_dt.dt.date.max(),(a.local_dt.dt.date< pd.Timestamp('2025-01-01').date()).sum(),(a.local_dt.dt.date>pd.Timestamp('2025-02-28').date()).sum())",
+   "result": {
+    "ok": false,
+    "stdout": "",
+    "error": "Traceback (most recent call last):\n  File \"/var/folders/ql/8_mlfx5s0hlckrlfb0lldh9w0000gn/T/ipykernel_74530/3513064669.py\", line 16, in run_python\n    exec(code, self.ns)\n  File \"<string>\", line 1, in <module>\nNameError: name 'air' is not defined. Did you mean: 'dir'?\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "air=pd.read_csv('airports.csv').set_index('airport'); a=pd.read_csv('airlines/AS.csv'); a['offset']=a.origin.map(air.utc_offset_hours)\na['local_dt']=pd.to_datetime(a.date_utc+' '+a.sched_dep_utc)+pd.to_timedelta(a.offset,unit='h')\nprint(a.sort_values('local_dt').head(5)[['flight_id','date_utc','origin','sched_dep_utc','local_dt']].to_string(index=False)); print(a.sort_values('local_dt').tail(5)[['flight_id','date_utc','origin','sched_dep_utc','local_dt']].to_string(index=False))\nprint('outside',sum(a.local_dt.dt.date < pd.Timestamp('2025-01-01').date()),sum(a.local_dt.dt.date > pd.Timestamp('2025-02-28').date()))",
+   "result": {
+    "ok": true,
+    "stdout": "flight_id   date_utc origin sched_dep_utc            local_dt\n   AS1002 2025-01-01    JFK         10:45 2025-01-01 05:45:00\n   AS1001 2025-01-01    DEN         22:40 2025-01-01 15:40:00\n   AS1003 2025-01-02    LAX         19:45 2025-01-02 11:45:00\n   AS1005 2025-01-02    LAX         22:55 2025-01-02 14:55:00\n   AS1006 2025-01-02    LAX         23:35 2025-01-02 15:35:00\nflight_id   date_utc origin sched_dep_utc            local_dt\n   AS1169 2025-02-28    SEA         07:00 2025-02-27 23:00:00\n   AS1170 2025-02-28    SEA         22:40 2025-02-28 14:40:00\n   AS1172 2025-03-01    JFK         01:10 2025-02-28 20:10:00\n   AS1173 2025-03-01    LAX         04:20 2025-02-28 20:20:00\n   AS1171 2025-03-01    LAX         07:10 2025-02-28 23:10:00\noutside 0 0\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "submit",
+   "answer": {
+    "top5": [
+     "DFW-LAX",
+     "DEN-SEA",
+     "DEN-LAX",
+     "ATL-JFK",
+     "ATL-DFW"
+    ]
+   },
+   "raw": "{\"top5\":[\"DFW-LAX\",\"DEN-SEA\",\"DEN-LAX\",\"ATL-JFK\",\"ATL-DFW\"]}",
+   "notes": "Combined all six carrier files, normalized Alaska's UTC-labeled columns for consistency, removed 12 repeated flight_id records, treated each route as the alphabetically sorted airport pair, and counted all scheduled records including cancellations. All records fall within the local Jan-Feb 2025 window after checking Alaska's UTC dates/times."
+  }
+ ]
+}

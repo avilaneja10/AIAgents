@@ -1,0 +1,8 @@
+airport,city,timezone,utc_offset_hours
+ATL,Atlanta,America/New_York,-5
+JFK,New York,America/New_York,-5
+ORD,Chicago,America/Chicago,-6
+DFW,Dallas-Fort Worth,America/Chicago,-6
+DEN,Denver,America/Denver,-7
+LAX,Los Angeles,America/Los_Angeles,-8
+SEA,Seattle,America/Los_Angeles,-8

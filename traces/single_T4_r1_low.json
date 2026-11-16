@@ -1,0 +1,115 @@
+{
+ "row": {
+  "system": "single",
+  "task": "T4",
+  "category": "distinct_roles",
+  "effort": "low",
+  "repeat": 1,
+  "score": 1.0,
+  "success": true,
+  "trap": "",
+  "calls": 5,
+  "input_tokens": 13562,
+  "output_tokens": 1417,
+  "cost_usd": 0.0020647,
+  "seconds": 19.6,
+  "handoffs": 0,
+  "comm_chars": 0,
+  "wall_s": 19.7,
+  "code_runs": 4
+ },
+ "final": {
+  "bad_weather_rate": 41.7,
+  "other_rate": 6.8
+ },
+ "grade_detail": {
+  "bad_weather_rate": true,
+  "other_rate": true
+ },
+ "calls": [
+  {
+   "agent": "single",
+   "input_tokens": 796,
+   "output_tokens": 95,
+   "seconds": 2.45,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 1512,
+   "output_tokens": 201,
+   "seconds": 3.41,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 1860,
+   "output_tokens": 490,
+   "seconds": 4.9,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 4154,
+   "output_tokens": 454,
+   "seconds": 5.53,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 5240,
+   "output_tokens": 177,
+   "seconds": 3.32,
+   "status": "completed"
+  }
+ ],
+ "messages": [],
+ "events": [
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "import pandas as pd, os\nasf=pd.read_csv('airlines/AS.csv'); w=pd.read_csv('weather.csv')\nprint(asf.head()); print(asf.shape, asf.dtypes); print(w.head()); print(w.shape, w.dtypes)\nprint(open('weather_codes.md').read())",
+   "result": {
+    "ok": true,
+    "stdout": "  flight_id    date_utc origin dest sched_dep_utc actual_dep_utc  cancelled\n0    AS1002  2025-01-01    JFK  SEA         10:45          10:56      False\n1    AS1001  2025-01-01    DEN  SEA         22:40          22:55      False\n2    AS1003  2025-01-02    LAX  SEA         19:45          19:57      False\n3    AS1005  2025-01-02    LAX  SEA         22:55          22:57      False\n4    AS1006  2025-01-02    LAX  SEA         23:35          23:28      False\n(173, 7) flight_id          str\ndate_utc           str\norigin             str\ndest               str\nsched_dep_utc      str\nactual_dep_utc     str\ncancelled         bool\ndtype: object\n  airport        date  hour wx_code  visibility_mi\n0     ATL  2025-01-01     0     CLR           10.0\n1     ATL  2025-01-01     1     CLR           10.0\n2     ATL  2025-01-01     2     CLR           10.0\n3     ATL  2025-01-01     3     CLR           10.0\n4     ATL  2025-01-01     4     CLR           10.0\n(9912, 5) airport              str\ndate                 str\nhour               int64\nwx_code              str\nvisibility_mi    float64\ndtype: object\n# Weather codes (METAR style)\n\n| code | meaning |\n|---|---|\n| `CLR` | clear |\n| `-RA` | light rain |\n| `RA` | moderate rain |\n| `+RA` | heavy rain |\n| `BR` | mist |\n| `FG` | fog |\n| `SN` | snow |\n| `TS` | thunderstorm |\n\n`visibility_mi` is visibility in statute miles.\n\n## Bad weather\nAn airport-hour counts as **bad weather** if and only if:\n- `wx_code` is `TS`, `SN` or `+RA`; **or**\n- `wx_code` is `FG` **and** `visibility_mi` < 1.0.\n\nEverything else (`CLR`, `-RA`, `RA`, `BR`, and `FG` with visibility >= 1.0) is **not** bad weather.\n\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "a=pd.read_csv('airports.csv'); print(a[a.airport.isin(asf.origin.unique())].to_string(index=False)); print('dupes',asf.flight_id.duplicated().sum(),'cancel',asf.cancelled.sum()); print(asf.origin.value_counts()); print(asf.date_utc.min(),asf.date_utc.max())",
+   "result": {
+    "ok": true,
+    "stdout": "airport        city            timezone  utc_offset_hours\n    JFK    New York    America/New_York                -5\n    DEN      Denver      America/Denver                -7\n    LAX Los Angeles America/Los_Angeles                -8\n    SEA     Seattle America/Los_Angeles                -8\ndupes 0 cancel 1\norigin\nSEA    80\nLAX    52\nDEN    25\nJFK    16\nName: count, dtype: int64\n2025-01-01 2025-03-01\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "import numpy as np\nx=asf.merge(a[['airport','utc_offset_hours']].rename(columns={'airport':'origin'}),on='origin',validate='many_to_one')\n# parse UTC datetimes; local scheduled timestamp\nx['sched_utc']=pd.to_datetime(x.date_utc+' '+x.sched_dep_utc)\nx['actual_utc']=pd.to_datetime(x.date_utc+' '+x.actual_dep_utc, errors='coerce')\nx['sched_local']=x.sched_utc+pd.to_timedelta(x.utc_offset_hours,unit='h')\nx['local_date']=x.sched_local.dt.date\nx['local_hour']=x.sched_local.dt.hour\nx['delay_min']=(x.actual_utc-x.sched_utc).dt.total_seconds()/60\nx=x[(x.local_date>=pd.Timestamp('2025-01-01').date())&(x.local_date<=pd.Timestamp('2025-02-28').date())]\n# weather merge\nww=w.copy(); ww['date']=pd.to_datetime(ww.date).dt.date\nx=x.merge(ww,left_on=['origin','local_date','local_hour'],right_on=['airport','date','hour'],how='left',validate='many_to_one')\nx['bad']=x.wx_code.isin(['TS','SN','+RA']) | ((x.wx_code=='FG')&(x.visibility_mi<1.0))\nx['delayed']=x.delay_min>15\nprint(x[['flight_id','origin','sched_utc','sched_local','wx_code','visibility_mi','delay_min','cancelled','bad']].to_string(index=False))\nprint('\\ncounts',x.groupby('bad',dropna=False).agg(n=('flight_id','size'), completed=('cancelled',lambda z:(~z).sum()), delayed=('delayed',lambda z:(z & ~x.loc[z.index,'cancelled']).sum())))\n",
+   "result": {
+    "ok": true,
+    "stdout": "flight_id origin           sched_utc         sched_local wx_code  visibility_mi  delay_min  cancelled   bad\n   AS1002    JFK 2025-01-01 10:45:00 2025-01-01 05:45:00     CLR          10.00       11.0      False False\n   AS1001    DEN 2025-01-01 22:40:00 2025-01-01 15:40:00     CLR          10.00       15.0      False False\n   AS1003    LAX 2025-01-02 19:45:00 2025-01-02 11:45:00     CLR          10.00       12.0      False False\n   AS1005    LAX 2025-01-02 22:55:00 2025-01-02 14:55:00     CLR          10.00        2.0      False False\n   AS1006    LAX 2025-01-02 23:35:00 2025-01-02 15:35:00     CLR          10.00       -7.0      False False\n   AS1004    SEA 2025-01-03 06:05:00 2025-01-02 22:05:00     CLR          10.00        6.0      False False\n   AS1007    DEN 2025-01-03 17:00:00 2025-01-03 10:00:00     CLR          10.00       11.0      False False\n   AS1008    SEA 2025-01-04 07:55:00 2025-01-03 23:55:00     +RA           2.00       -7.0      False  True\n   AS1009    LAX 2025-01-04 21:20:00 2025-01-04 13:20:00     CLR          10.00       -8.0      False False\n   AS1010    SEA 2025-01-05 03:15:00 2025-01-04 19:15:00     CLR          10.00        5.0      False False\n   AS1013    SEA 2025-01-05 18:30:00 2025-01-05 10:30:00     CLR          10.00        8.0      False False\n   AS1012    LAX 2025-01-06 03:55:00 2025-01-05 19:55:00     CLR          10.00        1.0      False False\n   AS1011    LAX 2025-01-06 04:40:00 2025-01-05 20:40:00     CLR          10.00        4.0      False False\n   AS1014    SEA 2025-01-06 21:50:00 2025-01-06 13:50:00     -RA           9.50       19.0      False False\n   AS1015    SEA 2025-01-06 23:15:00 2025-01-06 15:15:00     -RA           8.00       -8.0      False False\n   AS1019    SEA 2025-01-07 17:10:00 2025-01-07 09:10:00     CLR          10.00       10.0      False False\n   AS1016    LAX 2025-01-07 17:30:00 2025-01-07 09:30:00     CLR          10.00       -2.0      False False\n   AS1018    SEA 2025-01-07 22:45:00 2025-01-07 14:45:00     +RA           2.75    -1287.0      False  True\n   AS1017    SEA 2025-01-08 05:00:00 2025-01-07 21:00:00     CLR          10.00       18.0      False False\n   AS1021    SEA 2025-01-08 16:00:00 2025-01-08 08:00:00     CLR          10.00        8.0      False False\n   AS1022    LAX 2025-01-08 20:10:00 2025-01-08 12:10:00     CLR          10.00       -7.0      False False\n   AS1020    SEA 2025-01-09 06:00:00 2025-01-08 22:00:00      BR           2.50       15.0      False False\n   AS1023    SEA 2025-01-09 18:05:00 2025-01-09 10:05:00     CLR          10.00       12.0      False False\n   AS1024    SEA 2025-01-09 18:55:00 2025-01-09 10:55:00     CLR          10.00       -4.0      False False\n   AS1025    LAX 2025-01-10 04:55:00 2025-01-09 20:55:00     CLR          10.00        0.0      False False\n   AS1027    SEA 2025-01-10 13:35:00 2025-01-10 05:35:00     CLR          10.00       15.0      False False\n   AS1026    LAX 2025-01-11 01:20:00 2025-01-10 17:20:00     CLR          10.00       12.0      False False\n   AS1028    DEN 2025-01-11 22:10:00 2025-01-11 15:10:00      FG           1.00        2.0      False False\n   AS1029    SEA 2025-01-12 00:50:00 2025-01-11 16:50:00      RA           5.50        3.0      False False\n   AS1030    JFK 2025-01-12 10:30:00 2025-01-12 05:30:00     CLR          10.00       -1.0      False False\n   AS1031    SEA 2025-01-12 13:15:00 2025-01-12 05:15:00     CLR          10.00       -4.0      False False\n   AS1032    SEA 2025-01-12 14:00:00 2025-01-12 06:00:00     CLR          10.00       -8.0      False False\n   AS1033    SEA 2025-01-13 20:05:00 2025-01-13 12:05:00     CLR          10.00        0.0      False False\n   AS1034    DEN 2025-01-14 03:00:00 2025-01-13 20:00:00     CLR          10.00        7.0      False False\n   AS1037    DEN 2025-01-14 14:55:00 2025-01-14 07:55:00     CLR          10.00        4.0      False False\n   AS1036    LAX 2025-01-14 15:55:00 2025-01-14 07:55:00      BR           4.50       11.0      False False\n   A\n...[truncated]"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "# correct overnight clock difference and summarize\nraw=(pd.to_timedelta(x.sched_dep_utc+':00') if False else None)\n# derive clock minute\nsm=x.sched_utc.dt.hour*60+x.sched_utc.dt.minute\nam=x.actual_utc.dt.hour*60+x.actual_utc.dt.minute\nx['delay2']=am-sm\nx.loc[x.delay2 < -300,'delay2'] += 1440\n# likely only overnight negatives; inspect\nprint(x.loc[x.delay_min < -300,['flight_id','sched_dep_utc','actual_dep_utc','delay_min','delay2']])\nx['delayed2']=x.delay2>15\nz=x[~x.cancelled]\nprint('weather missing',x.wx_code.isna().sum(),'rows',len(x),'completed',len(z))\nprint(z.groupby('bad').agg(n=('flight_id','count'), delayed=('delayed2','sum'), rate=('delayed2','mean')))\nprint('bad weather rows',z[z.bad][['flight_id','wx_code','visibility_mi','delay2','delayed2']].to_string(index=False))",
+   "result": {
+    "ok": true,
+    "stdout": "    flight_id sched_dep_utc actual_dep_utc  delay_min  delay2\n17     AS1018         22:45          01:18    -1287.0   153.0\n123    AS1123         23:50          00:01    -1429.0    11.0\nweather missing 0 rows 173 completed 172\n         n  delayed      rate\nbad                          \nFalse  148       10  0.067568\nTrue    24       10  0.416667\nbad weather rows flight_id wx_code  visibility_mi  delay2  delayed2\n   AS1008     +RA           2.00    -7.0     False\n   AS1018     +RA           2.75   153.0      True\n   AS1038      SN           1.75    10.0     False\n   AS1048      FG           0.75    44.0      True\n   AS1054      SN           1.25     7.0     False\n   AS1053      SN           0.50    -9.0     False\n   AS1056      SN           1.00    11.0     False\n   AS1067      FG           0.75    22.0      True\n   AS1066     +RA           1.75     9.0     False\n   AS1070      SN           2.75    32.0      True\n   AS1101     +RA           2.25     9.0     False\n   AS1099      SN           1.00     0.0     False\n   AS1103      SN           0.75    -3.0     False\n   AS1104      FG           0.75    27.0      True\n   AS1126      SN           3.00    45.0      True\n   AS1136      FG           0.25    77.0      True\n   AS1138      SN           2.25     0.0     False\n   AS1139      SN           1.25    37.0      True\n   AS1145      SN           2.50    15.0     False\n   AS1148     +RA           3.00     9.0     False\n   AS1149     +RA           2.25    74.0      True\n   AS1157     +RA           1.50    15.0     False\n   AS1156      SN           2.75    28.0      True\n   AS1162     +RA           1.75     4.0     False\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "submit",
+   "answer": {
+    "bad_weather_rate": 41.7,
+    "other_rate": 6.8
+   },
+   "raw": "{\"bad_weather_rate\": 41.7, \"other_rate\": 6.8}",
+   "notes": "Converted AS scheduled UTC timestamps to local origin dates/hours using airport UTC offsets, then joined the matching origin-hour weather observation. Classified bad weather exactly per the supplied definition. Computed delays from actual minus scheduled clock times, adding 24 hours for overnight departures; excluded the one cancelled flight from both rates. Bad weather: 10 delayed / 24 completed; other: 10 / 148."
+  }
+ ]
+}

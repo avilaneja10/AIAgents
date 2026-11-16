@@ -1,0 +1,137 @@
+{
+ "row": {
+  "system": "single",
+  "task": "T2",
+  "category": "separable",
+  "effort": "low",
+  "repeat": 0,
+  "score": 1.0,
+  "success": true,
+  "trap": "",
+  "calls": 3,
+  "input_tokens": 7627,
+  "output_tokens": 916,
+  "cost_usd": 0.0012207000000000001,
+  "seconds": 11.1,
+  "handoffs": 0,
+  "comm_chars": 0,
+  "wall_s": 11.2,
+  "code_runs": 2
+ },
+ "final": {
+  "WN": {
+   "busiest": "DEN-LAX",
+   "worst": "DEN-ORD"
+  },
+  "DL": {
+   "busiest": "ATL-JFK",
+   "worst": "ATL-DFW"
+  },
+  "AA": {
+   "busiest": "DFW-LAX",
+   "worst": "DFW-ORD"
+  },
+  "UA": {
+   "busiest": "LAX-ORD",
+   "worst": "ATL-ORD"
+  },
+  "B6": {
+   "busiest": "JFK-LAX",
+   "worst": "ATL-JFK"
+  },
+  "AS": {
+   "busiest": "LAX-SEA",
+   "worst": "JFK-SEA"
+  }
+ },
+ "grade_detail": {
+  "WN.busiest": true,
+  "WN.worst": true,
+  "DL.busiest": true,
+  "DL.worst": true,
+  "AA.busiest": true,
+  "AA.worst": true,
+  "UA.busiest": true,
+  "UA.worst": true,
+  "B6.busiest": true,
+  "B6.worst": true,
+  "AS.busiest": true,
+  "AS.worst": true
+ },
+ "calls": [
+  {
+   "agent": "single",
+   "input_tokens": 856,
+   "output_tokens": 162,
+   "seconds": 2.44,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 2464,
+   "output_tokens": 458,
+   "seconds": 4.98,
+   "status": "completed"
+  },
+  {
+   "agent": "single",
+   "input_tokens": 4307,
+   "output_tokens": 296,
+   "seconds": 3.67,
+   "status": "completed"
+  }
+ ],
+ "messages": [],
+ "events": [
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "import pandas as pd, glob, os\nfiles=glob.glob('airlines/*.csv')\nprint(files)\nfor f in files:\n d=pd.read_csv(f)\n print(os.path.basename(f), d.shape, d.head(2).to_dict('records'), d.dtypes.to_dict(), 'dups', d.flight_id.duplicated().sum())\nprint(pd.read_csv('weather_codes.md') if False else open('README.md').read()[:500])",
+   "result": {
+    "ok": true,
+    "stdout": "['airlines/B6.csv', 'airlines/DL.csv', 'airlines/AS.csv', 'airlines/UA.csv', 'airlines/WN.csv', 'airlines/AA.csv']\nB6.csv (181, 7) [{'flight_id': 'B61002', 'date': '2025-01-01', 'origin': 'JFK', 'dest': 'ATL', 'sched_dep': '08:35', 'actual_dep': '08:35', 'cancelled': False}, {'flight_id': 'B61001', 'date': '2025-01-01', 'origin': 'JFK', 'dest': 'LAX', 'sched_dep': '21:00', 'actual_dep': '21:03', 'cancelled': False}] {'flight_id': <StringDtype(storage='python', na_value=nan)>, 'date': <StringDtype(storage='python', na_value=nan)>, 'origin': <StringDtype(storage='python', na_value=nan)>, 'dest': <StringDtype(storage='python', na_value=nan)>, 'sched_dep': <StringDtype(storage='python', na_value=nan)>, 'actual_dep': <StringDtype(storage='python', na_value=nan)>, 'cancelled': dtype('bool')} dups 12\nDL.csv (412, 7) [{'flight_id': 'DL1003', 'date': '2025-01-01', 'origin': 'LAX', 'dest': 'ATL', 'sched_dep': '07:55', 'actual_dep': '08:09', 'cancelled': False}, {'flight_id': 'DL1002', 'date': '2025-01-01', 'origin': 'DFW', 'dest': 'ATL', 'sched_dep': '14:25', 'actual_dep': '15:39', 'cancelled': False}] {'flight_id': <StringDtype(storage='python', na_value=nan)>, 'date': <StringDtype(storage='python', na_value=nan)>, 'origin': <StringDtype(storage='python', na_value=nan)>, 'dest': <StringDtype(storage='python', na_value=nan)>, 'sched_dep': <StringDtype(storage='python', na_value=nan)>, 'actual_dep': <StringDtype(storage='python', na_value=nan)>, 'cancelled': dtype('bool')} dups 0\nAS.csv (173, 7) [{'flight_id': 'AS1002', 'date_utc': '2025-01-01', 'origin': 'JFK', 'dest': 'SEA', 'sched_dep_utc': '10:45', 'actual_dep_utc': '10:56', 'cancelled': False}, {'flight_id': 'AS1001', 'date_utc': '2025-01-01', 'origin': 'DEN', 'dest': 'SEA', 'sched_dep_utc': '22:40', 'actual_dep_utc': '22:55', 'cancelled': False}] {'flight_id': <StringDtype(storage='python', na_value=nan)>, 'date_utc': <StringDtype(storage='python', na_value=nan)>, 'origin': <StringDtype(storage='python', na_value=nan)>, 'dest': <StringDtype(storage='python', na_value=nan)>, 'sched_dep_utc': <StringDtype(storage='python', na_value=nan)>, 'actual_dep_utc': <StringDtype(storage='python', na_value=nan)>, 'cancelled': dtype('bool')} dups 0\nUA.csv (297, 7) [{'flight_id': 'UA1004', 'date': '2025-01-01', 'origin': 'ORD', 'dest': 'LAX', 'sched_dep': '05:40', 'actual_dep': '05:39', 'cancelled': False}, {'flight_id': 'UA1005', 'date': '2025-01-01', 'origin': 'ORD', 'dest': 'JFK', 'sched_dep': '09:25', 'actual_dep': '09:39', 'cancelled': False}] {'flight_id': <StringDtype(storage='python', na_value=nan)>, 'date': <StringDtype(storage='python', na_value=nan)>, 'origin': <StringDtype(storage='python', na_value=nan)>, 'dest': <StringDtype(storage='python', na_value=nan)>, 'sched_dep': <StringDtype(storage='python', na_value=nan)>, 'actual_dep': <StringDtype(storage='python', na_value=nan)>, 'cancelled': dtype('bool')} dups 0\nWN.csv (525, 7) [{'flight_id': 'WN1009', 'date': '2025-01-01', 'origin': 'DEN', 'dest': 'DFW', 'sched_dep': '10:10', 'actual_dep': '10:18', 'cancelled': False}, {'flight_id': 'WN1007', 'date': '2025-01-01', 'origin': 'ORD', 'dest': 'DEN', 'sched_dep': '15:35', 'actual_dep': '15:54', 'cancelled': False}] {'flight_id': <StringDtype(storage='python', na_value=nan)>, 'date': <StringDtype(storage='python', na_value=nan)>, 'origin': <StringDtype(storage='python', na_value=nan)>, 'dest': <StringDtype(storage='python', na_value=nan)>, 'sched_dep': <StringDtype(storage='python', na_value=nan)>, 'actual_dep': <StringDtype(storage='python', na_value=nan)>, 'cancelled': dtype('bool')} dups 0\nAA.csv (356, 7) [{'flight_id': 'AA1005', 'date': '2025-01-01', 'origin': 'DFW', 'dest': 'SEA', 'sched_dep': '09:35', 'actual_dep': '09:31', 'cancelled': False}, {'flight_id': 'AA1004', 'date': '2025-01-01', 'origin': 'DFW', 'dest': 'JFK', 'sched_dep': '10:45', 'actual_dep': '10:42', 'cancelled': False}] {'flight_id': <StringDtype(storage='python', na_value=nan)>, 'date': <StringDtype(storage='python'\n...[truncated]"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "run_python",
+   "code": "import pandas as pd, glob, os\nout={}\nfor f in glob.glob('airlines/*.csv'):\n c=os.path.basename(f)[:2]; d=pd.read_csv(f).drop_duplicates('flight_id').copy()\n # identify columns suffix\n sc='sched_dep_utc' if 'sched_dep_utc' in d else 'sched_dep'; ac='actual_dep_utc' if 'actual_dep_utc' in d else 'actual_dep'\n d['route']=d.apply(lambda r:'-'.join(sorted([r.origin,r.dest])),axis=1)\n d['delay']=pd.to_timedelta(d[ac].fillna('00:00')+':00').dt.total_seconds()/60-pd.to_timedelta(d[sc]+':00').dt.total_seconds()/60\n # overnight correction for completed earlier actual\n d.loc[(~d.cancelled)&(d.delay< -720),'delay']+=1440\n g=d.groupby('route').agg(scheduled=('flight_id','size'), completed=('cancelled',lambda x:(~x).sum()), delayed=('delay',lambda x:((x>15)&x.notna()).sum()))\n g['rate']=g.delayed/g.completed\n busy=g[g.scheduled==g.scheduled.max()]\n eligible=g[g.completed>=20]; worst=eligible[eligible.rate==eligible.rate.max()]\n print('\\n',c,'rows',len(d),'busy max',busy.to_dict('index'),'worst',worst.to_dict('index'))\n print('all eligible sorted'); print(eligible.sort_values(['rate','completed'],ascending=False).head(10))\n out[c]={'busiest':busy.index[0],'worst':worst.index[0]}\nprint(out)",
+   "result": {
+    "ok": true,
+    "stdout": "\n B6 rows 169 busy max {'JFK-LAX': {'scheduled': 83, 'completed': 81, 'delayed': 9, 'rate': 0.1111111111111111}} worst {'ATL-JFK': {'scheduled': 39, 'completed': 38, 'delayed': 6, 'rate': 0.15789473684210525}}\nall eligible sorted\n         scheduled  completed  delayed      rate\nroute                                           \nATL-JFK         39         38        6  0.157895\nJFK-LAX         83         81        9  0.111111\nJFK-SEA         28         27        1  0.037037\n\n DL rows 412 busy max {'ATL-JFK': {'scheduled': 122, 'completed': 114, 'delayed': 29, 'rate': 0.2543859649122807}} worst {'ATL-DFW': {'scheduled': 54, 'completed': 53, 'delayed': 21, 'rate': 0.39622641509433965}}\nall eligible sorted\n         scheduled  completed  delayed      rate\nroute                                           \nATL-DFW         54         53       21  0.396226\nATL-SEA         48         47       12  0.255319\nATL-JFK        122        114       29  0.254386\nATL-DEN         31         31        7  0.225806\nATL-ORD         62         59       11  0.186441\nATL-LAX         95         95       13  0.136842\n\n AS rows 173 busy max {'LAX-SEA': {'scheduled': 95, 'completed': 94, 'delayed': 9, 'rate': 0.09574468085106383}} worst {'JFK-SEA': {'scheduled': 34, 'completed': 34, 'delayed': 7, 'rate': 0.20588235294117646}}\nall eligible sorted\n         scheduled  completed  delayed      rate\nroute                                           \nJFK-SEA         34         34        7  0.205882\nLAX-SEA         95         94        9  0.095745\nDEN-SEA         44         44        4  0.090909\n\n UA rows 297 busy max {'LAX-ORD': {'scheduled': 66, 'completed': 66, 'delayed': 14, 'rate': 0.21212121212121213}} worst {'ATL-ORD': {'scheduled': 28, 'completed': 27, 'delayed': 12, 'rate': 0.4444444444444444}}\nall eligible sorted\n         scheduled  completed  delayed      rate\nroute                                           \nATL-ORD         28         27       12  0.444444\nJFK-ORD         51         50       15  0.300000\nDEN-DFW         45         45       13  0.288889\nDEN-SEA         57         56       14  0.250000\nDEN-LAX         50         49       11  0.224490\nLAX-ORD         66         66       14  0.212121\n\n WN rows 525 busy max {'DEN-LAX': {'scheduled': 119, 'completed': 116, 'delayed': 41, 'rate': 0.35344827586206895}} worst {'DEN-ORD': {'scheduled': 70, 'completed': 69, 'delayed': 27, 'rate': 0.391304347826087}}\nall eligible sorted\n         scheduled  completed  delayed      rate\nroute                                           \nDEN-ORD         70         69       27  0.391304\nDFW-ORD         45         44       17  0.386364\nATL-DFW         63         62       23  0.370968\nDEN-LAX        119        116       41  0.353448\nDFW-LAX        109        107       35  0.327103\nDEN-DFW         50         50       14  0.280000\nDEN-SEA         69         69       14  0.202899\n\n AA rows 356 busy max {'DFW-LAX': {'scheduled': 91, 'completed': 89, 'delayed': 17, 'rate': 0.19101123595505617}} worst {'DFW-ORD': {'scheduled': 76, 'completed': 74, 'delayed': 21, 'rate': 0.28378378378378377}}\nall eligible sorted\n         scheduled  completed  delayed      rate\nroute                                           \nDFW-ORD         76         74       21  0.283784\nDFW-JFK         68         66       17  0.257576\nDFW-LAX         91         89       17  0.191011\nDEN-DFW         49         48        8  0.166667\nATL-DFW         43         42        7  0.166667\nDFW-SEA         29         29        4  0.137931\n{'B6': {'busiest': 'JFK-LAX', 'worst': 'ATL-JFK'}, 'DL': {'busiest': 'ATL-JFK', 'worst': 'ATL-DFW'}, 'AS': {'busiest': 'LAX-SEA', 'worst': 'JFK-SEA'}, 'UA': {'busiest': 'LAX-ORD', 'worst': 'ATL-ORD'}, 'WN': {'busiest': 'DEN-LAX', 'worst': 'DEN-ORD'}, 'AA': {'busiest': 'DFW-LAX', 'worst': 'DFW-ORD'}}\n"
+   }
+  },
+  {
+   "agent": "single",
+   "kind": "submit",
+   "answer": {
+    "WN": {
+     "busiest": "DEN-LAX",
+     "worst": "DEN-ORD"
+    },
+    "DL": {
+     "busiest": "ATL-JFK",
+     "worst": "ATL-DFW"
+    },
+    "AA": {
+     "busiest": "DFW-LAX",
+     "worst": "DFW-ORD"
+    },
+    "UA": {
+     "busiest": "LAX-ORD",
+     "worst": "ATL-ORD"
+    },
+    "B6": {
+     "busiest": "JFK-LAX",
+     "worst": "ATL-JFK"
+    },
+    "AS": {
+     "busiest": "LAX-SEA",
+     "worst": "JFK-SEA"
+    }
+   },
+   "raw": "{\"WN\":{\"busiest\":\"DEN-LAX\",\"worst\":\"DEN-ORD\"},\"DL\":{\"busiest\":\"ATL-JFK\",\"worst\":\"ATL-DFW\"},\"AA\":{\"busiest\":\"DFW-LAX\",\"worst\":\"DFW-ORD\"},\"UA\":{\"busiest\":\"LAX-ORD\",\"worst\":\"ATL-ORD\"},\"B6\":{\"busiest\":\"JFK-LAX\",\"worst\":\"ATL-JFK\"},\"AS\":{\"busiest\":\"LAX-SEA\",\"worst\":\"JFK-SEA\"}}",
+   "notes": "Loaded each carrier file, deduplicated repeated flight_id records (B6 had duplicates), normalized each route by alphabetically sorting its two airport codes, and counted all remaining scheduled flights for busiest. Computed completed-flight delays from actual minus scheduled time (adding a day for completed flights crossing midnight), then selected the highest delayed/completed rate among routes with at least 20 completed flights."
+  }
+ ]
+}
